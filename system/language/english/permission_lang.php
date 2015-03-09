@@ -1,0 +1,34 @@
+<?php
+
+$lang['permission_country_view'] = "Allow To View Country List";
+$lang['permission_country_create'] = "Allow To Create Country";
+$lang['permission_country_modify'] = "Allow To Modify Country";
+$lang['permission_country_delete'] = "Allow To Delete Country";
+$lang['permission_member_all_view'] = "Allow To View All Members";
+$lang['permission_member_country_view'] = "Allow To View Members From Same Country";
+$lang['permission_member_region_view'] = "Allow To View Members From Same Region";
+$lang['permission_member_township_view'] = "Allow To View Members From Same Township";
+$lang['permission_member_sector_view'] = "Allow To View Members From Same Sector";
+$lang['permission_member_create'] = "Allow To Create Member";
+$lang['permission_member_modify'] = "Allow To Modify Member";
+$lang['permission_member_delete'] = "Allow To Delete Member";
+$lang['permission_member_group_view'] = "Allow To View Member Group List";
+$lang['permission_member_group_create'] = "Allow To Create Member Group";
+$lang['permission_member_group_modify'] = "Allow To Modify Member Group";
+$lang['permission_member_group_delete'] = "Allow To Delete Member Group";
+$lang['permission_office_view'] = "Allow To View Office List";
+$lang['permission_office_create'] = "Allow To Create Office";
+$lang['permission_office_modify'] = "Allow To Modify Office";
+$lang['permission_office_delete'] = "Allow To Delete Office";
+$lang['permission_region_view'] = "Allow To View Region List";
+$lang['permission_region_create'] = "Allow To Create Region";
+$lang['permission_region_modify'] = "Allow To Modify Region";
+$lang['permission_region_delete'] = "Allow To Delete Region";
+$lang['permission_township_view'] = "Allow To View Township List";
+$lang['permission_township_create'] = "Allow To Create Township";
+$lang['permission_township_modify'] = "Allow To Modify Township";
+$lang['permission_township_delete'] = "Allow To Delete Township";
+$lang['permission_sector_view'] = "Allow To View Sector List";
+$lang['permission_sector_create'] = "Allow To Create Sector";
+$lang['permission_sector_modify'] = "Allow To Modify Sector";
+$lang['permission_sector_delete'] = "Allow To Delete Sector";
