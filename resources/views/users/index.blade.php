@@ -5,7 +5,7 @@
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
 			<div class="panel panel-default">
-				<div class="panel-heading"><h1>User List</h1></div>
+				<div class="panel-heading"><h1>User List <a class='btn btn-primary pull-right' href={{ url("/users/create" ) }}>Add New User</a></h1></div>
 				<div class="panel-body">
 					<section>
 						@if (count($errors) > 0)
@@ -24,7 +24,12 @@
 							@endif
 
 						{!! Form::open(['url' => 'roles']) !!}
+							@role('admin')
 							{!! Form::select('user_role', ['1' => 'Admin', '2' => 'Office Staff', '3' => 'Data Entry', '4' => 'Analyst' ], ['class' => 'form-control']) !!}
+							@endrole
+							@role('staff')
+							{!! Form::select('user_role', ['2' => 'Office Staff', '3' => 'Data Entry', '4' => 'Analyst' ], ['class' => 'form-control']) !!}
+							@endrole
 							{!! Form::submit( 'Change Role') !!}
 							<table class="table">
 							<thead>
@@ -44,7 +49,7 @@
 										<td>{{ $k + 1 }}</td>
 										<td>{{ $user->name }}</td>
 										<td>{{ $user->email }}</td>
-										<td>{{{ isset($user->role) ? $user->role : 'Undefined' }}}</td>
+										<td>{{ $user->roles->toArray()[0]['name'] }}</td>
 										<td><a href={{ url("/users/".$user->id ) }}>Profile</a></td>
 										<td><a href={{ url("/users/".$user->id."/delete")}}>Delete</a></td>
 									</tr>

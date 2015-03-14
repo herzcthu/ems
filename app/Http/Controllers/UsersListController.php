@@ -35,8 +35,10 @@ class UsersListController extends Controller {
 
 		if ($this->auth_user->is('admin'))
 		{
+
 			$users = User::all();
 			$roles = Role::all();
+			/** die($users->roles->toArray());
 			$users_array = $users->toArray();
 			$roles_array = $roles->toArray();
 			$role_count = count($roles_array);
@@ -60,13 +62,13 @@ class UsersListController extends Controller {
 			//var_dump(compact('users'));
 
 			//
-			$users = json_decode (json_encode ($users_array), FALSE);
+			//$users = json_decode (json_encode ($users_array), FALSE);
 			//var_dump($users);
 			//var_dump(compact($users_array));
 			//var_dump(compact('users'));
 			//var_dump(compact('roles'));
 			//die();
-
+				*/
 			//return view('users.index')->with('users', $users);
 			return view('users.index', compact('users'));
 			//return view('users.index', compact('users', 'roles'));//->with('users',$users_array);//, compact('users'));

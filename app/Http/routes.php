@@ -15,19 +15,16 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
-//Route::get('users', 'UserListController@index');
+Route::post('users/import', 'UsersListController@import');
 
-//Route::get('users/add-new', 'UserListController@AddNewUser');
+Route::post('locations/import', 'GeolocationsController@import');
 
-//Route::get('users/profile', 'UserListController@ShowProfile');
-
-//Route::get('users/profile/{id}', 'UserListController@ShowProfile');
-
-//Route::get('users/profile/{id}/edit', 'UserListController@EditProfile');
-
-//Route::post('users', 'UserListController@store');
-Route::get('users/{id}/delete', 'UsersListController@destroy');
 Route::resource('users', 'UsersListController');
+
+Route::resource('locations', 'GeolocationsController');
+
+Route::resource('participants', 'ParticipantsController');
+
 Route::post('roles', 'UserRoleController@update');
 
 Route::controllers([

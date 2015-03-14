@@ -12,8 +12,9 @@ class RolesServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->publishes([
-			__DIR__.'/../../migrations/' => base_path('/database/migrations')
-		], 'migrations');
+			__DIR__ . '/../../migrations/' => base_path('/database/migrations'),
+            __DIR__ . '/../../config/roles.php' => config_path('roles.php')
+		]);
 
         $this->registerBladeExtensions();
     }
@@ -25,7 +26,7 @@ class RolesServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
-		//
+        $this->mergeConfigFrom(__DIR__ . '/../../config/roles.php', 'roles');
 	}
 
     /**

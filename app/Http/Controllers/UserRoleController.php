@@ -99,12 +99,15 @@ class UserRoleController extends Controller {
 			}
 		}
 		//var_dump($userid);
-
 		foreach($userid as $k => $id){
 			//var_dump($id);
 			try{
+
+				if($this->auth_user->allowed('edit.role',$this->auth_user )){
+					//die('This is true: user allowed to edit roles');
 				User::find($id)->detachAllRoles();
 				User::find($id)->attachRole($user_role);
+				}
 				$flash_message = "Role Updated!";
 			}
 			catch(\Illuminate\Database\QueryException $e)

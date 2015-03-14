@@ -29,16 +29,18 @@ class Registrar implements RegistrarContract {
 	 */
 	public function create(array $data)
 	{
-
 		$new_user = User::create([
 			'name' => $data['name'],
 			'email' => $data['email'],
 			'password' => bcrypt($data['password']),
 		]);
-		if('1' == $new_user->id){
-		User::find(1)->attachRole(1);
-		}else {
-			User::find($new_user->id)->attachRole(4);
+
+
+		if($new_user['id'] == 1)
+		{
+			User::find(1)->attachRole(1);
+		}else{
+			User::find($new_user['id'])->attachRole(4);
 		}
 		return $new_user;
 	}

@@ -2,8 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use Bican\Roles\Models\Role;
-use App\User as User;
 
 class DatabaseSeeder extends Seeder {
 
@@ -16,7 +14,8 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-		//$this->call('UserTableSeeder');
+		// $this->call('UserTableSeeder');
+
 		$this->call('RolesTableSeeder');
 		$this->call('PermissionsTableSeeder');
 	}

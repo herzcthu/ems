@@ -5,14 +5,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Bican\Roles\Contracts\HasRoleContract;
-use Bican\Roles\Contracts\HasPermissionContract;
-use Bican\Roles\Traits\HasRole;
-use Bican\Roles\Traits\HasPermission;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasRoleContract, HasPermissionContract {
+use Bican\Roles\Contracts\HasRoleAndPermissionContract;
+use Bican\Roles\Traits\HasRoleAndPermission;
 
-	use Authenticatable, CanResetPassword, HasRole, HasPermission;
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, HasRoleAndPermissionContract {
+
+    use Authenticatable, CanResetPassword, HasRoleAndPermission;
 
 	/**
 	 * The database table used by the model.
@@ -26,7 +25,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['name', 'user_image', 'email', 'password', 'user_gender', 'dob', 'user_line_phone', 'user_mobile_phone', 'user_mailing_address', 'user_biography'];
+	protected $fillable = ['name', 'email', 'password'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -34,13 +33,5 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
-
-
-	public function allRoles()
-	{
-		$roles = HasRole::all();
-		die($roles);
-	}
-
 
 }

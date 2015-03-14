@@ -137,10 +137,18 @@ return [
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
 
+
 		/*
 		 * Bican Role Provider
 		 */
 		'Bican\Roles\RolesServiceProvider',
+
+		/*
+		 * Excel
+		 */
+		'Maatwebsite\Excel\ExcelServiceProvider',
+
+
 		/*
 		 * Application Service Providers...
 		 */
@@ -198,6 +206,7 @@ return [
 		'Validator' => 'Illuminate\Support\Facades\Validator',
 		'View'      => 'Illuminate\Support\Facades\View',
 		'Form'		=> 'Illuminate\Html\FormFacade',
+		'Excel' 	=> 'Maatwebsite\Excel\Facades\Excel',
 
 	],
 
