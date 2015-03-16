@@ -21,7 +21,7 @@
 <div class="form-group">
     {!! Form::label('user_gender', 'Gender: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('user_gender', ['male' => 'Male', 'female' => 'Female', 'third_gender' => 'Not Specified'], ['class' => 'form-control']) !!}
+        {!! Form::select('user_gender', ['M' => 'Male', 'F' => 'Female', 'U' => 'Not Specified'], ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">

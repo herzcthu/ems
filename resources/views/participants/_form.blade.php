@@ -25,9 +25,26 @@
     </div>
 </div>
 <div class="form-group">
-    {!! Form::label('state', 'State Assigned: ', ['class' => 'col-md-4 control-label']) !!}
+    {!! Form::label('participant_type', 'Participant Type: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('state', $states, ['class' => 'form-control']) !!}
+        {!! Form::select('participant_type', ['coordinator' => 'Coordinator', 'enumerator' => 'Enumerator', 'spotchecker' => 'Spot Checker' ], ['class' => 'form-control']) !!}
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('parent_id', 'Coordinator Name: ', ['class' => 'col-md-4 control-label']) !!}
+    <div class="col-md-6">
+    <?php
+
+        array_unshift($coordinators, ['null' =>'No Coordinator']);
+
+        ?>
+        {!! Form::select('parent_id', $coordinators, ['class' => 'form-control']) !!}
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('location', 'Location Assigned: ', ['class' => 'col-md-4 control-label']) !!}
+    <div class="col-md-6">
+        {!! Form::select('location', ['Region' => $districts, 'Township' => $townships, 'Village' => $villages ], ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">
@@ -52,6 +69,12 @@
     {!! Form::label('user_mobile_phone', 'Mobile Phone: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
         {!! Form::text('user_mobile_phone', null, ['class' => 'form-control']) !!}
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('current_org', 'Current Organization: ', ['class' => 'col-md-4 control-label']) !!}
+    <div class="col-md-6">
+        {!! Form::text('current_org', null, ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">

@@ -16,14 +16,18 @@ class UsersFormRequest extends Request {
 	{
 		$this->current_user = Auth::user();
 		$current_user_id = $this->current_user->id;
+		/*
+		$commentId = $this->route('comment');
 
+		return Comment::where('id', $commentId)
+			->where('user_id', Auth::id())->exists();
+		*/
+		$updateUserID = $this->route('users');
+		$user = User::find($updateUserID);
 		$method = Request::method();
 		//die($method);
 		if('PATCH' == $method) {
 
-			$url_segments = Request::segments();
-			$user_id = $url_segments[1];
-			$user = User::find($user_id);
 		}else{
 
 		}
@@ -32,7 +36,7 @@ class UsersFormRequest extends Request {
 
 		if ( $this->current_user->is('admin') ){
 			return true;
-		}elseif ($this->current_user->allowed('edit.user',$user ) && $current_user_id == $user_id)
+		}elseif ($this->current_user->allowed('edit.user',$user ) && (User::where('id', $updateUserID)->where('id', Auth::id())->exists()))
 		{
 			return true;
 		}else{
@@ -61,8 +65,8 @@ class UsersFormRequest extends Request {
 				'user_gender' => 'required',
 				'dob' => 'dateformat:Y-m-d',
 				'user_line_phone' => '',
-				'user_mobile_phone' => 'required',
-				'user_mailing_address' => 'required',
+				//'user_mobile_phone' => 'required',
+				//'user_mailing_address' => 'required',
 				'user_biography' => '',
 			];
 		}else {
@@ -74,8 +78,8 @@ class UsersFormRequest extends Request {
 				'user_gender' => 'required',
 				'dob' => 'dateformat:Y-m-d',
 				'user_line_phone' => '',
-				'user_mobile_phone' => 'required',
-				'user_mailing_address' => 'required',
+				//'user_mobile_phone' => 'required',
+				//'user_mailing_address' => 'required',
 				'user_biography' => '',
 			];
 		}

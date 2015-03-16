@@ -29,6 +29,7 @@ return array(
     'Maatwebsite\\Excel\\' => array($vendorDir . '/maatwebsite/excel/src'),
     'JakubOnderka\\PhpConsoleHighlighter' => array($vendorDir . '/jakub-onderka/php-console-highlighter/src'),
     'JakubOnderka\\PhpConsoleColor' => array($vendorDir . '/jakub-onderka/php-console-color/src'),
+    'Franzose\\ClosureTable' => array($vendorDir . '/franzose/closure-table/src'),
     'Flynsarmy\\CsvSeeder\\' => array($vendorDir . '/flynsarmy/csv-seeder/src'),
     'Dotenv' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
@@ -37,4 +38,5 @@ return array(
     'Cron' => array($vendorDir . '/mtdowling/cron-expression/src'),
     'Carbon' => array($vendorDir . '/nesbot/carbon/src'),
     'Bican\\Roles' => array($vendorDir . '/bican/roles/src'),
+    'Baum' => array($vendorDir . '/baum/baum/src'),
 );

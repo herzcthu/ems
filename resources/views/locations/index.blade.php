@@ -24,6 +24,9 @@
                                 </div>
                             @endif
 
+                                @if (Session::has('location_import_error'))
+                                    <div class="alert alert-danger">{{ Session::get('location_import_error') }}</div>
+                                @endif
                                 @if (Session::has('flash_message'))
                                     <div class="alert alert-success">{{ Session::get('flash_message') }}</div>
                                 @endif
@@ -64,7 +67,7 @@
                                 @role('admin')
                                 @foreach ($locations as $k => $location )
                                     <tr>
-                                        <td>{{ $location->id }}</td>
+                                        <td>{{ ( ( $locations->currentPage() * $locations->perPage()) - $locations->perPage() ) + $k + 1 }}</td>
                                         <td>{{ $location->township->district->state->state }}</td>
                                         <td>{{ $location->township->district->district }}</td>
                                         <td>{{{ $location->township->township }}}</td>

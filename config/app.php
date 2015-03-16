@@ -148,6 +148,15 @@ return [
 		 */
 		'Maatwebsite\Excel\ExcelServiceProvider',
 
+		/*
+		 * Baum Nested Categories
+		 */
+		'Baum\Providers\BaumServiceProvider',
+
+		/*
+		 * ClosureTable
+		 */
+		'Franzose\ClosureTable\ClosureTableServiceProvider',
 
 		/*
 		 * Application Service Providers...

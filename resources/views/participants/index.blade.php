@@ -19,8 +19,8 @@
                                 </div>
                             @endif
 
-                                @if (Session::has('flash_message'))
-                                    <div class="alert alert-success">{{ Session::get('flash_message') }}</div>
+                                @if (Session::has('participant_import_error'))
+                                    <div class="alert alert-success">{{ Session::get('participant_import_error') }}</div>
                                 @endif
                                 {!! Form::open(['url'=>'participants/import','files'=>true, 'form-horizontal']) !!}
                                 <div class="form-group">
@@ -46,11 +46,12 @@
 
                             <table class="table">
                                 <thead>
-                                <th>ID.</th>
+                                <th>No.</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>NRC No.</th>
-                                <th>State</th>
+                                <th>Participant Role</th>
+                                <th>Location</th>
                                 <th>View</th>
                                 <th>Action</th>
                                 </thead>
@@ -58,11 +59,12 @@
                                 @role('admin')
                                 @foreach ($participants as $k => $participant)
                                     <tr>
-                                        <td>{{ $participant->id }}</td>
+                                        <td>{{ (( $participants->currentPage() * $participants->perPage()) - $participants->perPage() ) + $k + 1}}</td>
                                         <td>{{ $participant->name }}</td>
                                         <td>{{ $participant->email }}</td>
                                         <td>{{ $participant->nrc_id }}</td>
-                                        <td>{{{ isset($participant->states[0]->state) ? $participant->states[0]->state : 'Undefined' }}}</td>
+                                        <td>{!! ucwords($participant->participant_type) !!}</td>
+                                        <td>{{ isset($participant->districts->toArray()[0]['district']) ? $participant->districts->toArray()[0]['district'] : 'Undefined' }}</td>
                                         <td><a href={{ url("/participants/".$participant->id ) }}>Edit</a></td>
                                         <td><a href={{ url("/participants/".$participant->id."/delete")}}>Delete</a></td>
                                     </tr>

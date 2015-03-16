@@ -36,9 +36,10 @@ class UsersListController extends Controller {
 		if ($this->auth_user->is('admin'))
 		{
 
-			$users = User::all();
-			$roles = Role::all();
-			/** die($users->roles->toArray());
+			$users = User::paginate(30);
+			//$roles = Role::find('1');
+			//die($roles->users);
+			/**
 			$users_array = $users->toArray();
 			$roles_array = $roles->toArray();
 			$role_count = count($roles_array);
@@ -189,7 +190,7 @@ class UsersListController extends Controller {
 
 		$user->update($user_array);
 
-		return redirect('users/'.$id);
+		return redirect('users');
 	}
 
 	/**
@@ -201,11 +202,23 @@ class UsersListController extends Controller {
 	public function destroy($id)
 	{
 		//
-		$user = User::find($id);
+		$roles = Role::find('1');
 
-		$user->delete();
+		if (count($roles->users->toArray()) == 1 && $roles->users[0]->id == $id) {
 
-		\Session::flash('flash_message', 'User '.$user->name.' Deleted!');
+			$error_message = "You are trying to delete only accout you have in your system as Admin Role.
+						\nYou cannot delete this account!";
+			\Session::flash('user_delete_error', $error_message);
+
+		}else{
+			$user = User::find($id);
+
+			$user->delete();
+			$message = 'User '.$user->name.' deleted!';
+			\Session::flash('flash_message', $message);
+		}
+
+
 
 		return redirect('users');
 	}

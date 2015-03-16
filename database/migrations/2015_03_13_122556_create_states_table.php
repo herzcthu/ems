@@ -19,7 +19,6 @@ class CreateStatesTable extends Migration {
 			$table->string('state');
 			$table->timestamps();
 		});
-
 	}
 
 	/**

@@ -26,7 +26,7 @@ class Villages extends Model {
 
     public function enumerator()
     {
-        return $this->belongsTo('App\Participants');
+        return $this->belongsTo('App\Participant');
     }
 
 }

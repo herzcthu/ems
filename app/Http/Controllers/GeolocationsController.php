@@ -70,6 +70,9 @@ class GeolocationsController extends Controller {
 		$input = $request->all();
 
 		//return $input['state'];
+		/*
+		 * Get $state object from database using $input['state']
+		 */
 		$states = States::where('state', '=', $input['state'])->get();
 
 		$state_array = $states->toArray();
@@ -164,33 +167,41 @@ class GeolocationsController extends Controller {
 
 	public function import(){
 
-		$file = Input::file('file')->getRealPath();
-		$excel = Excel::load($file, 'UTF-8');
-		$csv_array = $excel->get()->toArray();
-		foreach ($csv_array as $line){
+		$file = Input::file('file');
 
-			$state['state_id'] = $line['state_id'];
-			$state['state'] = $line['state'];
-			$new_state = States::updateOrCreate($state);
+		if(!empty($file)) {
+			$file = $file->getRealPath();
+			$excel = Excel::load($file, 'UTF-8');
+			$csv_array = $excel->get()->toArray();
+			foreach ($csv_array as $line) {
 
-			//return $new_state;
+				$state['state_id'] = $line['state_id'];
+				$state['state'] = $line['state'];
+				$new_state = States::updateOrCreate(array('state' => $line['state']), $state);
 
-			$district['states_id'] = $new_state['id'];
-			$district['district'] = $line['district'];
-			$new_district = Districts::updateOrCreate($district);
+				//return $new_state;
 
-			$township['districts_id'] = $new_district['id'];
-			$township['township'] = $line['township'];
-			$new_township = Townships::updateOrCreate($township);
+				$district['states_id'] = $new_state['id'];
+				$district['district'] = $line['district'];
+				$new_district = Districts::updateOrCreate(array('district' => $line['district'])$district);
 
-			$village['townships_id'] = $new_township['id'];
-			$village['villagetrack'] = $line['villagetrack'];
-			$village['village'] = $line['village'];
-			$village['village_my'] = $line['village_my'];
-			$village['village_id'] = $line['village_id'];
-			$new_village = Villages::updateOrCreate($village);
+				$township['districts_id'] = $new_district['id'];
+				$township['township'] = $line['township'];
+				$new_township = Townships::updateOrCreate(array('township' => $line['township'])$township);
+
+				$village['townships_id'] = $new_township['id'];
+				$village['villagetrack'] = $line['villagetrack'];
+				$village['village'] = $line['village'];
+				$village['village_my'] = $line['village_my'];
+				$village['village_id'] = $line['village_id'];
+				$new_village = Villages::updateOrCreate(array('village' => $line['village'])$village);
+			}
+			$message = 'Location data imported!';
+		}else{
+			$message = 'No file to import!';
 		}
-		\Session::flash('flash_message', 'Location data imported!');
+
+		\Session::flash('location_import_error', $message);
 		return redirect('locations');
 	}
 }

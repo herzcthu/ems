@@ -28,4 +28,9 @@ class Districts extends Model {
         return $this->hasMany('App\Townships', 'districts_id');
     }
 
+    public function coordinators()
+    {
+        return $this->belongsToMany('App\Participant', 'coordinators_regions', 'region_id');
+    }
+
 }

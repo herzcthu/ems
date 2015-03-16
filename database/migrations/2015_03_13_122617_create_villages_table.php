@@ -23,17 +23,6 @@ class CreateVillagesTable extends Migration {
 			$table->timestamps();
 			$table->foreign('townships_id')->references('id')->on('townships')->onDelete('cascade');
 		});
-
-		Schema::create('enumerators_villages', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->integer('villages_id')->unsigned()->index();
-			$table->integer('enumerators_id')->unsigned()->index();
-			$table->timestamps();
-			$table->foreign('villages_id')->references('id')->on('villages')->onDelete('cascade');
-			$table->foreign('enumerators_id')->references('id')->on('participants')->onDelete('cascade');
-		});
-
 	}
 
 	/**
@@ -43,7 +32,6 @@ class CreateVillagesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('enumerators_villages');
 		Schema::drop('villages');
 	}
 

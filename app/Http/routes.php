@@ -19,6 +19,12 @@ Route::post('users/import', 'UsersListController@import');
 
 Route::post('locations/import', 'GeolocationsController@import');
 
+Route::post('participants/import', 'ParticipantsController@import');
+
+Route::get('users/{users}/delete', 'UsersListController@destroy');
+
+Route::get('participants/{participants}/delete', 'ParticipantsController@destroy');
+
 Route::resource('users', 'UsersListController');
 
 Route::resource('locations', 'GeolocationsController');

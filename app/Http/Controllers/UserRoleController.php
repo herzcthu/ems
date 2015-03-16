@@ -105,10 +105,19 @@ class UserRoleController extends Controller {
 
 				if($this->auth_user->allowed('edit.role',$this->auth_user )){
 					//die('This is true: user allowed to edit roles');
-				User::find($id)->detachAllRoles();
-				User::find($id)->attachRole($user_role);
+					$roles = Role::find('1');
+
+					if (count($roles->users->toArray()) == 1 && $roles->users[0]->id == $id) {
+						$flash_message = "Error Role Assignment to Admin!";
+					}else {
+						User::find($id)->detachAllRoles();
+						User::find($id)->attachRole($user_role);
+						$flash_message = "Role Updated!";
+					}
+				}else{
+					$flash_message = "User not allowed to edit roles!";
 				}
-				$flash_message = "Role Updated!";
+
 			}
 			catch(\Illuminate\Database\QueryException $e)
 			{

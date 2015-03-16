@@ -22,6 +22,9 @@
 							@if (Session::has('flash_message'))
 								<div class="alert alert-success">{{ Session::get('flash_message') }}</div>
 							@endif
+							@if (Session::has('user_delete_error'))
+								<div class="alert alert-danger">{{ Session::get('user_delete_error') }}</div>
+							@endif
 
 						{!! Form::open(['url' => 'roles']) !!}
 							@role('admin')
@@ -38,6 +41,8 @@
 								<th>Name</th>
 								<th>Email</th>
 								<th>User Role</th>
+								<th>Gender</th>
+								<th>Date of Birth</th>
 								<th>View</th>
 								<th>Action</th>
 							</thead>
@@ -46,11 +51,13 @@
 								@foreach ($users as $k => $user)
 									<tr>
 										<td>{!! Form::input('checkbox', 'userid-'.$user->id , $user->id) !!}</td>
-										<td>{{ $k + 1 }}</td>
+										<td>{{ (($users->currentPage() * $users->perPage()) - $users->perPage() ) + $k + 1 }}</td>
 										<td>{{ $user->name }}</td>
 										<td>{{ $user->email }}</td>
 										<td>{{ $user->roles->toArray()[0]['name'] }}</td>
-										<td><a href={{ url("/users/".$user->id ) }}>Profile</a></td>
+										<td>{{ $user->user_gender }}</td>
+										<td>{{ $user->dob }}</td>
+										<td><a href={{ url("/users/".$user->id."/edit" ) }}>Edit</a></td>
 										<td><a href={{ url("/users/".$user->id."/delete")}}>Delete</a></td>
 									</tr>
 								@endforeach
