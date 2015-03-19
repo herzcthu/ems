@@ -1,5 +1,5 @@
 <div class="form-group">
-    {!! Form::label('name','Name',['id'=>'','class'=>'control-label col-md-4 ']) !!}
+    {!! Form::label('name','Form Name',['id'=>'','class'=>'control-label col-md-4 ']) !!}
     <div class="col-md-6">
         {!! Form::text('name',isset($form->name) ? $form->name:null,['id'=>'','class'=>'form-control file']) !!}
     </div>

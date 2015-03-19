@@ -15,6 +15,7 @@ Route::get('/', 'WelcomeController@index');
 
 Route::get('home', 'HomeController@index');
 
+
 Route::group(['prefix' => 'forms'], function(){
 	Route::get('/build', 'EmsFormsController@create_question_form');
 

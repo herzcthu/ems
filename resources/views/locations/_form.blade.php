@@ -54,7 +54,7 @@
     </div>
 </div>
 <div class="form-group">
-    <div class="col-md-6 col-md-offset-4">
+    <div class="col-sm-2 col-md-offset-4">
         {!! Form::submit( $submitButton, ['class' => 'btn btn-primary form-control']) !!}
     </div>
 </div>

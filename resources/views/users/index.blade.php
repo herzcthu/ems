@@ -1,74 +1,103 @@
-@extends('app')
+@extends('adminlte')
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
-			<div class="panel panel-default">
-				<div class="panel-heading"><h1>User List <a class='btn btn-primary pull-right' href={{ url("/users/create" ) }}>Add New User</a></h1></div>
-				<div class="panel-body">
-					<section>
-						@if (count($errors) > 0)
-							<div class="alert alert-danger">
-								<strong>Whoops!</strong> There were some problems with your input.<br><br>
-								<ul>
-									@foreach ($errors->all() as $error)
-										<li>{{ $error }}</li>
-									@endforeach
-								</ul>
-							</div>
-						@endif
 
-							@if (Session::has('flash_message'))
-								<div class="alert alert-success">{{ Session::get('flash_message') }}</div>
-							@endif
-							@if (Session::has('user_delete_error'))
-								<div class="alert alert-danger">{{ Session::get('user_delete_error') }}</div>
-							@endif
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Users
+                <small>Users List</small>
+            </h1>
+            <!--ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol-->
+        </section>
 
-						{!! Form::open(['url' => 'roles']) !!}
-							@role('admin')
-							{!! Form::select('user_role', ['1' => 'Admin', '2' => 'Office Staff', '3' => 'Data Entry', '4' => 'Analyst' ], ['class' => 'form-control']) !!}
-							@endrole
-							@role('staff')
-							{!! Form::select('user_role', ['2' => 'Office Staff', '3' => 'Data Entry', '4' => 'Analyst' ], ['class' => 'form-control']) !!}
-							@endrole
-							{!! Form::submit( 'Change Role') !!}
-							<table class="table">
-							<thead>
-								<th>{!! Form::input('checkbox', 'userrole', null) !!}</th>
-								<th>No.</th>
-								<th>Name</th>
-								<th>Email</th>
-								<th>User Role</th>
-								<th>Gender</th>
-								<th>Date of Birth</th>
-								<th>View</th>
-								<th>Action</th>
-							</thead>
-							<tbody>
-							@role('admin')
-								@foreach ($users as $k => $user)
-									<tr>
-										<td>{!! Form::input('checkbox', 'userid-'.$user->id , $user->id) !!}</td>
-										<td>{{ (($users->currentPage() * $users->perPage()) - $users->perPage() ) + $k + 1 }}</td>
-										<td>{{ $user->name }}</td>
-										<td>{{ $user->email }}</td>
-										<td>{{ $user->roles->toArray()[0]['name'] }}</td>
-										<td>{{ $user->user_gender }}</td>
-										<td>{{ $user->dob }}</td>
-										<td><a href={{ url("/users/".$user->id."/edit" ) }}>Edit</a></td>
-										<td><a href={{ url("/users/".$user->id."/delete")}}>Delete</a></td>
-									</tr>
-								@endforeach
-							@endrole
-							</tbody>
-						</table>
-							{!! Form::close() !!}
-					</section>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>	
-@stop
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    @if (Session::has('flash_message'))
+                        <div class="alert alert-success">{{ Session::get('flash_message') }}</div>
+                    @endif
+                    @if (Session::has('user_delete_error'))
+                        <div class="alert alert-danger">{{ Session::get('user_delete_error') }}</div>
+                    @endif
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Users List</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="form-group">
+                            {!! Form::open(['url' => 'roles']) !!}
+                            @role('admin')
+                            {!! Form::select('user_role', ['1' => 'Admin', '2' => 'Office Staff', '3' => 'Data Entry',
+                            '4' => 'Analyst' ], ['class' => 'form-control']) !!}
+                            @endrole
+                            @role('staff')
+                            {!! Form::select('user_role', ['2' => 'Office Staff', '3' => 'Data Entry', '4' => 'Analyst'
+                            ], ['class' => 'form-control']) !!}
+                            @endrole
+                            {!! Form::submit( 'Change Role') !!}
+                            </div>
+                            <table id="datatable-allfeatures" class="table table-bordered table-striped">
+                                <thead>
+                                <th>{!! Form::input('checkbox', 'userrole', null) !!}</th>
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>User Role</th>
+                                <th>Gender</th>
+                                <th>Date of Birth</th>
+                                <th>View</th>
+                                <th>Action</th>
+                                </thead>
+                                <tbody>
+                                @role('admin')
+                                @foreach ($users as $k => $user)
+                                    <tr>
+                                        <td>{!! Form::input('checkbox', 'userid-'.$user->id , $user->id) !!}</td>
+                                        <!--td>@{{ (($users->currentPage() * $users->perPage()) - $users->perPage() ) + $k + 1 }}</td-->
+                                        <td>{{ $k + 1}}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>{{ $user->roles->toArray()[0]['name'] }}</td>
+                                        <td>{{ $user->user_gender }}</td>
+                                        <td>{{ $user->dob }}</td>
+                                        <td><a href={{ url("/users/".$user->id."/edit" ) }}>Edit</a></td>
+                                        <td><a href={{ url("/users/".$user->id."/delete")}}>Delete</a></td>
+                                    </tr>
+                                @endforeach
+                                @endrole
+                                </tbody>
+                            </table>
+                            {!! Form::close() !!}
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div><!-- /.content-wrapper -->
+
+
+@endsection

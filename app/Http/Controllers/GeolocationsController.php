@@ -31,8 +31,8 @@ class GeolocationsController extends Controller {
 	{
 		if ($this->auth_user->is('admin'))
 		{
-			$locations = Villages::paginate(30);
-
+			//$locations = Villages::paginate(30);
+			$locations = Villages::all();
 			//return var_dump($locations[0]->township->toArray());
 			//return var_dump($locations[16]->districts[0]->townships[0]->villages->toArray());
 			//die();

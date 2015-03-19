@@ -1,13 +1,31 @@
-@extends('app')
+@extends('adminlte')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><h1>Participant List  <a class='btn btn-primary pull-right' href={{ url("/participants/create" ) }}>Add New participant</a></h1></div>
-                    <div class="panel-body">
-                        <section>
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                Participants
+                <small>Add New Participant</small>
+            </h1>
+            <!--ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol-->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Import Participants List</h3>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
                             @if (count($errors) > 0)
                                 <div class="alert alert-danger">
                                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -43,8 +61,15 @@
                                 <div class="form-group">
                                     {!! Form::close() !!}
                                 </div>
-
-                            <table class="table">
+                                </div><!-- box-body -->
+                        </div><!-- box -->
+                                <div class="box">
+                                    <div class="box-header">
+                                        <h3 class="box-title">Participants List Table</h3>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body">
+                                <table id="datatable-allfeatures" class="table table-bordered table-striped">
                                 <thead>
                                 <th>No.</th>
                                 <th>Name</th>
@@ -59,7 +84,8 @@
                                 @role('admin')
                                 @foreach ($participants as $k => $participant)
                                     <tr>
-                                        <td>{{ (( $participants->currentPage() * $participants->perPage()) - $participants->perPage() ) + $k + 1}}</td>
+                                        <!--td>@{{ (( $participants->currentPage() * $participants->perPage()) - $participants->perPage() ) + $k + 1}}</td-->
+                                        <td>{{ $k + 1 }}</td>
                                         <td>{{ $participant->name }}</td>
                                         <td>{{ $participant->email }}</td>
                                         <td>{{ $participant->nrc_id }}</td>
@@ -73,11 +99,18 @@
                                 </tbody>
                             </table>
 
-                                 {!! $participants->render(); !!}
-                        </section>
-                    </div>
+                              <!--   @{!! $participants->render(); !!} -->
                 </div>
+                <!-- /.box-body -->
             </div>
-        </div>
+            <!-- /.box -->
     </div>
-@stop
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    </div><!-- /.content-wrapper -->
+
+
+@endsection

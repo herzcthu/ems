@@ -13,7 +13,7 @@ class EmsFormQuestions extends Model {
     protected $table = 'ems_form_questions';
 
 
-    protected $fillable = ['parent_id', 'form_id', 'question_number', 'question', 'q_type', 'input_type', 'answers'];
+    protected $fillable = ['parent_id', 'form_id', 'question_number', 'question', 'q_type', 'input_type', 'a_view', 'answers'];
 
     public function form()
     {

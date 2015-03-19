@@ -36,6 +36,7 @@ return array(
     'Franzose\\ClosureTable\\Tests\\EntityTestCase' => $vendorDir . '/franzose/closure-table/tests/EntityTestCase.php',
     'Franzose\\ClosureTable\\Tests\\Models\\Page' => $vendorDir . '/franzose/closure-table/tests/models/Page.php',
     'Franzose\\ClosureTable\\Tests\\Seeds\\EntitiesSeeder' => $vendorDir . '/franzose/closure-table/tests/seeds/EntitiesSeeder.php',
+    'GeneralSettingsTableSeeder' => $baseDir . '/database/seeds/GeneralSettingsTableSeeder.php',
     'GeolocationsTableSeeder' => $baseDir . '/database/seeds/GeolocationsTableSeeder.php',
     'IlluminateQueueClosure' => $vendorDir . '/laravel/framework/src/Illuminate/Queue/IlluminateQueueClosure.php',
     'Maatwebsite\\Excel\\Classes\\Cache' => $vendorDir . '/maatwebsite/excel/src/Maatwebsite/Excel/Classes/Cache.php',

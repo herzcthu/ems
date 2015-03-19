@@ -20,4 +20,26 @@ class EmsForm extends Model {
         return $this->hasMany('App\EmsFormQuestions', 'form_id');
     }
 
+    public function setStartDateAttributes($date)
+    {
+        $this->attributes['start_date'] = date('Y-m-d', strtotime($date));
+    }
+
+    public function setEndDateAttributes($date)
+    {
+        $this->attributes['end_date'] = date('Y-m-d', strtotime($date));
+    }
+
+    public function getStartDateAttribute($date)
+    {
+        // return $value;
+        return date('d-m-Y', strtotime($date));
+    }
+
+    public function getEndDateAttribute($date)
+    {
+        // return $value;
+        return date('d-m-Y', strtotime($date));
+    }
+
 }

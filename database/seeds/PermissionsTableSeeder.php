@@ -7,7 +7,7 @@ use App\User as User;
 class PermissionsTableSeeder extends Seeder {
 
     public function run() {
-        //PermissionsTable::truncate();
+        Permission::truncate();
 
         $add_users = Permission::create([
             'name' => 'Add Users',

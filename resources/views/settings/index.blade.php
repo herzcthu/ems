@@ -1,13 +1,25 @@
-@extends('app')
+@extends('adminlte')
 
 @section('content')
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
-			<div class="panel panel-default">
-				<div class="panel-heading"><h1>General Settings</h1></div>
-				<div class="panel-body">
-					<section>
+
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>
+				General Settings
+				<small></small>
+			</h1>
+			<!--ol class="breadcrumb">
+				<li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+				<li class="active">Here</li>
+			</ol-->
+		</section>
+
+		<!-- Main content -->
+		<section class="content">
+			<div class="row">
+				<div class="col-xs-12">
 						@if (count($errors) > 0)
 							<div class="alert alert-danger">
 								<strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -29,34 +41,41 @@
 							{!! Form::model($options, ["method" => "PATCH", "action" => ["GeneralSettingsController@update"], "class" => "form-horizontal"]) !!}
 
 							<div class="form-group">
-								{!! Form::label("options['site_name']", "Site Name: ", ["class" => "col-md-4 control-label"]) !!}
-								<div class="col-md-6">
+								{!! Form::label("options['site_name']", "Site Name: ", ["class" => "col-sm-3 control-label"]) !!}
+								<div class="col-sm-6">
 									{!! Form::text("options[site_name]", isset($options[0]) ? $options[0]['options']['site_name']: null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">
-								{!! Form::label("options[site_descriptions]", "Site Descriptions: ", ["class" => "col-md-4 control-label"]) !!}
-								<div class="col-md-6">
+								{!! Form::label("options[site_descriptions]", "Site Descriptions: ", ["class" => "col-sm-3 control-label"]) !!}
+								<div class="col-sm-6">
 									{!! Form::text("options[site_descriptions]", isset($options[0]) ? $options[0]['options']['site_descriptions']: null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">
-								{!! Form::label("options[answers_per_question]", "Nos. of answers per question: ", ["class" => "col-md-4 control-label"]) !!}
-								<div class="col-md-6">
+								{!! Form::label("options[answers_per_question]", "Nos. of answers per question: ", ["class" => "col-sm-3 control-label"]) !!}
+								<div class="col-sm-6">
 									{!! Form::text("options[answers_per_question]", isset($options[0]) ? $options[0]['options']['answers_per_question']:null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 
 							<div class="form-group">
-								<div class="col-md-6 col-md-offset-4">
+								<div class="col-sm-6 col-sm-offset-3">
 									{!! Form::submit( "Update Settings", ["class" => "btn btn-primary form-control"]) !!}
 								</div>
 							</div>
 							{!! Form::close() !!}
-					</section>
 				</div>
-			</div>
-		</div>
-	</div>
-</div>	
-@stop
+	<!-- /.box-body -->
+</div>
+<!-- /.box -->
+</div>
+<!-- /.col -->
+</div>
+<!-- /.row -->
+</section>
+<!-- /.content -->
+</div><!-- /.content-wrapper -->
+
+
+@endsection

@@ -36,7 +36,8 @@ class UsersListController extends Controller {
 		if ($this->auth_user->is('admin'))
 		{
 
-			$users = User::paginate(30);
+			//$users = User::paginate(30);
+			$users = User::all();
 			//$roles = Role::find('1');
 			//die($roles->users);
 			/**
@@ -110,7 +111,7 @@ class UsersListController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id = '')
+	public function show($id)
 	{
 		if(('' === $id) || (!$this->auth_user->is('admin'))){
 			$id = $this->current_user_id;

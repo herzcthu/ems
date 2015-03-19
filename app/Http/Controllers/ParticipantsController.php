@@ -41,7 +41,8 @@ class ParticipantsController extends Controller {
 
 		if ($this->auth_user->level() > 6)
 		{
-			$participants = Participant::paginate(30);
+			//$participants = Participant::paginate(30);
+			$participants = Participant::all();
 
 			//return 'This is Geolocaiton';
 			return view('participants.index', compact('participants'));

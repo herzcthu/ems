@@ -11,6 +11,7 @@ use App\Participant;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class EmsFormsController extends Controller {
 
@@ -28,7 +29,8 @@ class EmsFormsController extends Controller {
 	public function index()
 	{
 		//
-		$forms = EmsForm::paginate(30);
+		//$forms = EmsForm::paginate(30);
+		$forms = EmsForm::all();
 
 		return view('forms/index', compact('forms'));
 	}
@@ -114,7 +116,7 @@ class EmsFormsController extends Controller {
 		}
 
 		//$forms = EmsForm::lists('name', 'id');
-		$questions = EmsFormQuestions::OfSingleMain($form_id)->idAscending()->paginate(30);
+		$questions = EmsFormQuestions::OfSingleMain($form_id)->idAscending()->get();
 		return view('forms/dataentry', compact('questions','form_name_url', 'form_id', 'enumerators'));
 	}
 
@@ -137,6 +139,7 @@ class EmsFormsController extends Controller {
 		$input = $request->all();
 		foreach ($input['answers'] as $q_id => $answer)
 		{
+			$answers['interviewee_id'] = $input['interviewee_id'];
 			$answers['q_id'] = $q_id;
 			$answers['answers'] = $answer;
 			if(isset($form_id)){
@@ -163,6 +166,21 @@ class EmsFormsController extends Controller {
 		return redirect('forms/'.$form_name_url.'/dataentry');
 	}
 
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function dataentry_edit($id)
+	{
+		//
+
+		$dataentry = EmsQuestionsAnswers::find($id);
+
+		return view('forms/edit_dataentry', compact('dataentry'));
+	}
+
 	public function results($forms)
 	{
 		//$answers = EmsQuestionsAnswers::answersByQ(1);
@@ -180,7 +198,7 @@ class EmsFormsController extends Controller {
 	public function create()
 	{
 		//
-		return false;
+		return view('forms/create');
 	}
 
 	/**
@@ -191,6 +209,7 @@ class EmsFormsController extends Controller {
 	public function store(Request $request)
 	{
 		//
+		$this->validate($request, ['name' => 'required|unique:ems_forms', 'descriptions' => 'required']);
 		$forms = EmsForm::create($request->all());
 		return redirect('forms');
 	}

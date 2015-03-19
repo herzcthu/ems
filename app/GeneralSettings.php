@@ -55,6 +55,7 @@ class GeneralSettings extends Model {
     {
             $options = $query->whereOptionsName($option);
             $value = $options->first()[$option][$option1];
+
             return $value;
     }
 }
