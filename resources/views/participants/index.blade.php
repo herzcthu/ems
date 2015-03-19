@@ -64,7 +64,7 @@
                                         <td>{{ $participant->email }}</td>
                                         <td>{{ $participant->nrc_id }}</td>
                                         <td>{!! ucwords($participant->participant_type) !!}</td>
-                                        <td>{{ isset($participant->districts->toArray()[0]['district']) ? $participant->districts->toArray()[0]['district'] : 'Undefined' }}</td>
+                                        <td>{{ isset($participant->districts->toArray()[0]['district']) ? $participant->districts->toArray()[0]['district'] : $participant->states->toArray()[0]['state'] }}</td>
                                         <td><a href={{ url("/participants/".$participant->id ) }}>Edit</a></td>
                                         <td><a href={{ url("/participants/".$participant->id."/delete")}}>Delete</a></td>
                                     </tr>

@@ -3,7 +3,7 @@ use Illuminate\Database\Seeder;
 use Bican\Roles\Models\Role;
 use App\User as User;
 
-class RolesTableSeeder extends Seeder {
+class ParticipantsTypesTableSeeder extends Seeder {
 
     public function run() {
         //Role::truncate();

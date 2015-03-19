@@ -22,6 +22,16 @@ class ParticipantsRelations extends Migration {
 			$table->timestamps();
 		});
 
+		Schema::create('coordinators_states', function(Blueprint $table)
+		{ //Coordinator Geolocation
+			$table->increments('id');
+			$table->integer('coordinators_id')->unsigned()->index();
+			$table->integer('state_id')->unsigned()->index();
+			$table->foreign('coordinators_id')->references('id')->on('participants')->onDelete('cascade');
+			$table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
+			$table->timestamps();
+		});
+
 		Schema::create('enumerators_villages', function(Blueprint $table)
 		{
 			$table->increments('id');
@@ -42,6 +52,7 @@ class ParticipantsRelations extends Migration {
 	{
 		//
 		Schema::drop('coordinators_regions');
+		Schema::drop('coordinators_states');
 		Schema::drop('enumerators_villages');
 	}
 

@@ -16,6 +16,11 @@ class Participant extends Model {
       'user_mobile_phone', 'user_mailing_address',
       'user_biography', 'parent_id', 'participant_type'];
 
+    public function states()
+    {
+        return $this->belongsToMany('App\States', 'coordinators_states', 'coordinators_id', 'state_id');
+    }
+
   public function districts()
   {
     return $this->belongsToMany('App\Districts', 'coordinators_regions', 'coordinators_id', 'region_id');
@@ -32,7 +37,22 @@ class Participant extends Model {
 
     public function get_parent()
     {
-        return $this->belongsToMany('App\participant', 'participants', 'parent_id', 'id');
+        return $this->belongsToMany('App\Participant', 'participants', 'parent_id', 'id');
+    }
+
+    public function scopeCoordinator($query)
+    {
+        return $query->whereParticipantType('coordinator');
+    }
+
+    public function scopeEnumerator($query)
+    {
+        return $query->whereParticipantType('enumerator');
+    }
+
+    public function scopeSpotchecker($query)
+    {
+        return $query->whereParticipantType('spotchecker');
     }
 
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateParticipantTypesTable extends Migration {
+class CreateEmsFormsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,13 +12,16 @@ class CreateParticipantTypesTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('participant_types', function(Blueprint $table)
+		Schema::create('ems_forms', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->string('name');
-			$table->integer('participant_id')->unsigned();
+			$table->string('name')->unique();
+			$table->string('q_prefix');
+			$table->integer('no_of_answers');
+			$table->string('descriptions');
+			$table->date('start_date');
+			$table->date('end_date');
 			$table->timestamps();
-			$table->foreign('participant_id')->references('id')->on('participants')->onDelete('cascade');
 		});
 	}
 
@@ -29,7 +32,7 @@ class CreateParticipantTypesTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('participant_types');
+		Schema::drop('ems_forms');
 	}
 
 }

@@ -26,11 +26,11 @@ class CreateParticipantsTable extends Migration {
       $table->enum('education_level', array('none','primary','middle','highschool','under_graduate','graduated','post_graduated'));
       $table->date('dob');
       $table->string('current_org');
-      $table->string('user_line_phone');
-      $table->string('user_mobile_phone');
-      $table->string('user_mailing_address');
-      $table->string('user_biography');
-      $table->integer('participant_type');
+      $table->string('user_line_phone')->nullable();
+      $table->string('user_mobile_phone')->nullable();
+      $table->string('user_mailing_address')->nullable();
+      $table->string('user_biography')->nullable();
+      $table->string('participant_type');
       $table->timestamps();
     });
 

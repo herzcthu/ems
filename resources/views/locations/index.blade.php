@@ -27,8 +27,8 @@
                                 @if (Session::has('location_import_error'))
                                     <div class="alert alert-danger">{{ Session::get('location_import_error') }}</div>
                                 @endif
-                                @if (Session::has('flash_message'))
-                                    <div class="alert alert-success">{{ Session::get('flash_message') }}</div>
+                                @if (Session::has('location_import_success'))
+                                    <div class="alert alert-success">{{ Session::get('location_import_success') }}</div>
                                 @endif
                                 {!! Form::open(['url'=>'locations/import','files'=>true, 'form-horizontal']) !!}
                                 <div class="form-group">

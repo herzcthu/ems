@@ -21,7 +21,7 @@ class States extends Model {
 
     public function coordinators()
     {
-        return $this->belongsToMany('App\Participant', 'coordinators_regions', 'region_id');
+        return $this->belongsToMany('App\Participant', 'coordinators_states', 'state_id');
     }
 
     public function districts()

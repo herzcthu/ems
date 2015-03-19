@@ -224,12 +224,12 @@ class ParticipantsController extends Controller {
 
 				if($participant['participant_type'] == 'coordinator')
 				{
-					//$state = States::where('state', '=', $line['state'])->get();
+					$state = States::where('state', '=', $line['state'])->get();
 					$district = Districts::where('district', '=', $line['region'])->get();
-				//	if(array_key_exists(0 ,$state->toArray())){
-				//		$location = $state;
-				//		$new_participant->states()->attach($location[0]['id']);
-				//	}
+					if(array_key_exists(0 ,$state->toArray())){
+						$location = $state;
+						$new_participant->states()->attach($location[0]['id']);
+					}
 					if(array_key_exists(0 ,$district->toArray())){
 						$location = $district;
 						$new_participant->districts()->attach($location[0]['id']);

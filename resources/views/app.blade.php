@@ -28,17 +28,22 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">Laravel</a>
+				<a class="navbar-brand" href="/">{!! App\GeneralSettings::options('options', 'site_name') !!}</a>
+				<p>{!! App\GeneralSettings::options('options', 'site_descriptions') !!}</p>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="{{ url('/') }}">Home</a></li>
-					<li><a href="{{ url('/locations') }}">Locations</a></li>
+					@permission('view.table')
+					<li><a href="{{ url('/forms') }}">Forms</a></li>
+					<li><a href="{{ url('/locations') }}">Locations</a>
+					@endpermission
 					@permission('edit.users')
 					<li><a href="{{ url('/users') }}">Users</a></li>
 					<li><a href="{{ url('/participants') }}">Participants</a></li>
 					@endpermission
+
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
@@ -50,6 +55,9 @@
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="{{ url('/auth/logout') }}">Logout</a></li>
+								@role('admin')
+								<li><a href="{{ url('/settings') }}">General Settings</a></li>
+								@endrole
 							</ul>
 						</li>
 					@endif
