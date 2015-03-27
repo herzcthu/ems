@@ -58,9 +58,15 @@
 									{!! Form::text("options[answers_per_question]", isset($options[0]) ? $options[0]['options']['answers_per_question']:null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
+							<div class="form-group">
+								{!! Form::label("options[form_for_dashboard]", "Select Form to show on Dashboard: ", ["class" => "col-sm-3 control-label"]) !!}
+								<div class="col-sm-6">
+									{!! Form::select("options[form_for_dashboard]", $forms,isset($options[0]) ? $options[0]['options']['form_for_dashboard']:null, ["class" => "form-control"]) !!}
+								</div>
+							</div>
 
 							<div class="form-group">
-								<div class="col-sm-6 col-sm-offset-3">
+								<div class="col-sm-2 col-sm-offset-3">
 									{!! Form::submit( "Update Settings", ["class" => "btn btn-primary form-control"]) !!}
 								</div>
 							</div>

@@ -37,14 +37,17 @@
                     @if (Session::has('user_delete_error'))
                         <div class="alert alert-danger">{{ Session::get('user_delete_error') }}</div>
                     @endif
+                        @if (Session::has('error_message'))
+                            <div class="alert alert-danger">{{ Session::get('error_message') }}</div>
+                        @endif
                     <div class="box">
                         <div class="box-header">
                             <h3 class="box-title">Users List</h3>
                         </div>
                         <!-- /.box-header -->
                         <div class="box-body">
-                            <div class="form-group">
                             {!! Form::open(['url' => 'roles']) !!}
+                            <div class="form-group">
                             @role('admin')
                             {!! Form::select('user_role', ['1' => 'Admin', '2' => 'Office Staff', '3' => 'Data Entry',
                             '4' => 'Analyst' ], ['class' => 'form-control']) !!}
@@ -57,28 +60,29 @@
                             </div>
                             <table id="datatable-allfeatures" class="table table-bordered table-striped">
                                 <thead>
-                                <th>{!! Form::input('checkbox', 'userrole', null) !!}</th>
+                                <th>{!! Form::input('checkbox', 'userrole', null, ['id' => 'cb']) !!}</th>
                                 <th>No.</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>User Role</th>
                                 <th>Gender</th>
                                 <th>Date of Birth</th>
-                                <th>View</th>
+                                <th>Profile</th>
+                                <th>Edit</th>
                                 <th>Action</th>
                                 </thead>
                                 <tbody>
                                 @role('admin')
                                 @foreach ($users as $k => $user)
                                     <tr>
-                                        <td>{!! Form::input('checkbox', 'userid-'.$user->id , $user->id) !!}</td>
-                                        <!--td>@{{ (($users->currentPage() * $users->perPage()) - $users->perPage() ) + $k + 1 }}</td-->
+                                        <td>{!! Form::input('checkbox', 'userid['.$user->id.']' , $user->id, ['class' => 'cb']) !!}</td>
                                         <td>{{ $k + 1}}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->roles->toArray()[0]['name'] }}</td>
                                         <td>{{ $user->user_gender }}</td>
                                         <td>{{ $user->dob }}</td>
+                                        <td><a href={{ url("/users/".$user->id ) }}>View</a></td>
                                         <td><a href={{ url("/users/".$user->id."/edit" ) }}>Edit</a></td>
                                         <td><a href={{ url("/users/".$user->id."/delete")}}>Delete</a></td>
                                     </tr>

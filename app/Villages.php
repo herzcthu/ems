@@ -26,7 +26,12 @@ class Villages extends Model {
 
     public function enumerator()
     {
-        return $this->belongsTo('App\Participant');
+        return $this->belongsToMany('App\Participant');
+    }
+
+    public function interviewee()
+    {
+        return $this->hasMany('App\EmsQuestionsAnswers');
     }
 
 }

@@ -7,11 +7,11 @@ use App\User as User;
 class GeneralSettingsTableSeeder extends Seeder {
  
     public function run() {
-        GeneralSettings::truncate();
+        //GeneralSettings::truncate();
 
         GeneralSettings::create( [
             'options_name' => 'options' ,
-            'options' => array('site_name' => 'EMS','site_descriptions' => 'Election Monitoring System', 'answers_per_question' => 10)
+            'options' => array('site_name' => 'EMS','site_descriptions' => 'Election Monitoring System', 'answers_per_question' => 10, 'form_for_dashboard' => 1)
         ] );
     }
 }

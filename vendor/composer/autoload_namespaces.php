@@ -31,6 +31,7 @@ return array(
     'JakubOnderka\\PhpConsoleColor' => array($vendorDir . '/jakub-onderka/php-console-color/src'),
     'Franzose\\ClosureTable' => array($vendorDir . '/franzose/closure-table/src'),
     'Flynsarmy\\CsvSeeder\\' => array($vendorDir . '/flynsarmy/csv-seeder/src'),
+    'Felixkiss\\UniqueWithValidator\\' => array($vendorDir . '/felixkiss/uniquewith-validator/src'),
     'Dotenv' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),

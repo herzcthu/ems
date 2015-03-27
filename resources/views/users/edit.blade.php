@@ -7,8 +7,8 @@
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1>
-				Users
-				<small>Add new user</small>
+				User Profile
+				<small>Edit user</small>
 			</h1>
 			<!--ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
@@ -22,7 +22,7 @@
 				<div class="col-xs-12">
 					<div class="box">
 						<div class="box-header">
-							<h3 class="box-title">Add New User</h3>
+							<h3 class="box-title">Edit {{ $user->name }}</h3>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">

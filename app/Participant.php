@@ -30,6 +30,11 @@ class Participant extends Model {
     return $this->belongsToMany('App\Villages', 'enumerators_villages', 'enumerators_id');
   }
 
+  public function pgroups()
+  {
+      return $this->belongsToMany('App\PGroups', 'participants_pgroups', 'participant_id', 'pgroups_id');
+  }
+
   public function type()
   {
       return $this->belongsTo('App\ParticipantType', 'participant_id');
@@ -37,7 +42,7 @@ class Participant extends Model {
 
     public function get_parent()
     {
-        return $this->belongsToMany('App\Participant', 'participants', 'parent_id', 'id');
+        return $this->belongsTo('App\Participant', 'participants', 'parent_id', 'id');
     }
 
     public function scopeCoordinator($query)
@@ -53,6 +58,30 @@ class Participant extends Model {
     public function scopeSpotchecker($query)
     {
         return $query->whereParticipantType('spotchecker');
+    }
+
+    public function setDobAttribute($date)
+    {
+        $this->attributes['dob'] = date('Y-m-d', strtotime($date));
+    }
+
+    public function getDobAttribute($date)
+    {
+        // return $value;
+        return date('d-m-Y', strtotime($date));
+    }
+
+    protected function setNrcIdAttribute($nrc_id)
+    {
+        $nrc_id = preg_replace('/\s+/', '', $nrc_id);
+
+        $nrc_id = strtolower($nrc_id);
+
+        $pattern = '/(\d+){1,2}\/(\w+a|ah)(\w+a|ah)(\w+a|ah)\((\w)(\w+)?\)(\d+)/i';
+        $nrc_id_format =  preg_replace_callback($pattern, function($matches){
+            return $matches[1]."/".ucwords($matches[2]).ucwords($matches[3]).ucwords($matches[4])."(".ucwords($matches[5]).")".$matches[7];
+        }, $nrc_id);
+        $this->attributes['nrc_id'] = $nrc_id_format;
     }
 
 }

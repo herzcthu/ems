@@ -10,23 +10,28 @@
         {!! Form::text('descriptions',isset($form->descriptions) ? $form->descriptions:null,['id'=>'','class'=>'form-control file']) !!}
     </div>
 </div>
-<!--div class="form-group">
+<div class="form-group">
+        {!! Form::label('no_of_answers','Answers per question',['id'=>'','class'=>'control-label col-md-4']) !!}
     <div class="col-md-6">
-        {!! Form::label('no_of_answers','Answers per question',['id'=>'','class'=>'control-label']) !!}
-
-        {!! Form::text('no_of_answers','',['id'=>'','class'=>'form-control file']) !!}
+        {!! Form::text('no_of_answers',isset($form->no_of_answers) ? $form->no_of_answers:null,['id'=>'','class'=>'form-control']) !!}
     </div>
-</div-->
+</div>
+<div class="form-group">
+    {!! Form::label('p_group', 'Participants Group: ', ['class' => 'control-label col-md-4']) !!}
+    <div class="col-md-6">
+    {!! Form::select('p_group', isset($p_group) ? $p_group:['none' => 'None'], ['class' => 'form-control']) !!}
+    </div>
+</div>
 <div class="form-group">
     {!! Form::label('start_date', 'Start Date: ', ['class' => 'control-label col-md-4 ']) !!}
     <div class="col-md-6">
-        {!! Form::input('date', 'start_date', isset($form->start_date) ? $form->start_date:date('d-m-Y'), ['class' => 'form-control']) !!}
+        {!! Form::input('date', 'start_date', isset($form->start_date) ? $form->start_date:date('d-m-Y'), ['class' => 'form-control datepicker']) !!}
     </div>
 </div>
 <div class="form-group">
     {!! Form::label('end_date', 'End Date: ', ['class' => 'control-label col-md-4 ']) !!}
     <div class="col-md-6">
-        {!! Form::input('date', 'end_date', isset($form->end_date) ? $form->end_date:date('d-m-Y'), ['class' => 'form-control']) !!}
+        {!! Form::input('date', 'end_date', isset($form->end_date) ? $form->end_date:date('d-m-Y'), ['class' => 'form-control datepicker']) !!}
     </div>
 </div>
 <div class="form-group">

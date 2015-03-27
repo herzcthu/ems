@@ -22,6 +22,7 @@ class CreateVillagesTable extends Migration {
 			$table->string('village_my')->nullable();
 			$table->timestamps();
 			$table->foreign('townships_id')->references('id')->on('townships')->onDelete('cascade');
+			$table->unique(array('villagetrack','village'));
 		});
 	}
 

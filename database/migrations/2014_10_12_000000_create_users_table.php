@@ -32,6 +32,10 @@ class CreateUsersTable extends Migration {
 			$table->string('email')->unique();
 			$table->string('password', 60);
 			$table->enum('user_gender', array('M','F','U'));
+			$table->string('user_line_phone');
+			$table->string('user_mobile_phone');
+			$table->string('user_mailing_address');
+			$table->string('user_biography');
 			$table->date('dob');
 			$table->rememberToken();
 			$table->timestamps();

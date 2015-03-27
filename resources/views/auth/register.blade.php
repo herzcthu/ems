@@ -40,12 +40,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
+							@if($errors->first('agree'))
+								<span> You need to accept our terms to register </span>
+							@else
 							<strong>Whoops!</strong> There were some problems with your input.<br><br>
 							<ul>
 								@foreach ($errors->all() as $error)
 									<li>{{ $error }}</li>
 								@endforeach
 							</ul>
+							@endif
 						</div>
 					@endif
 
@@ -57,7 +61,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 							<span class="glyphicon glyphicon-user form-control-feedback"></span>
 						</div>
 						<div class="form-group has-feedback">
-							<input type="email" class="form-control" name="email" value="{{ old('email') }} placeholder="Email"/>
+							<input type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="Email"/>
 							<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 						</div>
 						<div class="form-group has-feedback">

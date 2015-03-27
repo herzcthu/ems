@@ -84,7 +84,7 @@
                                 <th>Township</th>
                                 <th>Village Track</th>
                                 <th>Village/Ward</th>
-                                <th>Village Burmese</th>
+                                <th lang="mm">Village Burmese</th>
                                 </thead>
                                 <tbody>
                                 @role('admin')
@@ -96,7 +96,7 @@
                                         <td>{{{ $location->township->township }}}</td>
                                         <td>{{{ isset($location->villagetrack ) ? $location->villagetrack : '' }}}</td>
                                         <td>{{{ isset($location->village ) ? $location->village : '' }}}</td>
-                                        <td>{{{ isset($location->village_my ) ? $location->village_my : '' }}}</td>
+                                        <td lang="mm">{{{ isset($location->village_my ) ? $location->village_my : '' }}}</td>
                                     </tr>
                                 @endforeach
 

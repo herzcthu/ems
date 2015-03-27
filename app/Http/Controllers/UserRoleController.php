@@ -4,14 +4,10 @@ use App\User;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use App\Http\Requests\UsersFormRequest;
-use Bican\Roles\Models\Permission;
 use Bican\Roles\Models\Role;
 
 
 use Illuminate\Http\Request;
-//use Illuminate\HttpResponse;
-//use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -79,25 +75,17 @@ class UserRoleController extends Controller {
 	/**
 	 * Update the specified resource in storage.
 	 *
-	 * @param  int  $id
+	 * @param Request $request
 	 * @return Response
+	 * @internal param int $id
 	 */
 	public function update(Request $request)
 	{
 		//
-		$req_array = $request->all();
-
-		//var_dump($req_array);
-
-		foreach($req_array as $k => $v){
-			if($k == 'user_role'){
-				$user_role = $v;
-			}elseif($k == '_token'){
-
-			}else{
-				$userid[$k] = $v;
-			}
-		}
+		$input = $request->all();
+		//return $input;
+		$user_role = $input['user_role'];
+		$userid = $input['userid'];
 		//var_dump($userid);
 		foreach($userid as $k => $id){
 			//var_dump($id);
@@ -108,25 +96,28 @@ class UserRoleController extends Controller {
 					$roles = Role::find('1');
 
 					if (count($roles->users->toArray()) == 1 && $roles->users[0]->id == $id) {
-						$flash_message = "Error Role Assignment to Admin!";
+						$error_message = "Error Role Assignment to Admin!";
 					}else {
 						User::find($id)->detachAllRoles();
 						User::find($id)->attachRole($user_role);
 						$flash_message = "Role Updated!";
 					}
 				}else{
-					$flash_message = "User not allowed to edit roles!";
+					$error_message = "User not allowed to edit roles!";
 				}
 
 			}
 			catch(\Illuminate\Database\QueryException $e)
 			{
-				$flash_message = "Error Role Assignment!";
+				$error_message = "Error Role Assignment!";
 			}
 
 		}
 		//die();
 		//return $request;
+		if(isset($error_message))
+		\Session::flash('error_message', $error_message);
+		if(isset($flash_message))
 		\Session::flash('flash_message', $flash_message);
 		return redirect('users');
 	}

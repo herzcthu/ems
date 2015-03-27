@@ -17,13 +17,11 @@ Route::get('home', 'HomeController@index');
 
 
 Route::group(['prefix' => 'forms'], function(){
-	Route::get('/build', 'EmsFormsController@create_question_form');
+	Route::get('/add_question', 'EmsFormsController@create_question_form');
 
-	Route::post('/build', 'EmsFormsController@save_question');
+	Route::post('/add_question', 'EmsFormsController@save_question');
 
 	Route::get('/{forms}/delete', 'EmsFormsController@destroy');
-
-	Route::get('/{forms}/results', 'EmsFormsController@results');
 
 	Route::get('/question/{forms}', 'EmsFormsController@qedit');
 
@@ -33,14 +31,25 @@ Route::group(['prefix' => 'forms'], function(){
 
 	Route::post('/{forms}/dataentry', 'EmsFormsController@dataentry_save');
 
-	Route::get('/{forms}/build', 'EmsFormsController@create_question_form');
+	Route::get('/{forms}/dataentry/{interviewee}', 'EmsFormsController@dataentry_edit');
 
-	Route::post('/{forms}/build', 'EmsFormsController@save_question');
+	Route::patch('/{forms}/dataentry/{interviewee}', 'EmsFormsController@dataentry_update');
 
-	Route::patch('/{forms}/build', 'EmsFormsController@qupdate');
+	Route::get('/{forms}/add_question', 'EmsFormsController@create_question_form');
 
+	Route::post('/{forms}/add_question', 'EmsFormsController@save_question');
+
+	Route::post('/question/{forms}', 'EmsFormsController@save_question');
+
+	Route::patch('/question/{forms}', 'EmsFormsController@qupdate');
 
 });
+
+Route::get('/results/{forms}/details', 'EmsFormsController@results_details');
+
+Route::get('/results/{forms}', 'EmsFormsController@results');
+
+Route::get('/results/{forms}/export', 'EmsFormsController@export_dataentry');
 
 Route::post('users/import', 'UsersListController@import');
 
@@ -48,9 +57,13 @@ Route::post('locations/import', 'GeolocationsController@import');
 
 Route::post('participants/import', 'ParticipantsController@import');
 
+Route::post('participants/setgroup', 'ParticipantsController@setgroup');
+
 Route::get('users/{users}/delete', 'UsersListController@destroy');
 
+Route::resource('participants/group', 'PGroupController');
 
+Route::get('participants/group/{group}/delete', 'PGroupController@destroy');
 
 Route::get('participants/{participants}/delete', 'ParticipantsController@destroy');
 

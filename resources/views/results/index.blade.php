@@ -54,15 +54,15 @@
 
                                 </thead>
                                 <tbody>
-                                @role('admin')
+                                @permission('view.table')
                                 @foreach ($answers as $k => $answer )
                                     <tr>
-                                        <td>{{ ( ( $answers->currentPage() * $answers->perPage()) - $answers->perPage() ) + $k + 1 }}</td>
+                                        <td>{{ $k + 1 }}</td>
 
                                     </tr>
                                 @endforeach
 
-                                @endrole
+                                @endpermission
                                 </tbody>
                             </table>
                     </div>

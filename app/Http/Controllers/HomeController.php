@@ -1,5 +1,9 @@
 <?php namespace App\Http\Controllers;
 
+use App\EmsForm;
+use App\EmsQuestionsAnswers;
+use App\GeneralSettings;
+
 class HomeController extends Controller {
 
 	/*
@@ -30,7 +34,16 @@ class HomeController extends Controller {
 	 */
 	public function index()
 	{
-		return view('home');
+		$form_id = GeneralSettings::options('options', 'form_for_dashboard');
+
+		//return $form_id;
+		$data_array = EmsQuestionsAnswers::ExportArray($form_id);
+		//return $data_array;
+		$forms = EmsForm::paginate(5);
+
+		//return;
+
+		return view('home', compact('data_array', 'forms'));
 	}
 
 }

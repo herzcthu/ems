@@ -149,6 +149,12 @@ return [
 		'Maatwebsite\Excel\ExcelServiceProvider',
 
 		/*
+		 * UniqueWithValidator https://github.com/felixkiss/uniquewith-validator
+		 */
+
+		'Felixkiss\UniqueWithValidator\UniqueWithValidatorServiceProvider',
+
+		/*
 		 * Baum Nested Categories
 		 */
 		'Baum\Providers\BaumServiceProvider',

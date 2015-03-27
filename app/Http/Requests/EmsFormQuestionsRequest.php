@@ -33,12 +33,29 @@ class EmsFormQuestionsRequest extends Request {
 	 */
 	public function rules()
 	{
+		$method = Request::method();
+		//die($method);
+		if('PATCH' == $method)
+		{
+			$rules = [
+				//
+				'question' => 'required',
+				'input_type' => 'required',
+				'form_id' => 'required',
+				'answers' => ''
+			];
+		}else{
+			$rules = [
+				//
+				'question' => 'required|unique:ems_form_questions',
+				'input_type' => 'required',
+				'form_id' => 'required',
+				'answers' => ''
+			];
 
-		$rules = [
-			//
-			'question' => 'required|unique:ems_form_questions',
-			'input_type' => 'required'
-		];
+		}
+
+
 
 		return $rules;
 	}

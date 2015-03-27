@@ -13,7 +13,7 @@ class EmsForm extends Model {
     protected $table = 'ems_forms';
 
 
-    protected $fillable = ['name', 'descriptions', 'start_date', 'end_date'];
+    protected $fillable = ['pgroup_id', 'name', 'descriptions', 'q_prefix', 'no_of_answers', 'start_date', 'end_date'];
 
     public function questions()
     {
@@ -40,6 +40,11 @@ class EmsForm extends Model {
     {
         // return $value;
         return date('d-m-Y', strtotime($date));
+    }
+
+    public function pgroup()
+    {
+        return $this->belongsTo('App\PGroups');
     }
 
 }

@@ -34,4 +34,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
+	protected function setDobAttribute($date)
+	{
+		$this->attributes['dob'] = date('Y-m-d', strtotime($date));
+	}
+
+	protected function getDobAttribute($date)
+	{
+		// return $value;
+		return date('d-m-Y', strtotime($date));
+	}
+
 }

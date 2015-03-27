@@ -26,12 +26,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- DATA TABLES -->
     <link href="{{ asset('/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>
 
+    <!-- Date Picker -->
+    <link href="{{ asset('/plugins/datepicker/datepicker3.css') }}" rel="stylesheet" type="text/css"/>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    <link href="{{ asset('/css/fonts/fonts.css') }}" rel="stylesheet" type="text/css"/>
+
+
+    <!-- jQuery 2.1.3 -->
+    <script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -146,36 +154,48 @@ desired effect
                 <li class="header">HEADER</li>
                 <!-- Optionally, you can add icons to the links -->
                 <li class="active"><a href="/home"><i class="fa fa-home"></i><span>Home</span></a></li>
+
                 <li class="treeview">
                     <a href="#"><i class="fa fa-edit"></i><span>Forms</span> <i
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a href="/forms">Form List</a></li>
+                        @permission('create.form')
                         <li><a href="/forms/create">Create New Form</a></li>
+                        @endpermission
                     </ul>
                 </li>
+                @permission('add.data')
                 <li class="treeview">
                     <a href="#"><i class="fa fa-street-view"></i><span>Locations</span> <i
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a href="/locations">Locations List</a></li>
+                        @role('admin|staff')
                         <li><a href="/locations/create">Add New Location</a></li>
+                        @endrole
                     </ul>
                 </li>
+                @endpermission
+                @role('admin|staff')
                 <li class="treeview">
                     <a href="#"><i class="fa fa-group"></i><span>Participants</span> <i
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a href="/participants">Participants List</a></li>
                         <li><a href="/participants/create">Add New Participant</a></li>
+                        <li><a href="/participants/group">Participants Group</a></li>
                     </ul>
                 </li>
+                @endrole
                 <li class="treeview">
                     <a href="#"><i class="fa fa-user"></i><span>Users</span> <i
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         <li><a href="/users">Users List</a></li>
+                        @permission('add.users')
                         <li><a href="/users/create">Add New User</a></li>
+                        @endpermission
                     </ul>
                 </li>
             </ul>
@@ -183,6 +203,7 @@ desired effect
         </section>
         <!-- /.sidebar -->
     </aside>
+
 
     <!-- yield page content -->
     @yield('content')
@@ -200,29 +221,177 @@ desired effect
 </div>
 <!-- ./wrapper -->
 
+
+    <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <p id="sub"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                    <!--button type="button" class="btn btn-primary">Save changes</button-->
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 <!-- REQUIRED JS SCRIPTS -->
 
-<!-- jQuery 2.1.3 -->
-<script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
 <!-- Bootstrap 3.3.2 JS -->
 <script src="{{ asset('/js/bootstrap.min.js') }}" type="text/javascript"></script>
+<!-- InputMask -->
+<script src="{{ asset('/plugins/input-mask/jquery.inputmask.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/plugins/input-mask/jquery.inputmask.date.extensions.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/plugins/input-mask/jquery.inputmask.extensions.js') }}" type="text/javascript"></script>
+
 <script src="{{ asset('/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/plugins/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
 <!-- SlimScroll -->
 <script src="{{ asset('/plugins/slimScroll/jquery.slimscroll.min.js') }}" type="text/javascript"></script>
 <!-- FastClick -->
 <script src="{{ asset('/plugins/fastclick/fastclick.min.js') }}"></script>
+<!-- Date Picker -->
+<script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+
+
+<script type="text/javascript">
+    jQuery.noConflict();
+    (function( $ ) {
+        $(document).ready(function ($) {
+            $('#popupModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var info = button.data('mainquestion') // Extract info from data-* attributes
+                var question = button.data('subquestion')
+                var answers = button.data('answers')
+                var answersonly = button.data('answersonly')
+                // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+                // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+                var modal = $(this)
+                modal.find('.modal-title').text(info)
+                if (typeof question !== 'undefined') {
+                    modal.find('.modal-body p').text(question)
+                    modal.find('.modal-body p').append("&nbsp;&nbsp;&nbsp;=>&nbsp;&nbsp;" + answers)
+                }else{
+                    modal.find('.modal-body p').text(answersonly)
+                }
+            })
+            $('#datatable-allfeatures').dataTable({
+                    "aoColumnDefs": [
+                        { 'bSortable': false, 'aTargets': [ 0 ] }
+                    ]});
+     //       $('#datatable-results').dataTable({
+      //          "bPaginate": false,
+      //          "bLengthChange": false,
+       //         "bFilter": false,
+       //         "bSort": false,
+       //         "bInfo": false,
+        //        "bAutoWidth": false
+         //   });
+            $('.datepicker').datepicker({
+                format: 'dd-mm-yyyy',
+                startDate: '-3d'
+            });
+            // http://www.sanwebe.com/2014/01/how-to-select-all-deselect-checkboxes-jquery
+            $('#cb').click(function(event) {  //on click
+                if(this.checked) { // check select status
+                    $('.cb').each(function() { //loop through each checkbox
+                        this.checked = true;  //select all checkboxes with class "checkbox1"
+                    });
+                }else{
+                    $('.cb').each(function() { //loop through each checkbox
+                        this.checked = false; //deselect all checkboxes with class "checkbox1"
+                    });
+                }
+            });
+
+        });
+    })(jQuery);
+</script>
+
+
+
+<script type="text/javascript">
+    jQuery.noConflict();
+    (function( $ ) {
+        $(document).ready(function ($) {
+
+            $("[data-mask]").inputmask();
+            $("#email").inputmask({ alias: "email"});
+        });
+    })(jQuery);
+
+</script>
+    <style type="text/css">
+        #gender-chart { height:300px;}
+    </style>
+
+
+
+
+<!-- jQuery 2.1.3 -->
+<script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
+<!-- FLOT CHARTS -->
+<script src="{{ asset('/plugins/flot/jquery.flot.min.js') }}" type="text/javascript"></script>
+<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
+<script src="{{ asset('/plugins/flot/jquery.flot.resize.min.js') }}" type="text/javascript"></script>
+<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
+<script src="{{ asset('/plugins/flot/jquery.flot.pie.min.js') }}" type="text/javascript"></script>
+<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
+<script src="{{ asset('/plugins/flot/jquery.flot.categories.min.js') }}" type="text/javascript"></script>
+
+
+<script src="{{ asset('/plugins/Garlic/garlic.min.js') }}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    jQuery.noConflict();
+    (function( $ ) {
+        $( document ).ready(function( $ ) {
+            var data = {
+                data: [["Ayeyawady", 10], ["Bago", 8], ["Chin, 4"], ["Sagaing", 4],
+                    ["Mandalay", 13], ["Magway", 17], ["Kachin", 9], ["Kayin", 6], ["Rakhaing", 7], ["Shan", 8]],
+                color: "#3c8dbc"
+            };
+
+            $.plot($("#gender-chart"), [data], {
+                grid: {
+                    borderWidth: 1,
+                    borderColor: "#f3f3f3",
+                    tickColor: "#f3f3f3"
+                },
+                series: {
+                    bars: {
+                        show: true,
+                        barWidth: 0.5,
+                        align: "center"
+                    }
+                },
+                xaxis: {
+                    mode: "categories",
+                    tickLength: 0
+                }
+            });
+            $( 'form' ).garlic();
+        });
+    })(jQuery);
+
+
+
+
+</script>
+
+
+
+
+
+<!-- jQuery 2.1.3 -->
+<script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
-<!-- AdminLTE for demo purposes -->
-<!--script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script-->
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#datatable-allfeatures').dataTable();
-    });
-</script>
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-      Both of these plugins are recommended to enhance the
-      user experience -->
+
 </body>
 </html>

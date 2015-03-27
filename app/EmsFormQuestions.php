@@ -21,6 +21,12 @@ class EmsFormQuestions extends Model {
 
     }
 
+    public function get_parent()
+    {
+        //return $this->belongsToMany('App\EmsFormQuestions', 'ems_form_questions', 'parent_id', 'id');
+        return $this->belongsTo('App\EmsFormQuestions', 'parent_id');
+    }
+
     public function get_children()
     {
         //return $this->belongsToMany('App\EmsFormQuestions', 'ems_form_questions', 'parent_id', 'id');
@@ -32,10 +38,18 @@ class EmsFormQuestions extends Model {
         return $this->hasMany('App\EmsQuestionsAnswers', 'q_id');
     }
 
+    private function compare($a, $b)
+    {
+        $a = preg_replace('/^[\-]/', '', $a);
+        $b = preg_replace('/^[\-]/', '', $b);
+        return strcasecmp($a, $b);
+    }
     public function setAnswersAttribute($value)
     {
-        // return $value;
-        $this->attributes['answers'] = json_encode($value);
+        $answers = array_filter($value);
+        uksort($answers, array($this,'compare'));
+
+        $this->attributes['answers'] = json_encode($answers);
         // return json_encode($value);
     }
 
@@ -49,6 +63,7 @@ class EmsFormQuestions extends Model {
         // return $value;
         return json_decode($value, true);
     }
+
     public function scopeIdDescending($query)
     {
         return $query->orderBy('id','DESC');
@@ -57,6 +72,16 @@ class EmsFormQuestions extends Model {
     public function scopeIdAscending($query)
     {
         return $query->orderBy('id','ASC');
+    }
+
+    public function scopeQuestionNumberDescending($query)
+    {
+        return $query->orderBy('question_number','DESC');
+    }
+
+    public function scopeQuestionNumberAscending($query)
+    {
+        return $query->orderBy('question_number','ASC');
     }
 
     public function scopeSingle($query)
@@ -99,6 +124,12 @@ class EmsFormQuestions extends Model {
         return $query->where('form_id', '=', $form_id);
     }
 
+    public function scopeOfQNumber($query, $q_no)
+    {
+        return $query->where('question_number', '=', $q_no);
+    }
+
+
     /**
      * Search for form id and
      * search for question type is single or main
@@ -112,6 +143,16 @@ class EmsFormQuestions extends Model {
         $query->where(function($query)
         {
             $query->where('q_type', '=', 'single')->orWhere('q_type', '=', 'main');
+        });
+        return $query;
+    }
+
+    public function scopeOfSingleSub($query, $form_id)
+    {
+        $query->where('form_id', '=', $form_id);
+        $query->where(function($query)
+        {
+            $query->where('q_type', '=', 'single')->orWhere('q_type', '=', 'sub');
         });
         return $query;
     }

@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers;
 
+use App\EmsForm;
 use App\GeneralSettings;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -29,9 +30,9 @@ class GeneralSettingsController extends Controller {
 			$options = GeneralSettings::all();
 			//return $options[0]->options;
 			//$options = json_decode($settings[0]->options, true);
-
+			$forms = EmsForm::lists('name', 'id');
 			//return $options[0]['options']['site_name'];
-			return view('settings.index', compact('options'));
+			return view('settings.index', compact('options','forms'));
 		}
 	}
 

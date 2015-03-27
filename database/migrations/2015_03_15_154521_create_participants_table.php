@@ -15,7 +15,6 @@ class CreateParticipantsTable extends Migration {
       $table->engine = 'InnoDB';
       $table->increments('id');
       $table->integer('parent_id')->unsigned()->nullable();
-
       // Add needed columns here (f.ex: name, slug, path, etc.)
       $table->string('user_image')->default('user.png');
       $table->string('name');

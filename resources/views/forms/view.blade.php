@@ -102,8 +102,10 @@
 											<div class="col-md-offset-1">
 												@foreach($question->get_children as $children)
 													<p>{{ $children->question }}
-													<a href={{ url("/forms/question/".$children->id ) }}>Edit</a>
-													<a href={{ url("/forms/question/".$children->id."/delete" ) }}>Delete</a>
+														@permission('edit.form')
+														<a href={{ url("/forms/question/".$children->id ) }}>Edit</a>
+														<a href={{ url("/forms/question/".$children->id."/delete" ) }}>Delete</a>
+														@endpermission
 													</p>
 
 															@if($children->input_type == 'radio')

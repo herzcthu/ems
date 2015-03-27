@@ -39,7 +39,7 @@
 						@if (Session::has('form_build_success'))
 							<div class="alert alert-success">{{ Session::get('form_build_success') }}</div>
 						@endif
-						{!! Form::open(['url' => 'forms/'.$form_url.'/build', 'class' => 'form-horizontal']) !!}
+						{!! Form::open(['url' => 'forms/'.$form_name_url.'/add_question', 'class' => 'form-horizontal']) !!}
 						@include('forms._qform', ['submitButton' => 'Create', 'formtype' => 'create'])
 						{!! Form::close() !!}
 						</div>

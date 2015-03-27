@@ -41,7 +41,12 @@
                                     </div>
                                 @endif
 
-
+                                @if (Session::has('form_success'))
+                                    <div class="alert alert-success">{{ Session::get('form_success') }}</div>
+                                @endif
+                                @if (Session::has('form_error'))
+                                    <div class="alert alert-danger">{{ Session::get('form_error') }}</div>
+                                @endif
 
                                 <table class="table table-bordered table-striped table-hover table-heading table-datatable"
                                        id="datatable-allfeatures">
@@ -54,10 +59,10 @@
                                     <th>End Date</th>
                                     @permission('view.table')
                                     <th>Results</th>
+                                    <th>View</th>
                                     @endpermission
                                     @permission('edit.form')
                                     <th>Build</th>
-                                    <th>View</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
                                     @endpermission
@@ -66,7 +71,7 @@
                                     @endpermission
                                     </thead>
                                     <tbody>
-                                    @role('admin')
+                                    @permission('view.table')
                                     @foreach ($forms as $k => $form )
                                         <tr>
                                             <!--td>@{{ ( ( $forms->currentPage() * $forms->perPage()) - $forms->perPage() ) + $k + 1 }}</td-->
@@ -76,15 +81,21 @@
                                             <td>{{ $form->start_date }}</td>
                                             <td>{{ $form->end_date }}</td>
                                             @permission('view.table')
-                                            <td><a href={{ url("/forms/".$form->id."/results" ) }}>Results</a></td>
+                                            <td>
+                                                <a href={{ url("/results/".urlencode($form->name) ) }}>Results</a>
+                                            </td>
+                                            <td><a href={{ url("/forms/".urlencode($form->name) ) }}>View</a></td>
                                             @endpermission
                                             @permission('edit.form')
-                                            <td><a href={{ url("/forms/".$form->id."/build" ) }}>Build</a></td>
-                                            <td><a href={{ url("/forms/".$form->id ) }}>View</a></td>
-                                            <td><a href={{ url("/forms/".$form->id."/edit" ) }}>Edit</a></td>
-                                            <td><a href={{ url("/forms/".$form->id."/delete" ) }}>Delete</a></td>
+                                            <td><a href={{ url("/forms/".urlencode($form->name)."/add_question" ) }}>Build</a>
+                                            </td>
+                                            <td><a href={{ url("/forms/".urlencode($form->name)."/edit" ) }}>Edit</a>
+                                            </td>
+                                            <td>
+                                                <a href={{ url("/forms/".urlencode($form->name)."/delete" ) }}>Delete</a>
+                                            </td>
                                             @endpermission
-                                            @permission('view.form')
+                                            @permission('add.data')
                                             <td><a href={{ url("/forms/".urlencode($form->name)."/dataentry" ) }}>Add
                                                     Data</a>
                                             </td>
@@ -92,7 +103,7 @@
                                         </tr>
                                     @endforeach
 
-                                    @endrole
+                                    @endpermission
                                     </tbody>
                                     <tfoot>
                                     <th>No.</th>
@@ -102,10 +113,10 @@
                                     <th>End Date</th>
                                     @permission('view.table')
                                     <th>Results</th>
+                                    <th>View</th>
                                     @endpermission
                                     @permission('edit.form')
                                     <th>Build</th>
-                                    <th>View</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
                                     @endpermission
@@ -114,7 +125,6 @@
                                     @endpermission
                                     </tfoot>
                                 </table>
-                                {!! Form::close() !!}
                                 <!--div id="datatable-1_paginate" class="dataTables_paginate paging_bootstrap">
                                     @{!! $forms->render() !!}
                                 </div-->

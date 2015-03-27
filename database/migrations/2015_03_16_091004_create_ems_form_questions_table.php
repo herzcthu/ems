@@ -20,7 +20,7 @@ class CreateEmsFormQuestionsTable extends Migration {
 			$table->string('question_number');
 			$table->string('question')->unique();
 			$table->enum('q_type',array('single', 'main', 'sub'));
-			$table->enum('input_type', array('none','radio','choice','select','text','textarea'));
+			$table->enum('input_type', array('none','same','radio','choice','select','text','textarea'));
 			$table->string('a_view');
 			$table->string('answers');
 			$table->timestamps();
@@ -40,6 +40,12 @@ class CreateEmsFormQuestionsTable extends Migration {
 	public function down()
 	{
 		Schema::drop('ems_form_questions');
+		Schema::table('ems_form_questions', function ($table)
+		{
+			$table->dropForeign('ems_form_questions_parent_id_foreign');
+			$table->dropForeign('ems_form_questions_form_id_foreign');
+		});
+
 	}
 
 }

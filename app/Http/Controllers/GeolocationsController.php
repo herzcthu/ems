@@ -105,7 +105,7 @@ class GeolocationsController extends Controller {
 		$villagetrack_array[0]['villagetrack'] = $villagetrack_input;
 		$villagetrack_array[0]['village'] = $village_input;
 
-		$new_villagetrack = Villages::updateOrCreate(array('village' => $input['village']), $villagetrack_array[0]);
+		$new_villagetrack = Villages::updateOrCreate(array('villagetrack' => $input['villagetrack'],'village' => $input['village']), $villagetrack_array[0]);
 
 	/**	$villages = Villages::where('village', '=', $input['village'])->get();
 		$village_array = $villages->toArray();
@@ -194,7 +194,7 @@ class GeolocationsController extends Controller {
 				$village['village'] = $line['village'];
 				$village['village_my'] = $line['village_my'];
 				$village['village_id'] = $line['village_id'];
-				$new_village = Villages::updateOrCreate(array('village' => $line['village']), $village);
+				$new_village = Villages::updateOrCreate(array('villagetrack' => $line['villagetrack'], 'village' => $line['village']), $village);
 			}
 			$message = 'Location data imported!';
 			\Session::flash('location_import_success', $message);

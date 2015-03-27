@@ -39,7 +39,7 @@
 						@if (Session::has('form_build_success'))
 							<div class="alert alert-success">{{ Session::get('form_build_success') }}</div>
 						@endif
-						{!! Form::model($form, ['method' => 'PATCH', 'action' => ['EmsFormsController@edit', $form->id], 'class' => 'form-horizontal']) !!}
+						{!! Form::model($form, ['method' => 'PATCH', 'action' => ['EmsFormsController@update', $form->id], 'class' => 'form-horizontal']) !!}
 						@include('forms._form', ['submitButton' => 'Update', 'formtype' => 'create'])
 						{!! Form::close() !!}
 				 </div>
