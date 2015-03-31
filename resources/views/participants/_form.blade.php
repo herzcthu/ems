@@ -4,14 +4,12 @@
         {!! Form::text('name', null, ['class' => 'form-control']) !!}
     </div>
 </div>
-@if ($formtype == 'create')
 <div class="form-group">
     {!! Form::label('email', 'Email: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="input-group col-md-4">
-        {!! Form::email('email', null, ['class' => 'form-control']) !!}
+        {!! Form::email('email', isset($participant->email)?$participant->email:null, ['class' => 'form-control']) !!}
     </div>
 </div>
-@endif
 <div class="form-group">
     {!! Form::label('nrc_id', 'NRC No: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="input-group col-md-4">
@@ -30,7 +28,7 @@
         {!! Form::select('participant_type', ['coordinator' => 'Coordinator', 'enumerator' => 'Enumerator', 'spotchecker' => 'Spot Checker' ], null,['class' => 'form-control']) !!}
     </div>
 </div>
-<div class="form-group">
+<!--div class="form-group">
     {!! Form::label('parent_id', 'Coordinator Name: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="input-group col-md-4">
     <?php
@@ -40,11 +38,11 @@
         ?>
         {!! Form::select('parent_id', $coordinators, null, ['class' => 'form-control']) !!}
     </div>
-</div>
+</div-->
 <div class="form-group">
     {!! Form::label('location', 'Location Assigned: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="input-group col-md-4">
-        {!! Form::select('location', ['Region' => $districts, 'Township' => $townships, 'Village' => $villages ], null, ['class' => 'form-control']) !!}
+        {!! Form::select('location', isset($locations)? $locations:['State' => $states, 'District' => $districts, 'Township' => $townships, 'Village' => $villages ], isset($location)? $location:null, ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">
@@ -59,7 +57,7 @@
         <div class="input-group-addon">
             <i class="fa fa-calendar"></i>
         </div>
-        {!! Form::input('date', 'dob', null, ['class' => 'form-control datepicker']) !!}
+        {!! Form::input('date', 'dob', null, ['class' => 'form-control dobdatepicker']) !!}
     </div>
 </div>
 <div class="form-group">

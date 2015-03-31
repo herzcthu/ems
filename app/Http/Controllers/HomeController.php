@@ -37,8 +37,11 @@ class HomeController extends Controller {
 		$form_id = GeneralSettings::options('options', 'form_for_dashboard');
 
 		//return $form_id;
-		$data_array = EmsQuestionsAnswers::ExportArray($form_id);
-		//return $data_array;
+		$data_array = EmsQuestionsAnswers::get_alldataentry($form_id);
+		if(!isset($data_array)){
+			$data_array = array();
+		}
+		//return array_count_values(array_column($data_array,'State'))['Ayeyarwady'];
 		$forms = EmsForm::paginate(5);
 
 		//return;

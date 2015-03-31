@@ -24,6 +24,7 @@
         {!! Form::radio('q_type','single',true) !!} Single
         {!! Form::radio('q_type','main') !!} Main
         {!! Form::radio('q_type','sub') !!} Sub Question
+        {!! Form::radio('q_type','same') !!} Same Answers as Main
     </div>
 </div>
 <div class="form-group">
@@ -35,13 +36,13 @@
 <div class="form-group">
     {!! Form::label('input_type', 'Input Type: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('input_type', ['none' => 'None', 'same' => 'Same answers for all Sub Questions','radio' => 'Radio', 'choice' => 'Choice', 'select' => 'Select', 'text' => 'Text', 'textarea' => 'Textarea'],isset($question->input_type) ? $question->input_type: null, ['class' => 'form-control']) !!}
+        {!! Form::select('input_type', ['none' => 'None', 'same' => 'Same answers for all Sub Questions','radio' => 'Radio', 'choice' => 'Choice', 'select' => 'Select', 'text' => 'Text', 'textarea' => 'Textarea','date' => 'Date', 'year' => 'Year', 'month' => 'Month', 'time' => 'Time'],isset($question->input_type) ? $question->input_type: null, ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">
     {!! Form::label('a_view', 'Question Display Type: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('a_view', ['none' => 'None', 'list' => 'List','table' => 'Table', 'validated-list' => 'Validated List', 'validated-table' => 'Validated Table'],isset($question->a_view) ? $question->a_view: null, ['class' => 'form-control']) !!}
+        {!! Form::select('a_view', ['none' => 'None','notes' => 'With Text Field Question Notes', 'list' => 'List','table' => 'Table', 'validated-list' => 'Validated List', 'validated-table' => 'Validated Table'],isset($question->a_view) ? $question->a_view: null, ['class' => 'form-control']) !!}
     </div>
 </div>
 <div class="form-group">

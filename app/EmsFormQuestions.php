@@ -64,6 +64,9 @@ class EmsFormQuestions extends Model {
         return json_decode($value, true);
     }
 
+
+
+
     public function scopeIdDescending($query)
     {
         return $query->orderBy('id','DESC');
@@ -81,7 +84,7 @@ class EmsFormQuestions extends Model {
 
     public function scopeQuestionNumberAscending($query)
     {
-        return $query->orderBy('question_number','ASC');
+        return $query->orderByRaw('LENGTH(question_number),question_number');
     }
 
     public function scopeSingle($query)
@@ -153,6 +156,16 @@ class EmsFormQuestions extends Model {
         $query->where(function($query)
         {
             $query->where('q_type', '=', 'single')->orWhere('q_type', '=', 'sub');
+        });
+        return $query;
+    }
+
+    public function scopeOfNotMain($query, $form_id)
+    {
+        $query->where('form_id', '=', $form_id);
+        $query->where(function($query)
+        {
+            $query->where('q_type', '!=', 'main');
         });
         return $query;
     }

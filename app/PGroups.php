@@ -16,7 +16,7 @@ class PGroups extends Model {
 
     public function participants()
     {
-        return $this->belongsToMany('App\Participant', 'participants_pgroups', 'pgroups_id');
+        return $this->belongsToMany('App\Participant', 'participants_pgroups', 'pgroups_id', 'participant_id')->withTimestamps();
     }
     public function forms()
     {

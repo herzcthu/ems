@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Villages;
 use Illuminate\Database\Eloquent\Model;
 use Request;
 use Illuminate\Support\Collection;
@@ -15,12 +16,9 @@ class EmsQuestionsAnswers extends Model {
     protected $table = 'ems_questions_answers';
 
 
-    protected $fillable = ['answers', 'form_id', 'enu_id', 'q_id', 'user_id', 'interviewee_id', 'interviewee_gender', 'interviewee_age', 'interviewee_villageid'];
+    protected $fillable = ['answers', 'notes', 'form_id', 'enu_id', 'q_id', 'user_id', 'interviewee_id', 'interviewee_gender', 'interviewee_age', 'interviewer_id'];
 
-    public function question()
-    {
-        return $this->belongsTo('App\EmsFormQuestions', 'q_id');
-    }
+
 
     public function village()
     {
@@ -37,6 +35,26 @@ class EmsQuestionsAnswers extends Model {
         // return $value;
         $this->attributes['answers'] = json_encode($value);
         // return json_encode($value);
+    }
+
+    public function setNotesAttribute($value)
+    {
+        $notes = array_filter($value);
+        uksort($notes, array($this,'compare'));
+
+        $this->attributes['notes'] = json_encode($notes);
+        // return json_encode($value);
+    }
+
+    /**
+     * Decode Answers json string from database
+     * @param $value
+     * @return object
+     */
+    public function getNotesAttribute($value)
+    {
+        // return $value;
+        return json_decode($value, true);
     }
 
     public function setIntervieweeIdAttribute($value)
@@ -89,62 +107,76 @@ class EmsQuestionsAnswers extends Model {
     }
 
 
-    public static function AllArray()
+    /**
+     * Generate all data entry array from database
+     * @param $form_name_url
+     * @return array
+     */
+    public static function get_alldataentry($form_name_url)
     {
+        $form_name = urldecode($form_name_url);
+        try {
+            $getform = EmsForm::where('name', '=', $form_name)->get();
+            $form_array = $getform->toArray();
+        }catch (QueryException $e){
+            $form_array = '';
+        }
+        //return $form->toArray();
 
-        //return $query;
-        $totalinv = EmsQuestionsAnswers::lists('interviewee_id');
-        $uniqueinv = array_unique($totalinv);
+        if (empty($form_array)) {
+            $getform = EmsForm::find($form_name_url);
+            $id = $getform->id;
+        } elseif (!empty($form_array)) {
+            $id = $getform->first()['id'];
+        } else {
+            return false;
+        }
 
-        // $paginated = $this->paginate($uniqueinv, 10);
-        // $gettotalinv = $paginated['currentpage'];
+        $questions = EmsFormQuestions::OfNotMain($id)->get();
+        $dataentry = EmsQuestionsAnswers::all();
+        foreach($dataentry as $data) {
+
+            $alldata[$data->interviewee_id]['Interviewee ID'] = $data->interviewee_id;
+            $alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
+            $alldata[$data->interviewee_id]['Interviewer ID'] = $data->interviewer_id;
+
+            preg_match('/([1-9]{3})([0-9]{3})/', $data->interviewer_id, $matches);
+
+            //return $matches;
+
+            $locations = Villages::getLocations($matches[2]);
+
+            //$village_name = Villages::getVillageName($matches[2]);
+
+            $alldata[$data->interviewee_id]['State'] = $locations['state']['state'];
+            $alldata[$data->interviewee_id]['District'] = $locations['district']['district'];
+            $alldata[$data->interviewee_id]['Township'] = $locations['township']['township'];
+            $alldata[$data->interviewee_id]['Village Track'] = $locations['village']['villagetrack'];
+            $alldata[$data->interviewee_id]['Village'] = $locations['village']['village'];
 
 
-        //foreach($uniqueinv as $inv_id){
-        for($i=0; $i < count($uniqueinv); $i++){
-
-            //var_dump($inv_id);
-
-            $answers_for_inv = EmsQuestionsAnswers::where('interviewee_id', '=', $uniqueinv[$i])->get();
-
-            //var_dump($answers_for_inv->toArray());
-
-
-
-            foreach($answers_for_inv as $k => $v)
-            {
-                //var_dump($v);
-               // $interviewee['interviewee'] = $query->where('interviewee_id', '=', $inv_id)->get();
-
-                $interviewee[$uniqueinv[$i]]['enumerator'] = Participant::where('id', '=', $v['enu_id']);
-
-                $interviewee[$uniqueinv[$i]]['questions'] = EmsFormQuestions::find($v['q_id']);
-
-                $interviewee[$uniqueinv[$i]]['answers'][$k] = EmsQuestionsAnswers::where('interviewee_id', '=', $uniqueinv[$i])->where('q_id', '=', $v['q_id']);
-
-
-                $interviewee[$uniqueinv[$i]]['form'] = EmsForm::where('id', '=', $v['form_id']);
-
-                $interviewee[$uniqueinv[$i]]['user'] = User::where('id', '=', $v['user_id']);
-
-               // var_dump($alldata);
-                //$interviewee[$uniqueinv[$i]] = new Collection();
-                //$interviewee[$uniqueinv[$i]]->merge()
+            foreach ($questions as $q) {
+                if($q->q_type == 'sub' || $q->q_type == 'same') {
+                    if (array_key_exists($q->id, $data->answers)) {
+                        $alldata[$data->interviewee_id][$q->get_parent->question_number.$q->question_number] = $data->answers[$q->id];
+                    }else{
+                        $alldata[$data->interviewee_id][$q->get_parent->question_number.$q->question_number] = '';
+                    }
+                }else{
+                    if (array_key_exists($q->id, $data->answers)) {
+                        $alldata[$data->interviewee_id][$q->question_number] = $data->answers[$q->id];
+                    }else{
+                        $alldata[$data->interviewee_id][$q->question_number] = '';
+                    }
+                }
 
             }
-           // print_r($interviewee[$uniqueinv[$i]]['answers']);
-
-            //print_r($interviewee);
-           // var_dump($interviewee[$inv_id]);
-          //  die();
-            $onedata[$i][$uniqueinv[$i]] = new Collection($interviewee[$uniqueinv[$i]]);
-
-
         }
-        return new Collection($onedata);
 
-
+        return $alldata;
     }
+
+    /**
 
     public static function ExportArray($form_id)
     {
@@ -249,6 +281,6 @@ class EmsQuestionsAnswers extends Model {
         $item = self::array_unshift_assoc($item, 'interviewee_id', $key);
 
       }
-
+        **/
 
 }

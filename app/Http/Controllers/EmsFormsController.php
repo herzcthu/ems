@@ -160,7 +160,7 @@ class EmsFormsController extends Controller
 
             $form['a_view'] = $form_input['a_view'];
 
-            if ($form_input['q_type'] == 'sub') {
+            if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same') {
                 $form['parent_id'] = $form_input['main_id'];
             } else {
                 $form['parent_id'] = null;
@@ -228,6 +228,7 @@ class EmsFormsController extends Controller
             }
             //$forms = EmsForm::lists('name', 'id');
             $questions = EmsFormQuestions::OfSingleMain($id)->questionNumberAscending()->get();
+
             $form_id = $id;
             return view('forms/dataentry', compact('questions', 'form_name', 'form_name_url', 'form_id', 'enumerators', 'form_answers_count'));
 
@@ -694,21 +695,23 @@ class EmsFormsController extends Controller
             return view('errors/404');
         }
 
-        $data_array = EmsQuestionsAnswers::ExportArray($id);
+        $data_array = EmsQuestionsAnswers::get_alldataentry($id);
 
-        //return $data_array;
+       // print_r($data_array);
+       // return;
 
         $excel->create($form_name_url, function($excel) use($data_array) {
 
             $excel->sheet('Sheetname', function($sheet) use($data_array) {
 
                 $sheet->fromArray($data_array);
+                //$sheet->fromArray($data_array,null, 'A1', false, true);
 
                // $sheet->loadview('results/excel');
 
             });
 
-        })->export('csv');
+        })->export('xls');
     }
 
     /**
@@ -887,7 +890,7 @@ class EmsFormsController extends Controller
 
         $question->a_view = $form_input['a_view'];
 
-        if ($form_input['q_type'] == 'sub') {
+        if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same') {
             $question->parent_id = $form_input['main_id'];
         } else {
             $question->parent_id = null;

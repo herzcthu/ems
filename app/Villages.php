@@ -34,4 +34,66 @@ class Villages extends Model {
         return $this->hasMany('App\EmsQuestionsAnswers');
     }
 
+    public static function getLocations($village_id)
+    {
+       // return $village_id;
+        $village_id = Villages::where('village_id', '=', $village_id)->pluck('id');
+
+        $village = Villages::find($village_id);
+
+        $township = Townships::find($village->township->id);
+
+        $district = Districts::find($township->district->id);
+
+        $state = States::find($district->state->id);
+
+        $query = compact('village','township','district', 'state');
+
+        return $query;
+    }
+
+    public static function getVillageName($village_id)
+    {
+        return Villages::where('village_id', '=', $village_id)->pluck('village');
+    }
+
+    public static function getTownshipByVillageID($village_id)
+    {
+        $village_id = Villages::where('village_id', '=', $village_id)->pluck('id');
+
+        $village = Villages::find($village_id);
+
+        $township = Townships::find($village->township->id);
+
+        return $township;
+    }
+    public static function getDistrictByVillageID($village_id)
+    {
+        $village_id = Villages::where('village_id', '=', $village_id)->pluck('id');
+
+        $village = Villages::find($village_id);
+
+        $township = Townships::find($village->township->id);
+
+        $district = Districts::find($township->district->id);
+
+        return $district;
+    }
+
+    public static function getStateByVillageID($village_id)
+    {
+        // return $village_id;
+        $village_id = Villages::where('village_id', '=', $village_id)->pluck('id');
+
+        $village = Villages::find($village_id);
+
+        $township = Townships::find($village->township->id);
+
+        $district = Districts::find($township->district->id);
+
+        $state = States::find($district->state->id);
+
+        return $state;
+    }
+
 }

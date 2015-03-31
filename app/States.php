@@ -21,7 +21,7 @@ class States extends Model {
 
     public function coordinators()
     {
-        return $this->belongsToMany('App\Participant', 'coordinators_states', 'state_id');
+        return $this->belongsToMany('App\Participant', 'coordinators_states', 'state_id', 'coordinators_id')->withTimestamps();
     }
 
     public function districts()
@@ -33,5 +33,7 @@ class States extends Model {
     {
         return $this->hasManyThrough('App\Townships', 'Districts', 'states_id', 'districts_id');
     }
+
+
 
 }

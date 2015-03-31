@@ -29,6 +29,7 @@ class CreateParticipantsTable extends Migration {
       $table->string('user_mobile_phone')->nullable();
       $table->string('user_mailing_address')->nullable();
       $table->string('user_biography')->nullable();
+      $table->integer('participant_id')->unique()->unsigned()->index();
       $table->string('participant_type');
       $table->timestamps();
     });

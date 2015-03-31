@@ -214,6 +214,20 @@ if ( ! function_exists('csrf_token'))
 	}
 }
 
+if ( ! function_exists('database_path'))
+{
+	/**
+	 * Get the database path.
+	 *
+	 * @param  string  $path
+	 * @return string
+	 */
+	function database_path($path = '')
+	{
+		return app()->make('path.database').($path ? '/'.$path : $path);
+	}
+}
+
 if ( ! function_exists('delete'))
 {
 	/**
@@ -590,13 +604,13 @@ if ( ! function_exists('env'))
 			case '(false)':
 				return false;
 
-			case 'null':
-			case '(null)':
-				return null;
-
 			case 'empty':
 			case '(empty)':
 				return '';
+
+			case 'null':
+			case '(null)':
+				return;
 		}
 
 		if (Str::startsWith($value, '"') && Str::endsWith($value, '"'))

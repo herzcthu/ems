@@ -33,7 +33,7 @@
     {!! Form::label('dob', 'Date of Birth: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="input-group col-md-4">
         <div class="input-group-addon"><i class="fa fa-birthday-cake"></i></div>
-        {!! Form::input('date', 'dob', date('d-m-Y'), ['class' => 'form-control datepicker']) !!}
+        {!! Form::input('date', 'dob', date('d-m-Y'), ['class' => 'form-control dobdatepicker']) !!}
     </div>
 </div>
 <div class="form-group">

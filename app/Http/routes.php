@@ -75,6 +75,12 @@ Route::resource('participants', 'ParticipantsController');
 
 Route::resource('forms', 'EmsFormsController');
 
+Route::get('dataentry/{form}/create', 'EmsQuestionsAnswersController@create');
+
+Route::post('dataentry/{form}/create', 'EmsQuestionsAnswersController@store');
+
+Route::resource('dataentry/{form}', 'EmsQuestionsAnswersController');
+
 Route::post('roles', 'UserRoleController@update');
 
 Route::get('settings', 'GeneralSettingsController@index');

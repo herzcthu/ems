@@ -5,18 +5,20 @@ use App\Districts;
 use App\Http\Requests;
 use App\Http\Requests\ParticipantsFormRequest;
 use App\PGroups;
-use App\Townships;
 use App\User;
 
-use App\Participant;
 use App\States;
+use App\Villages;
+use App\Townships;
+use App\Participant;
 use App\Http\Controllers\Controller;
 
-use App\Villages;
+
 use Bican\Roles\Models\Permission;
 use Bican\Roles\Models\Role;
 
 
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 //use Illuminate\HttpResponse;
 //use Illuminate\Routing\Controller;
@@ -84,49 +86,7 @@ class ParticipantsController extends Controller {
 		//
 		$input = $request->all();
 		//die(print_r($input));
-		$participant['name'] = $input['name'];
-		$participant['email'] = $input['email'];
-		$participant['nrc_id'] = $input['nrc_id'];
-		$participant['ethnicity'] = $input['ethnicity'];
-		$participant['participant_type'] = $input['participant_type'];
-		//$participant['location'] = $input['location'];
-		$participant['user_gender'] = $input['user_gender'];
-		$participant['user_mobile_phone'] = $input['user_mobile_phone'];
-		$participant['user_line_phone'] = $input['user_line_phone'];
-		$participant['current_org'] = $input['current_org'];
-		$participant['user_mailing_address'] = $input['user_mailing_address'];
-		$participant['education_level'] = $input['education_level'];
-		$village = Villages::where('village', '=', $input['location'])->get();
-		$state = States::where('state', '=', $input['location'])->get();
-		$district = Districts::where('district', '=', $input['location'])->get();
-		if($input['parent_id'] == null || $input['participant_type'] == 'coordinator'){
-			$participant['parent_id'] = null;
-		}else{
-
-			$participant['parent_id'] = $input['parent_id'];
-		}
-		$participant['dob'] = $input['dob'];
-
-		//return $participant['nrc_id'];
-		$new_participant = Participant::firstOrNew($participant);
-		//$new_participant->nrc_id = $participant['nrc_id'];
-		//return $new_participant->nrc_id;
-		//$new_participant = Participant::create($participant);
-		$new_participant->save();
-		//return $new_participant->id;
-
-		if(array_key_exists(0 ,$village->toArray())){
-			$location = $village;
-			$new_participant->villages()->attach($location[0]['id']);
-		}
-		if(array_key_exists(0 ,$state->toArray())){
-			$location = $state;
-			$new_participant->states()->attach($location[0]['id']);
-		}
-		if(array_key_exists(0 ,$district->toArray())){
-			$location = $district;
-			$new_participant->districts()->attach($location[0]['id']);
-		}
+		$this->CreatAndStore($input);
 
 		return redirect('participants');
 	}
@@ -170,10 +130,19 @@ class ParticipantsController extends Controller {
 
 			}else{
 				$participants = Participant::find($id);
+				if($participants->participant_type == 'coordinator')
+				{
+					$location = isset($participants->states->first()['state']) ? $participants->states->first()['state']: $participants->districts->first()['district'];
+					//$locations = array('Dtates' => $states, 'Districts' => $districts);
+				}else{
+
+					$location = $participants->villages->first()['village'];
+					//$locations = array('Villages' => $villages);
+				}
 				$viewport = 'participants.profile';
 			}
 
-			return view($viewport, compact('participants', 'p_group'));
+			return view($viewport, compact('participants', 'p_group', 'location'));
 		}
 	}
 
@@ -188,6 +157,13 @@ class ParticipantsController extends Controller {
 		if ($this->auth_user->level() > 6)
 		{		//
 			$p_group = PGroups::lists('name', 'id');
+
+			$states = States::lists('state', 'state');
+			$districts = Districts::lists('district', 'district');
+			$townships = Townships::lists('township', 'township');
+			$villages = Villages::lists('village', 'village');
+			$coordinators = Participant::where('participant_type', '=', 'coordinator')->lists('name', 'nrc_id');
+
 			if($id == 'coordinator'){
 
 
@@ -216,17 +192,22 @@ class ParticipantsController extends Controller {
 
 			}else{
 				$participant = Participant::find($id);
+				if($participant->participant_type == 'coordinator')
+				{
+					$location = isset($participant->states->first()['state']) ? $participant->states->first()['state']: $participant->districts->first()['district'];
+					$locations = array('Dtates' => $states, 'Districts' => $districts);
+				}else{
+
+					$location = $participant->villages->first()['village'];
+					$locations = array('Villages' => $villages);
+				}
 				$viewport = 'participants.edit';
 			}
-			$states = States::lists('state', 'state');
-			$districts = Districts::lists('district', 'district');
-			$townships = Townships::lists('township', 'township');
-			$villages = Villages::lists('village', 'village');
-			$coordinators = Participant::where('participant_type', '=', 'coordinator')->lists('name', 'nrc_id');
 
 
 
-			return view($viewport, compact('participant','p_group','states', 'districts','townships','villages', 'coordinators'));
+
+			return view($viewport, compact('participant','p_group','locations', 'location', 'states', 'districts','townships','villages', 'coordinators'));
 		}
 	}
 
@@ -241,50 +222,7 @@ class ParticipantsController extends Controller {
 					//
 					$participant = Participant::findOrFail($id);
 					$input = $request->all();
-					//die(print_r($input));
-					//$old_participant = Participant::find($id);
-					$participant->name = $input['name'];
-					$participant->email = $participant['email'];
-					$participant->nrc_id = $input['nrc_id'];
-					$participant->ethnicity = $input['ethnicity'];
-					$participant->participant_type = $input['participant_type'];
-					//$participant['location'] = $input['location'];
-					$participant->user_gender = $input['user_gender'];
-					$participant->user_mobile_phone = $input['user_mobile_phone'];
-					$participant->user_line_phone = $input['user_line_phone'];
-					$participant->current_org = $input['current_org'];
-					$participant->user_mailing_address = $input['user_mailing_address'];
-					$participant->education_level = $input['education_level'];
-					$village = Villages::where('village', '=', $input['location'])->get();
-					$state = States::where('state', '=', $input['location'])->get();
-					$district = Districts::where('district', '=', $input['location'])->get();
-					if($input['parent_id'] == null || $input['participant_type'] == 'coordinator'){
-						$participant->parent_id = null;
-					}else{
-					$participant->parent_id = $input['parent_id'];
-					}
-			$participant->dob = $input['dob'];
-
-			//return $participant['nrc_id'];
-			//$new_participant = Participant::findOrNew($participant);
-			//$new_participant->nrc_id = $participant['nrc_id'];
-			//return $new_participant->nrc_id;
-			//$new_participant = Participant::create($participant);
-			$participant->push();
-			//return $participant->id;
-
-			if(array_key_exists(0 ,$village->toArray())){
-				$location = $village;
-				$participant->villages()->attach($location[0]['id']);
-			}
-			if(array_key_exists(0 ,$state->toArray())){
-				$location = $state;
-				$participant->states()->attach($location[0]['id']);
-			}
-			if(array_key_exists(0 ,$district->toArray())){
-				$location = $district;
-				$participant->districts()->attach($location[0]['id']);
-			}
+					$this->CreatAndStore($input);
 
 			return redirect('participants');
 	}
@@ -309,6 +247,9 @@ class ParticipantsController extends Controller {
 	}
 
 
+	/**
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
 	public function import(){
 
 		$file = Input::file('file');
@@ -318,80 +259,7 @@ class ParticipantsController extends Controller {
 			$excel = Excel::load($file, 'UTF-8');
 			$csv_array = $excel->get()->toArray();
 			foreach ($csv_array as $line) {
-				$participant['name'] = $line['name'];
-				$participant['email'] = $line['email'];
-				$participant['nrc_id'] = $line['nrc_id'];
-				$participant['dob'] = $line['dob'];
-				$participant['ethnicity'] = $line['ethnicity'];
-				$participant['user_mobile_phone'] = $line['mobile'];
-				$participant['user_line_phone'] = $line['line_phone'];
-				$participant['user_biography'] = $line['biography'];
-				$participant['user_mailing_address'] = $line['mailing_address'];
-				$participant['user_gender'] = $line['gender'];
-				$location = $line['region'];
-
-				if(isset($line['type']))
-				{
-					$participant['participant_type'] = $line['type'];
-				}
-				else
-				{
-					$participant['participant_type'] = 'enumerator';
-				}
-
-
-				$participant['current_org'] = $line['current_org'];
-				$participant['education_level'] = $line['education_level'];
-
-				//$pattern = '/(\d+){1,2}\/(\w\w)(\w\w)(\w\w)\((\w)(\w+)?\)(\d+)/i';
-				// $nrc_id =  preg_replace_callback($pattern, function($matches){
-				//	return $matches[1]."/".ucwords($matches[2]).ucwords($matches[3]).ucwords($matches[4])."(".ucwords($matches[5]).")".$matches[7];
-				//}, $line['nrc_id']);
-				//$participant['nrc_id'] = $nrc_id;
-				//return $participant['nrc_id'];
-				$new_participant = Participant::updateOrCreate(array('nrc_id' => $participant['nrc_id']), $participant);
-				//$new_participant = Participant::firstOrCreate($participant);
-				//$participant = new Participant();
-				//$new_participant = Participant::firstOrNew($participant);
-				//return $new_participant->nrc_id;
-
-				//$new_participant->save();
-
-				if($participant['participant_type'] == 'coordinator')
-				{
-					$state = States::where('state', '=', $line['state'])->get();
-					$district = Districts::where('district', '=', $line['region'])->get();
-					if(array_key_exists(0 ,$state->toArray())){
-						$location = $state;
-						$new_participant->states()->attach($location[0]['id']);
-					}
-					if(array_key_exists(0 ,$district->toArray())){
-						$location = $district;
-						$new_participant->districts()->attach($location[0]['id']);
-					}
-				}
-				elseif($participant['participant_type'] == 'enumerator')
-				{
-					$village = Villages::where('village', '=', $line['village'])->get();
-					if(array_key_exists(0 ,$village->toArray())){
-						$location = $village;
-						$new_participant->villages()->attach($location[0]['id']);
-					}
-					$coordinator = Participant::where('name', '=', $line['coordinator']);
-
-					$coordinator = Participant::find($coordinator->first()->id);
-
-					$new_participant->get_parent()->associate($coordinator);
-				}
-				else
-				{
-					$township = Townships::where('township', '=', $line['township'])->get();
-				}
-
-				$pgroup = PGroups::all();
-				$new_participant->pgroups()->attach($pgroup->first()->id);
-
-
+				$this->CreatAndStore($line);
 			}
 			$message = 'Participant List imported!';
 		}else{
@@ -431,5 +299,182 @@ class ParticipantsController extends Controller {
 		\Session::flash('participant_success', $message);
 
 		return redirect('participants');
+	}
+
+	private function CreatAndStore($input)
+	{
+		$participant['name'] = $input['name'];
+		$participant['email'] = $input['email'];
+		$participant['nrc_id'] = $input['nrc_id'];
+		$participant['ethnicity'] = $input['ethnicity'];
+		$participant['dob'] = $input['dob'];
+		$participant['participant_type'] = $input['participant_type'];
+		//$participant['location'] = $input['location'];
+		$participant['user_gender'] = $input['user_gender'];
+		$participant['user_biography'] = $input['user_biography'];
+		$participant['user_mobile_phone'] = $input['user_mobile_phone'];
+		$participant['user_line_phone'] = $input['user_line_phone'];
+		$participant['current_org'] = $input['current_org'];
+		$participant['user_mailing_address'] = $input['user_mailing_address'];
+		$participant['education_level'] = $input['education_level'];
+
+		if(isset($input['location'])) {
+			try {
+				$village_id = Villages::where('village', '=', $input['location'])->pluck('village_id');
+			}catch (QueryException $e){
+
+			}
+			try {
+				$state_id = States::where('state', '=', $input['location'])->pluck('state_id');
+			}catch (QueryException $e){
+
+			}
+			try {
+				$district_id = Districts::where('district', '=', $input['location'])->pluck('id');
+			}catch (QueryException $e){
+
+			}
+		}
+
+		if(isset($input['village'])){
+			try {
+				$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
+			}catch (QueryException $e){
+
+			}
+		}
+
+		if(isset($input['state'])){
+			try {
+				$state_id = States::where('state', '=', $input['state'])->pluck('state_id');
+			}catch (QueryException $e){
+
+			}
+		}
+
+		if(isset($input['district'])){
+			try {
+				$district_id = Districts::where('district', '=', $input['district'])->pluck('id');
+			}catch (QueryException $e){
+
+			}
+		}
+
+		if(isset($input['region'])){
+			try {
+				$district_id = Districts::where('district', '=', $input['region'])->pluck('id');
+			}catch (QueryException $e){
+
+			}
+		}
+
+		$last = Participant::all();
+
+
+		$current_inserting_participant_id = $last->last()['id'] + 1;
+		$new_pid =  sprintf('%04d',$current_inserting_participant_id);
+
+
+		if($participant['participant_type'] == 'coordinator'){
+			if(isset($line['state'])) {
+				$state_id = States::where('state', '=', $input['state'])->pluck('state_id');
+			}
+			if(isset($line['district'])) {
+				$district_id = Districts::where('district', '=', $input['district'])->pluck('id');
+			}
+			$participant['parent_id'] = null;
+			if(isset($state_id)) {
+				$participant['participant_id'] = $state_id . $new_pid;
+			}
+			if(isset($district_id)){
+				$participant['participant_id'] = $district_id . $new_pid;
+			}
+
+		}else{
+			//$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
+			//$participant['parent_id'] = $line['parent_id'];
+
+			//return $village_id;
+
+			$get_locations = Villages::getLocations($village_id);
+
+			$state_id = $get_locations['state']['id'];
+
+			$state_id_for_enu = $get_locations['state']['state_id'];
+
+			//return $state_id_for_enu;
+
+			$coordinator = States::find($state_id);
+
+			//return $coordinator->coordinators;
+
+			$participant['parent_id'] = $coordinator->coordinators->first()->pivot->coordinators_id;
+
+			$participant['participant_id'] = $state_id_for_enu.sprintf('%03d', $village_id);
+
+
+		}
+
+
+		$nrc_id = $participant['nrc_id'];
+		$nrc_id = preg_replace('/\s+/', '', $nrc_id);
+
+		$nrc_id = strtolower($nrc_id);
+
+		$pattern = '/(\d+){1,2}\/(\w+a|ah)(\w+a|ah)(\w+a|ah)\((\w)(\w+)?\)(\d+)/i';
+		$nrc_id_format =  preg_replace_callback($pattern, function($matches){
+			return $matches[1]."/".ucwords($matches[2]).ucwords($matches[3]).ucwords($matches[4])."(".ucwords($matches[5]).")".$matches[7];
+		}, $nrc_id);
+
+		try {
+			$new_participant = Participant::updateOrCreate(['nrc_id' => $nrc_id_format], $participant);
+		}catch (QueryException $e){
+			$update_error = true;
+		}
+
+
+		if($participant['participant_type'] == 'coordinator')
+		{
+			//return var_dump($new_participant->states());
+			if(isset($state_id)) {
+				//return var_dump($state_id);
+				$realstateid = States::where('state_id', '=', $state_id)->pluck('id');
+
+				$new_participant->states()->sync([$realstateid]);
+
+
+			}
+			if(isset($district_id)){
+
+				$new_participant->districts()->sync([$district_id]);
+			}
+		}
+		elseif($participant['participant_type'] == 'enumerator')
+		{
+
+			if(isset($village_id)) {
+
+				try {
+
+					$realvillageid = Villages::where('village_id', '=', $village_id)->pluck('id');
+					//return var_dump($new_participant->villages());
+					//return var_dump($new_participant);
+					$new_participant->villages()->attach([$realvillageid]);
+				}catch (QueryException $e){
+
+				}
+			}
+		}
+		else
+		{
+			$township = Townships::where('township', '=', $input['township'])->get();
+		}
+
+
+
+		$pgroup = PGroups::all();
+
+
+		$new_participant->pgroups()->sync([$pgroup->first()->id]);
 	}
 }

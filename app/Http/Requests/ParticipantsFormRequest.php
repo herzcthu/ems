@@ -1,6 +1,9 @@
 <?php namespace App\Http\Requests;
 
+use App\Districts;
 use App\Http\Requests\Request;
+use App\States;
+use App\Villages;
 use Illuminate\Support\Facades\Auth;
 
 class ParticipantsFormRequest extends Request {
@@ -66,7 +69,8 @@ class ParticipantsFormRequest extends Request {
 				'education_level' => '',
 				'current_org' => '',
 				'user_biography' => '',
-				'participant_type' => ''
+				'participant_type' => '',
+				'location'
 			];
 		}else {
 			$rules = [
@@ -82,11 +86,45 @@ class ParticipantsFormRequest extends Request {
 				'education_level' => '',
 				'current_org' => '',
 				'user_biography' => '',
-				'participant_type' => ''
+				'participant_type' => '',
+				'location'
 			];
 		}
 
 		return $rules;
+	}
+
+
+	// Here we can do more with the validation instance...
+	public function dataentryValidation($validator){
+
+		// Use an "after validation hook" (see laravel docs)
+		$validator->after(function($validator)
+		{
+			$participant_type = $this->input('participant_type');
+
+			if($participant_type == 'coordinator'){
+				try {
+					$state = States::where('state', '=', $this->input('location'))->pluck('state');
+				}catch (\Exception $e){
+					$validator->errors()->add('participant_type', 'No state with that name. Check again!');
+				}
+				if(empty($state)){
+					$validator->errors()->add('participant_type', 'Your location not match with state record, Check again!');
+				}
+
+			}else{
+				try {
+					$village = Villages::where('village', '=', $this->input('location'))->pluck('village');
+				}catch (\Exception $e){
+					$validator->errors()->add('participant_type', 'No state with that name. Check again!');
+				}
+				if(empty($village)){
+					$validator->errors()->add('participant_type', 'Your location not match with village record, Check again!');
+				}
+			}
+
+		});
 	}
 
 }

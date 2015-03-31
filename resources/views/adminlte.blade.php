@@ -29,6 +29,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Date Picker -->
     <link href="{{ asset('/plugins/datepicker/datepicker3.css') }}" rel="stylesheet" type="text/css"/>
 
+    <!-- Time Picker -->
+    <link href="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css"/>
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -198,6 +201,17 @@ desired effect
                         @endpermission
                     </ul>
                 </li>
+                @permission('view.table')
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-user"></i><span>Results</span> <i
+                                class="fa fa-angle-left pull-right"></i></a>
+                    <ul class="treeview-menu">
+                        @foreach(\App\EmsForm::all() as $form)
+                        <li><a href="/dataentry/{{ urlencode($form->name)}}">{{ $form->name }}</a></li>
+                        @endforeach
+                    </ul>
+                </li>
+                @endpermission
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -230,7 +244,7 @@ desired effect
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <p id="sub"></p>
+                    <span id="sub"></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
@@ -257,6 +271,8 @@ desired effect
 <script src="{{ asset('/plugins/fastclick/fastclick.min.js') }}"></script>
 <!-- Date Picker -->
 <script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+<!-- Time Picker -->
+<script src="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
 
 
 <script type="text/javascript">
@@ -269,18 +285,26 @@ desired effect
                 var question = button.data('subquestion')
                 var answers = button.data('answers')
                 var answersonly = button.data('answersonly')
+                var notes = button.data('notes')
+                var notequestion = button.data('notequestion')
                 // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
                 // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
                 var modal = $(this)
-                modal.find('.modal-title').text(info)
+
                 if (typeof question !== 'undefined') {
-                    modal.find('.modal-body p').text(question)
-                    modal.find('.modal-body p').append("&nbsp;&nbsp;&nbsp;=>&nbsp;&nbsp;" + answers)
+                    modal.find('.modal-title').text(info)
+                    modal.find('.modal-body span').html(question)
+                    modal.find('.modal-body span').append("&nbsp;" + answers)
+                }else if(typeof notes !== 'undefined'){
+                    modal.find('.modal-title').text(notequestion)
+                    modal.find('.modal-body span').html("&nbsp;" + notes)
                 }else{
-                    modal.find('.modal-body p').text(answersonly)
+                    modal.find('.modal-title').text(info)
+                    modal.find('.modal-body span').html("&nbsp;" + answersonly)
                 }
             })
             $('#datatable-allfeatures').dataTable({
+                    "scrollX":true,
                     "aoColumnDefs": [
                         { 'bSortable': false, 'aTargets': [ 0 ] }
                     ]});
@@ -295,6 +319,29 @@ desired effect
             $('.datepicker').datepicker({
                 format: 'dd-mm-yyyy',
                 startDate: '-3d'
+            });
+            $('.dobdatepicker').datepicker({
+                format: 'dd-mm-yyyy'
+            });
+            $('.year-picker').datepicker({
+                format: 'yyyy',
+                startView: 2,
+                minViewMode: 2
+                //defaultViewDate: year
+            });
+            $('.month-picker').datepicker({
+                format: 'mm',
+                startView: 1,
+                minViewMode: 1
+                //defaultViewDate: year
+            });
+            $('.date-picker').datepicker({
+                format: 'dd-mm-yyyy'
+            });
+            $('.time-picker').timepicker({
+                showMeridian: false,
+                showInputs: false,
+                disableFocus: true
             });
             // http://www.sanwebe.com/2014/01/how-to-select-all-deselect-checkboxes-jquery
             $('#cb').click(function(event) {  //on click
@@ -352,8 +399,8 @@ desired effect
     (function( $ ) {
         $( document ).ready(function( $ ) {
             var data = {
-                data: [["Ayeyawady", 10], ["Bago", 8], ["Chin, 4"], ["Sagaing", 4],
-                    ["Mandalay", 13], ["Magway", 17], ["Kachin", 9], ["Kayin", 6], ["Rakhaing", 7], ["Shan", 8]],
+                data: [["Ayeyawady", ayeyarwady], ["Bago (West)", bago_west], ["Bago (East)", bago_east], ["Chin", chin], ["Sagaing", sagaing],
+                    ["Mandalay", mandalay], ["Magway", magway], ["Kachin", kachin], ["Kayin", kayin], ["Rakhaing", rakhaing], ["Shan (North)", shan_north], ["Shan (South)", shan_south]],
                 color: "#3c8dbc"
             };
 
@@ -372,7 +419,14 @@ desired effect
                 },
                 xaxis: {
                     mode: "categories",
-                    tickLength: 0
+                    tickLength: 0,
+                    tickDecimals: 0,
+                    tickSize: 1
+                },
+                yaxis: {
+                    tickLength: 0,
+                    tickDecimals: 0,
+                    tickSize: 1
                 }
             });
             $( 'form' ).garlic();

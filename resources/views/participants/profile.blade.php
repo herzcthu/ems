@@ -36,7 +36,11 @@
 								<tbody>
 								<tr>
 									<td>Username:</td>
-									<td>{{ $participants->name }}</td>
+									<td>{{ $participants->name }} ({{ ucwords($participants->participant_type) }})</td>
+								</tr>
+								<tr>
+									<td>Location Assigned:</td>
+									<td>{{ $location }}</td>
 								</tr>
 								<tr>
 									<td>Email Address:</td>
@@ -50,9 +54,9 @@
 								<tr>
 								<tr>
 									<td>Gender</td>
-									<td>@if($participants->user_gender == 'M')
+									<td>@if($participants->user_gender == 'Male')
 											 Male
-										@elseif($participants->user_gender == 'F')
+										@elseif($participants->user_gender == 'Female')
 											 Female
 										@else
 											 Unspecified
@@ -65,14 +69,48 @@
 								</tr>
 								<tr>
 								<td>Phone Number</td>
-								<td>{{ $participants->user_line_phone }}(Landline)<br><br>{{ $participants->user_mobile_phone }}(Mobile)
+								<td>{!! isset($participants->user_line_phone)? $participants->user_line_phone.' (Landline)<br><br>':'' !!}{{ $participants->user_mobile_phone }} (Mobile)
 								</td>
 
+								</tr>
+								<tr>
+									<td>Current Organization</td>
+									<td>{{ $participants->current_org }}</td>
+								</tr>
+								<tr>
+									<td>Education</td>
+									<td>{{ ucwords($participants->education_level) }}</td>
+								</tr>
+								<tr>
+									<td>Ethnicity</td>
+									<td>{{ $participants->ethnicity }}</td>
 								</tr>
 								<tr>
 									<td>User Biography</td>
 									<td>{{ $participants->user_biography }}</td>
 								</tr>
+								@if($participants->participant_type == 'coordinator')
+								<tr>
+									<td>Enumerators under management:</td>
+									<td>
+										<ul>
+										@foreach( $participants->get_children as $enumerator )
+											<li>
+												{{ $enumerator->name }}
+											</li>
+										@endforeach
+										</ul>
+									</td>
+								</tr>
+								@else
+									<tr>
+										<td>Coordinator:</td>
+										<td>
+											{{ $participants->get_parent->name }}
+										</td>
+									</tr>
+
+								@endif
 
 								</tbody>
 							</table>

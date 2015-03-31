@@ -14,25 +14,25 @@ class Participant extends Model {
   protected $fillable = [ 'name', 'user_image', 'email', 'nrc_id', 'ethincity', 'education_level',
       'user_gender', 'dob','current_org', 'user_line_phone',
       'user_mobile_phone', 'user_mailing_address',
-      'user_biography', 'parent_id', 'participant_type'];
+      'user_biography', 'parent_id', 'participant_type','participant_id'];
 
     public function states()
     {
-        return $this->belongsToMany('App\States', 'coordinators_states', 'coordinators_id', 'state_id');
+        return $this->belongsToMany('App\States', 'coordinators_states', 'coordinators_id', 'state_id')->withTimestamps();
     }
 
   public function districts()
   {
-    return $this->belongsToMany('App\Districts', 'coordinators_regions', 'coordinators_id', 'region_id');
+    return $this->belongsToMany('App\Districts', 'coordinators_regions', 'coordinators_id', 'region_id')->withTimestamps();
   }
   public function villages()
   {
-    return $this->belongsToMany('App\Villages', 'enumerators_villages', 'enumerators_id');
+    return $this->belongsToMany('App\Villages', 'enumerators_villages', 'enumerators_id')->withTimestamps();
   }
 
   public function pgroups()
   {
-      return $this->belongsToMany('App\PGroups', 'participants_pgroups', 'participant_id', 'pgroups_id');
+      return $this->belongsToMany('App\PGroups', 'participants_pgroups', 'participant_id', 'pgroups_id')->withTimestamps();
   }
 
   public function type()
@@ -43,6 +43,15 @@ class Participant extends Model {
     public function get_parent()
     {
         return $this->belongsTo('App\Participant', 'participants', 'parent_id', 'id');
+    }
+
+    public function get_children()
+    {
+        return $this->hasMany('App\Participant', 'parent_id', 'id');
+    }
+
+    public function answers(){
+        return $this->hasMany('App\EmsQuestionsAnswers', 'enumerators_answers', '');
     }
 
     public function scopeCoordinator($query)
