@@ -98,13 +98,16 @@
                     <h4>{{ $question->question }}</h4>
                     @if($question->a_view == 'validated-table')
                         <table id="validated-table" class="table">
-                            <th> </th>
-                            @if(is_array($question->answers))
+                            <thead>
+                            <th> Test </th>
+                            @if(is_array($question->answers) && $question->input_type == 'same')
                                 @foreach($question->get_children as $children)
                                     <th>{{ $children->question_number }}. {{ $children->question }}</th>
                                 @endforeach
+                            </thead>
+                            <tbody>
                                 @foreach($question->answers as $answer_k => $answer_v)
-                                    <tr>
+                                    <tr>test
                                         <td>{{ $answer_v }}</td>
                                         @foreach($question->get_children as $children)
 
@@ -116,6 +119,7 @@
                                         @endforeach
                                     </tr>
                                 @endforeach
+                            </tbody>
                             @endif
                         </table>
                         <script type="text/javascript">

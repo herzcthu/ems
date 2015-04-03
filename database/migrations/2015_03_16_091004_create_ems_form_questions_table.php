@@ -19,11 +19,11 @@ class CreateEmsFormQuestionsTable extends Migration {
 			$table->integer('form_id')->unsigned()->nullable();
 			$table->integer('list_id')->unique();
 			$table->string('question_number');
-			$table->string('question')->unique();
+			$table->text('question');
 			$table->enum('q_type',array('single', 'main', 'sub', 'same'));
 			$table->enum('input_type', array('none','same','radio','choice','select','text','textarea','date','year','month','time'));
 			$table->string('a_view');
-			$table->string('answers');
+			$table->text('answers');
 			$table->timestamps();
 		});
 		Schema::table('ems_form_questions', function(Blueprint $table)

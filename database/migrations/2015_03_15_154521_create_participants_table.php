@@ -27,8 +27,8 @@ class CreateParticipantsTable extends Migration {
       $table->string('current_org');
       $table->string('user_line_phone')->nullable();
       $table->string('user_mobile_phone')->nullable();
-      $table->string('user_mailing_address')->nullable();
-      $table->string('user_biography')->nullable();
+      $table->text('user_mailing_address')->nullable();
+      $table->text('user_biography')->nullable();
       $table->string('payment_type')->nullable();
       $table->string('bank')->nullable();
       $table->integer('participant_id')->unique()->unsigned()->index();

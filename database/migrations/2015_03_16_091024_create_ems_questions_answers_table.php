@@ -21,9 +21,9 @@ class CreateEmsQuestionsAnswersTable extends Migration {
 			$table->integer('interviewee_id')->unique()->unsigned()->nullable();
 			$table->enum('interviewee_gender', array('M','F','U'));
 			$table->integer('interviewee_age');
-			$table->string('notes');
+			$table->text('notes');
 			$table->integer('psu');
-			$table->string('answers');
+			$table->text('answers');
 			$table->timestamps();
 		});
 		Schema::table('ems_questions_answers', function(Blueprint $table)

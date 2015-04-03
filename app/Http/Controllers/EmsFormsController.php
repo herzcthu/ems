@@ -187,6 +187,50 @@ class EmsFormsController extends Controller
         return redirect('forms/' . $form_url . '/add_question');
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @return Response
+     * @internal param int $id
+     */
+    public function qupdate(EmsFormQuestionsRequest $request, $id)
+    {
+        //
+
+        $question = EmsFormQuestions::findOrFail($id);
+        $form_input = $request->all();
+        $question->form_id = $form_input['form_id'];
+
+        $question->question_number = $form_input['question_number'];
+
+        $question->question = $form_input['question'];
+
+        $question->q_type = $form_input['q_type'];
+
+        $question->a_view = $form_input['a_view'];
+
+        if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same') {
+            $question->parent_id = $form_input['main_id'];
+        } else {
+            $question->parent_id = null;
+        }
+        if ($form_input['q_type'] != 'main') {
+            $question->input_type = $form_input['input_type'];
+            $question->answers = $form_input['answers'];
+        }
+        if ( $form_input['q_type'] == 'main' && $form_input['input_type'] == 'same')
+        {
+            $question->input_type = $form_input['input_type'];
+
+            $question->answers = $form_input['answers'];
+        }
+
+        //return $question;
+        $question->push();
+        return redirect('forms/question/' . $id);
+    }
+
     public function dataentry_form($form_name_url)
     {
         if ($this->auth_user->can("add.data")) {
@@ -867,49 +911,7 @@ class EmsFormsController extends Controller
         return redirect('forms');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @return Response
-     * @internal param int $id
-     */
-    public function qupdate(EmsFormQuestionsRequest $request, $id)
-    {
-        //
 
-        $question = EmsFormQuestions::findOrFail($id);
-        $form_input = $request->all();
-        $question->form_id = $form_input['form_id'];
-
-        $question->question_number = $form_input['question_number'];
-
-        $question->question = $form_input['question'];
-
-        $question->q_type = $form_input['q_type'];
-
-        $question->a_view = $form_input['a_view'];
-
-        if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same') {
-            $question->parent_id = $form_input['main_id'];
-        } else {
-            $question->parent_id = null;
-        }
-        if ($form_input['q_type'] != 'main') {
-            $question->input_type = $form_input['input_type'];
-            $question->answers = $form_input['answers'];
-        }
-        if ( $form_input['q_type'] == 'main' && $form_input['input_type'] == 'same')
-        {
-            $question->input_type = $form_input['input_type'];
-
-            $question->answers = $form_input['answers'];
-        }
-
-        //return $question;
-        $question->push();
-        return redirect('forms/question/' . $id);
-    }
 
     /**
      * Remove the specified resource from storage.

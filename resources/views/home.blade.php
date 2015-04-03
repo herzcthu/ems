@@ -26,7 +26,7 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Dataentry Count</span>
 
-                            <span class="info-box-number">{{ count($data_array) }}</span>
+                            <span class="info-box-number">{{ !empty($data_array)? count($data_array): 0 }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
@@ -35,8 +35,8 @@
                         <span class="info-box-icon bg-green"><i class="fa  ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Gender</span>
-                            <span class="info-box-number">M {{ sprintf("%.2f%%",(((array_key_exists('M', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['M']:0)/count($data_array))*100)) }}</span>
-                            <span class="info-box-number">F {{ sprintf("%.2f%%",(((array_key_exists('F', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['F']:0)/count($data_array))*100)) }}</span>
+                            <span class="info-box-number">M {{ !empty($data_array)? sprintf("%.2f%%",(((array_key_exists('M', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['M']:0)/count($data_array))*100)):0 }}</span>
+                            <span class="info-box-number">F {{ !empty($data_array)? sprintf("%.2f%%",(((array_key_exists('F', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['F']:0)/count($data_array))*100)):0 }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
@@ -153,6 +153,7 @@
     </div><!-- /.content-wrapper -->
 
     <script type="text/javascript">
+        @if(!empty($data_array))
         var ayeyarwady = {{ array_key_exists('Ayeyarwady', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Ayeyarwady']:0 }};
         var bago_west = {{ array_key_exists('Bago (West)', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Bago (West)']:0 }};
         var bago_east = {{ array_key_exists('Bago (East)', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Bago (East)']:0 }};
@@ -167,6 +168,7 @@
         var magway = {{ array_key_exists('Magway', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Magway']:0 }};
         var shan_north = {{ array_key_exists('Shan (North)', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Shan (North)']:0 }};
         var shan_south = {{ array_key_exists('Shan (South)', array_count_values(array_column($data_array,'State')))? array_count_values(array_column($data_array,'State'))['Shan (South)']:0 }};
+        @endif
     </script>
 
 

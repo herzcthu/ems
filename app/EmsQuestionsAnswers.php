@@ -125,7 +125,7 @@ class EmsQuestionsAnswers extends Model {
         try {
             $getform = EmsForm::where('name', '=', $form_name)->get();
             $form_array = $getform->toArray();
-        }catch (QueryException $e){
+        } catch (QueryException $e) {
             $form_array = '';
         }
         //return $form->toArray();
@@ -141,7 +141,10 @@ class EmsQuestionsAnswers extends Model {
 
         $questions = EmsFormQuestions::OfNotMain($id)->get();
         $dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
-        foreach($dataentry as $data) {
+        //dd($questions);
+
+        if (!empty($dataentry->toArray())) {
+            foreach ($dataentry as $data) {
 
             $alldata[$data->interviewee_id]['Interviewee ID'] = $data->interviewee_id;
             $alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
@@ -163,9 +166,9 @@ class EmsQuestionsAnswers extends Model {
 
 
             foreach ($questions as $q) {
-                if($q->q_type == 'sub' || $q->q_type == 'same') {
+                if ($q->q_type == 'sub' || $q->q_type == 'same') {
                     if (array_key_exists($q->id, $data->answers)) {
-                        if(is_array($data->answers[$q->id])){
+                        if (is_array($data->answers[$q->id])) {
 
                             for ($i = 1; $i <= 15; $i++) {
                                 if (in_array($i, $data->notes)) {
@@ -181,27 +184,31 @@ class EmsQuestionsAnswers extends Model {
                                             }
                                         }
                                     }
-                                }else{
+                                } else {
                                     $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $i] = '';
                                 }
                             }
 
-                        }else {
+                        } else {
                             $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = $data->answers[$q->id];
                         }
-                    }else{
-                        $alldata[$data->interviewee_id][$q->get_parent->question_number.$q->question_number] = '';
+                    } else {
+                        $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = '';
                     }
-                }else{
+                } else {
                     if (array_key_exists($q->id, $data->answers)) {
                         $alldata[$data->interviewee_id][$q->question_number] = $data->answers[$q->id];
-                    }else{
+                    } else {
                         $alldata[$data->interviewee_id][$q->question_number] = '';
                     }
                 }
 
             }
         }
+    }else{
+            $alldata = array();
+        }
+
 
         return $alldata;
     }
