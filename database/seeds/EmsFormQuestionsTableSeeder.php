@@ -20,6 +20,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question1 = EmsFormQuestions::create( [
                     'form_id' => $form->id,
+                    'list_id' => 1,
                     'question_number' => 'Q1',
                     'question' => 'Are you the head of the household?',
                     'q_type' => 'single',
@@ -31,6 +32,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question2 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 2,
             'question_number' => 'Q2',
             'question' => 'Here is a list of groups and organizations; I’d like you to tell me if you have often, sometimes, or never participated in the following types of meetings or activities over the past year.',
             'q_type' => 'main',
@@ -42,6 +44,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question3 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 3,
             'parent_id' => $question2->id,
             'question_number' => '(a)',
             'question' => 'Cultural Groups',
@@ -54,6 +57,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question4 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 4,
             'parent_id' => $question2->id,
             'question_number' => '(b)',
             'question' => 'Sports Groups',
@@ -66,6 +70,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question5 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 5,
             'parent_id' => $question2->id,
             'question_number' => '(c)',
             'question' => 'Worker Associations',
@@ -78,6 +83,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question6 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 6,
             'parent_id' => $question2->id,
             'question_number' => '(d)',
             'question' => 'Community Development Groups',
@@ -90,6 +96,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question7 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 7,
             'parent_id' => $question2->id,
             'question_number' => '(e)',
             'question' => 'Religious Gatherings',
@@ -102,6 +109,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question8 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 8,
             'question_number' => 'Q3',
             'question' => 'How interested would you say you are in politics?  ',
             'q_type' => 'single',
@@ -113,6 +121,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question9 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 9,
             'question_number' => 'Q4',
             'question' => 'In many countries, independent groups observe elections. Have you heard of this?',
             'q_type' => 'single',
@@ -124,6 +133,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question10 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 10,
             'question_number' => 'Q5',
             'question' => 'Sometimes, international groups observe elections. Do you think that the involvement of international observers helps guarantee transparent elections? ',
             'q_type' => 'single',
@@ -134,6 +144,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question11 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 11,
             'question_number' => 'Q6',
             'question' => 'Sometimes, national groups observe the elections. Do you think the involvement of national observers helps guarantee transparent elections?',
             'q_type' => 'single',
@@ -145,6 +156,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question12 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 12,
             'question_number' => 'Q7',
             'question' => 'Do you expect unrest or violence to occur in connection with election process?',
             'q_type' => 'single',
@@ -156,6 +168,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question13 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 13,
             'question_number' => 'Q8',
             'question' => 'On a scale of 1 to 5 where ‘1’ means “not important at all” and ‘5’ means “very important," how important are the following things for an election to be run well… ',
             'q_type' => 'main',
@@ -167,6 +180,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question14 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 14,
             'parent_id' => $question13->id,
             'question_number' => '(a)',
             'question' => 'Ballot is secret',
@@ -179,6 +193,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question15 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 15,
             'parent_id' => $question13->id,
             'question_number' => '(b)',
             'question' => 'Election commission is neutral',
@@ -191,6 +206,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question16 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 16,
             'parent_id' => $question13->id,
             'question_number' => '(c)',
             'question' => 'There is no fraud',
@@ -203,6 +219,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question17 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 17,
             'parent_id' => $question13->id,
             'question_number' => '(d)',
             'question' => 'The votes are counted properly',
@@ -215,6 +232,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question18 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 18,
             'parent_id' => $question13->id,
             'question_number' => '(e)',
             'question' => 'The correct results are announced',
@@ -227,6 +245,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
 
         $question19 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 19,
             'parent_id' => $question13->id,
             'question_number' => '(f)',
             'question' => 'Every party has an equal chance to campaign',
@@ -238,6 +257,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question20 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 20,
             'parent_id' => $question13->id,
             'question_number' => '(g)',
             'question' => 'Voters are free from intimidation or pressure',
@@ -249,6 +269,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question21 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 21,
             'question_number' => 'Q9',
             'question' => 'Whose opinion do you think matters most, when it comes to deciding whether elections have been run well?  Please pick up to three.',
             'q_type' => 'main',
@@ -261,6 +282,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question22 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 22,
             'parent_id' => $question21->id,
             'question_number' => '(a)',
             'question' => '1st Mention',
@@ -272,6 +294,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question23 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 23,
             'parent_id' => $question21->id,
             'question_number' => '(b)',
             'question' => '2nd Mention',
@@ -283,6 +306,7 @@ class EmsFormQuestionsTableSeeder extends Seeder {
         ] );
         $question24 = EmsFormQuestions::create( [
             'form_id' => $form->id,
+            'list_id' => 24,
             'parent_id' => $question21->id,
             'question_number' => '(c)',
             'question' => '3rd Mention',

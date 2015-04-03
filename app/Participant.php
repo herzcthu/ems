@@ -14,7 +14,7 @@ class Participant extends Model {
   protected $fillable = [ 'name', 'user_image', 'email', 'nrc_id', 'ethincity', 'education_level',
       'user_gender', 'dob','current_org', 'user_line_phone',
       'user_mobile_phone', 'user_mailing_address',
-      'user_biography', 'parent_id', 'participant_type','participant_id'];
+      'user_biography','payment_type','bank', 'parent_id', 'participant_type','participant_id'];
 
     public function states()
     {

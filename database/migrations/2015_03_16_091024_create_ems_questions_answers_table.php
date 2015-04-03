@@ -22,6 +22,7 @@ class CreateEmsQuestionsAnswersTable extends Migration {
 			$table->enum('interviewee_gender', array('M','F','U'));
 			$table->integer('interviewee_age');
 			$table->string('notes');
+			$table->integer('psu');
 			$table->string('answers');
 			$table->timestamps();
 		});

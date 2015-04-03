@@ -66,7 +66,7 @@ class EmsQuestionsAnswersController extends Controller
                 if($q->get_parent->input_type == 'same') {
                     foreach ($q->get_parent->answers as $kk => $answer){
                        // print_r(array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $kk)));
-                        if(array_key_exists($kk, array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id)))){
+                        if(array_key_exists($kk, array_count_values(array_dot(array_column(array_column($alldata->toArray(), 'answers'), $q->id))))){
                            // print $q->question_number;
                            // print $q->id;
                            // print $kk;
@@ -78,7 +78,7 @@ class EmsQuestionsAnswersController extends Controller
                 }
             }
         }
-
+        //return;
 
         return view('dataentry/index', compact('form_name_url','dataentry', 'form', 'questions', 'alldata'));
     }
@@ -163,10 +163,15 @@ class EmsQuestionsAnswersController extends Controller
             $answers['user_id'] = $this->current_user_id;
             $answers['interviewee_id'] = $input['interviewer_id'] . $input['interviewee_id'];
             $answers['interviewee_gender'] = $input['interviewee_gender'];
-            $answers['interviewee_age'] = $input['interviewee_age'];
+            $answers['psu'] = $input['psu'];
+            //$answers['interviewee_age'] = $input['interviewee_age'];
 
             $answers['answers'] = $input['answers'];
-            $answers['notes'] = $input['notes'];
+            if(isset($input['notes'])) {
+                $answers['notes'] = $input['notes'];
+            }else{
+                $answers['notes'] = array();
+            }
             if (isset($form_id)) {
                 $answers['form_id'] = $form_id;
             } else {
@@ -182,7 +187,7 @@ class EmsQuestionsAnswersController extends Controller
             $message = 'Not allow to add new data for' . $form_name . '!';
             \Session::flash('answer_success', $message);
         }
-        return redirect('dataentry/' . $form_name_url . '/create');
+        return redirect($form_name_url . '/dataentry/create');
     }
 
     /**
@@ -245,7 +250,7 @@ class EmsQuestionsAnswersController extends Controller
             //$forms = EmsForm::lists('name', 'id');
             $questions = EmsFormQuestions::OfSingleMain($id)->questionNumberAscending()->get();
             $form_id = $id;
-            $dataentry = EmsQuestionsAnswers::where('interviewee_id', '=', $interviewee)->lists('answers', 'q_id');
+            $dataentry = EmsQuestionsAnswers::where('interviewee_id', '=', $interviewee)->lists('answers', 'id');
 
             //  return $dataentry;
 
@@ -288,7 +293,7 @@ class EmsQuestionsAnswersController extends Controller
             $answers['user_id'] = $this->current_user_id;
             $answers['interviewee_id'] = $input['interviewer_id'] . $input['interviewee_id'];
             $answers['interviewee_gender'] = $input['interviewee_gender'];
-            $answers['interviewee_age'] = $input['interviewee_age'];
+            //$answers['interviewee_age'] = $input['interviewee_age'];
 
             $answers['answers'] = $input['answers'];
             $answers['notes'] = $input['notes'];

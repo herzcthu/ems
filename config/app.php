@@ -165,6 +165,11 @@ return [
 		'Franzose\ClosureTable\ClosureTableServiceProvider',
 
 		/*
+		 *https://github.com/stevebauman/translation
+		 */
+		'Stevebauman\Translation\TranslationServiceProvider',
+
+		/*
 		 * Application Service Providers...
 		 */
 		'App\Providers\AppServiceProvider',
@@ -222,6 +227,8 @@ return [
 		'View'      => 'Illuminate\Support\Facades\View',
 		'Form'		=> 'Illuminate\Html\FormFacade',
 		'Excel' 	=> 'Maatwebsite\Excel\Facades\Excel',
+		'Translation' => 'Stevebauman\Translation\Facades\Translation',
+
 
 	],
 

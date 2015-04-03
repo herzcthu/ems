@@ -1,0 +1,2 @@
+<!-- @{{ array_key_exists($k,array_count_values(array_dot(array_column(array_column($alldata->toArray(), 'answers'), $q->id))))? '&lt;small class="label bg-green"&gt;'.sprintf("%.2f%%",(((array_count_values(array_dot(array_column(array_column($alldata->toArray(), 'answers'), $q->id))[$k]))/count($alldata))*100)).' &lt;/small&gt;':'' }} -->
+

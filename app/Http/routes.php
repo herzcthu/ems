@@ -75,11 +75,13 @@ Route::resource('participants', 'ParticipantsController');
 
 Route::resource('forms', 'EmsFormsController');
 
-Route::get('dataentry/{form}/create', 'EmsQuestionsAnswersController@create');
+Route::get('{form}/dataentry/create', 'EmsQuestionsAnswersController@create');
 
-Route::post('dataentry/{form}/create', 'EmsQuestionsAnswersController@store');
+Route::post('{form}/dataentry/create', 'EmsQuestionsAnswersController@store');
 
-Route::resource('dataentry/{form}', 'EmsQuestionsAnswersController');
+Route::resource('{form}/dataentry', 'EmsQuestionsAnswersController');
+
+Route::get('{form}/ajax', 'AjaxController@check');
 
 Route::post('roles', 'UserRoleController@update');
 

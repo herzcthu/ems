@@ -47,8 +47,8 @@
 
                             </section>
 
-
-                            <table id="datatable-results" class="table table-bordered table-striped">
+                            <div id="table">
+                            <table id="datatable-results" class="table table-bordered table-hover table-striped">
                                 <thead>
                                 <!--th>No.</th-->
                                 <th>Interviewee ID</th>
@@ -60,46 +60,84 @@
                                 <th>Interviewee</th-->
 
                                 @foreach($questions as $qk => $q)
-                                    <th>
-                                        @if($q->q_type == 'same')
+                                        @if($q->q_type == 'same' && $q->a_view == 'categories')
+                                            @for($i =1; $i <= 15; $i++)
+                                                <th>
+                                                    <a href='#' data-toggle='modal' data-target='#popupModal'
+                                                       data-mainquestion='{{ $q->get_parent->question_number." ".$q->get_parent->question}}'
+                                                       data-subquestion='{{ $q->question_number." ".$q->question }}' data-answers='&lt;ul&gt;
+                                                   @foreach($q->get_parent->answers as $k => $answer)
+                                                       @if(is_array($answer))
+
+                                                       @else
+                                                    {{ "&lt;li&gt;(".$k.") ".$answer." " }}
+
+
+                                                       &lt;/li&gt;
+                                                       @endif
+                                                    @endforeach
+                                                            &lt;/ul&gt;'>
+                                                        {{ $q->get_parent->question_number.' '.$q->question_number.'.'.$i }}
+                                                    </a>
+                                                </th>
+                                            @endfor
+                                        @elseif($q->q_type == 'same')
+                                            <th>
                                             <a href='#' data-toggle='modal' data-target='#popupModal'
                                                data-mainquestion='{{ $q->get_parent->question_number." ".$q->get_parent->question}}'
                                                data-subquestion='{{ $q->question_number." ".$q->question }}' data-answers='&lt;ul&gt;
                                                    @foreach($q->get_parent->answers as $k => $answer)
-                                                   {{ "&lt;li&gt;(".$k.") ".$answer." " }}
-                                                   {{ array_key_exists($k,array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id)))? (((array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id))[$k])/count($alldata))*100).'%':'' }}
-                                                   &lt;/li&gt;
+                                                       @if(is_array($answer))
+
+                                                       @else
+                                                       {{ "&lt;li&gt;(".$k.") ".$answer." " }}
+
+
+                                                       &lt;/li&gt;
+                                                       @endif
                                                    @endforeach
                                                     &lt;/ul&gt;'>
                                                 {{ $q->get_parent->question_number.' '.$q->question_number }}
+                                            </a>
+                                            </th>
                                         @elseif($q->q_type == 'sub')
+                                            <th>
                                                     <a href='#' data-toggle='modal' data-target='#popupModal'
                                                        data-mainquestion='{{ $q->get_parent->question_number." ".$q->get_parent->question}}'
                                                        data-subquestion='{{ $q->question_number." ".$q->question }}' data-answers='&lt;ul&gt;
                                                     @foreach($q->answers as $k => $answer)
-                                                    {{ "&lt;li&gt;(".$k.") ".$answer." " }}
-                                                   {{ array_key_exists($k,array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id)))? (((array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id))[$k])/count($alldata))*100).'%':'' }}
-                                                   &lt;/li&gt;
+                                                        @if(is_array($answer))
+
+                                                        @else
+                                                        {{ "&lt;li&gt;(".$k.") ".$answer." " }}
+                                                        &lt;/li&gt;
+                                                        @endif
                                                     @endforeach
                                                             &lt;/ul&gt;'>
 
                                                 {{ $q->get_parent->question_number.' '.$q->question_number }}
-
+                                                    </a>
+                                            </th>
                                          @else
+                                            <th>
                                                     <a href='#' data-toggle='modal' data-target='#popupModal'
                                                         data-mainquestion='{{ $q->question_number." ".$q->question }}'
                                                         data-answersonly='&lt;ul&gt;
                                                         @foreach($q->answers as $k => $answer)
-                                                        {{ "&lt;li&gt;(".$k.") ".$answer." " }}
-                                                   {{ array_key_exists($k,array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id)))? (((array_count_values(array_column(array_column($alldata->toArray(), 'answers'), $q->id))[$k])/count($alldata))*100).'%':'' }}
-                                                   &lt;/li&gt;
+                                                            @if(is_array($answer))
+
+                                                            @else
+                                                            {{ "&lt;li&gt;(".$k.") ".$answer." " }}
+                                                            &lt;/li&gt;
+                                                            @endif
                                                         @endforeach
                                                                 &lt;/ul&gt;'>
                                                 {{ $q->question_number }}
-
+                                                    </a>
+                                            </th>
                                         @endif
-                                             </a>
-                                    </th>
+
+
                                 @endforeach
 
 
@@ -118,17 +156,45 @@
 
                                         @foreach($questions as $q)
                                             @if(array_key_exists($q->id, $data->answers))
-                                                <td>
+
                                                     @if(array_key_exists($q->id, $data->notes))
-                                                        <a href='#' data-toggle='modal' data-target='#popupModal' data-notequestion='{{ $q->question }}'
-                                                           data-notes='{{ $data->notes[$q->id] }}'>
-                                                            {{ $data->answers[$q->id] }}
-                                                        </a>
+
+                                                            <td>
+                                                            <a href='#' data-toggle='modal' data-target='#popupModal' data-notequestion='{{ $q->question }}'
+                                                               data-notes='{{ $data->notes[$q->id] }}'>
+                                                                {{ $data->answers[$q->id] }}
+                                                            </a>
+                                                            </td>
 
                                                     @else
-                                                    {{ $data->answers[$q->id] }}
+                                                        @if(is_array($data->answers[$q->id]))
+                                                        @for($i = 1; $i <= 15; $i++)
+                                                            @if(in_array($i, $data->notes))
+                                                                <td>
+                                                                @foreach($data->notes as $note)
+                                                                    @if($note == $i)
+                                                                        @foreach($data->answers[$q->id] as $da)
+                                                                            @if(array_key_exists($note, $da))
+                                                                            {{ $da[$note] }}
+                                                                            @endif
+                                                                        @endforeach
+                                                                    @endif
+                                                                @endforeach
+                                                                </td>
+                                                            @else
+                                                                <td>
+
+                                                                </td>
+
+                                                            @endif
+                                                        @endfor
+                                                        @else
+                                                            <td>
+                                                            {{ $data->answers[$q->id] }}
+                                                            </td>
+                                                        @endif
                                                     @endif
-                                                </td>
+
                                             @else
                                                 <td></td>
                                             @endif
@@ -143,7 +209,7 @@
 
                                 </tfoot>
                             </table>
-
+                            </div>
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -156,5 +222,9 @@
         <!-- /.content -->
     </div><!-- /.content-wrapper -->
 
-
+<style>
+    #datatable-results{
+        width:100%;
+        overflow-x: hidden;}
+</style>
 @endsection

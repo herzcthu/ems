@@ -32,11 +32,11 @@
                 </div><!-- /.col -->
                 <div class="col-md-3 col-sm-6 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-red"><i class="fa  ion-ios-people-outline"></i></span>
+                        <span class="info-box-icon bg-green"><i class="fa  ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Gender</span>
-                            <span class="info-box-number">M {{ (((array_key_exists('M', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['M']:0)/count($data_array))*100) }} %</span>
-                            <span class="info-box-number">F {{ (((array_key_exists('F', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['F']:0)/count($data_array))*100) }} %</span>
+                            <span class="info-box-number">M {{ sprintf("%.2f%%",(((array_key_exists('M', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['M']:0)/count($data_array))*100)) }}</span>
+                            <span class="info-box-number">F {{ sprintf("%.2f%%",(((array_key_exists('F', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['F']:0)/count($data_array))*100)) }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
@@ -46,10 +46,10 @@
 
                 <div class="col-md-3 col-sm-6 col-xs-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-green"><i class="ion ion-ios-people-outline"></i></span>
+                        <span class="info-box-icon bg-red"><i class="ion ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text"></span>
-                            <span class="info-box-number"></span>
+                            <span class="info-box-text">Incomplete Answers</span>
+                            <span class="info-box-number"> {{ sprintf("%.2f%%", (isset($no_answers_percent)?$no_answers_percent:0)) }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->

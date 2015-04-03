@@ -17,6 +17,7 @@ class CreateEmsFormQuestionsTable extends Migration {
 			$table->increments('id');
 			$table->integer('parent_id')->unsigned()->nullable();
 			$table->integer('form_id')->unsigned()->nullable();
+			$table->integer('list_id')->unique();
 			$table->string('question_number');
 			$table->string('question')->unique();
 			$table->enum('q_type',array('single', 'main', 'sub', 'same'));

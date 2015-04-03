@@ -16,7 +16,9 @@ class EmsQuestionsAnswers extends Model {
     protected $table = 'ems_questions_answers';
 
 
-    protected $fillable = ['answers', 'notes', 'form_id', 'enu_id', 'q_id', 'user_id', 'interviewee_id', 'interviewee_gender', 'interviewee_age', 'interviewer_id'];
+    protected $fillable = ['answers', 'notes', 'form_id',
+        'enu_id', 'q_id', 'user_id', 'interviewee_id',
+        'interviewee_gender', 'interviewee_age', 'interviewer_id', 'psu'];
 
 
 
@@ -36,7 +38,12 @@ class EmsQuestionsAnswers extends Model {
         $this->attributes['answers'] = json_encode($value);
         // return json_encode($value);
     }
-
+    private function compare($a, $b)
+    {
+        $a = preg_replace('/^[\-]/', '', $a);
+        $b = preg_replace('/^[\-]/', '', $b);
+        return strcasecmp($a, $b);
+    }
     public function setNotesAttribute($value)
     {
         $notes = array_filter($value);
@@ -133,14 +140,14 @@ class EmsQuestionsAnswers extends Model {
         }
 
         $questions = EmsFormQuestions::OfNotMain($id)->get();
-        $dataentry = EmsQuestionsAnswers::all();
+        $dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
         foreach($dataentry as $data) {
 
             $alldata[$data->interviewee_id]['Interviewee ID'] = $data->interviewee_id;
             $alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
             $alldata[$data->interviewee_id]['Interviewer ID'] = $data->interviewer_id;
 
-            preg_match('/([1-9]{3})([0-9]{3})/', $data->interviewer_id, $matches);
+            preg_match('/([1-9][0-9]{2})([0-9]{3})/', $data->interviewer_id, $matches);
 
             //return $matches;
 
@@ -158,7 +165,30 @@ class EmsQuestionsAnswers extends Model {
             foreach ($questions as $q) {
                 if($q->q_type == 'sub' || $q->q_type == 'same') {
                     if (array_key_exists($q->id, $data->answers)) {
-                        $alldata[$data->interviewee_id][$q->get_parent->question_number.$q->question_number] = $data->answers[$q->id];
+                        if(is_array($data->answers[$q->id])){
+
+                            for ($i = 1; $i <= 15; $i++) {
+                                if (in_array($i, $data->notes)) {
+
+                                    foreach ($data->notes as $note) {
+                                        if ($note == $i) {
+                                            foreach ($data->answers[$q->id] as $da) {
+                                                if (array_key_exists($note, $da)) {
+
+                                                    $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $note] = $da[$note];
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $i] = '';
+                                }
+                            }
+
+                        }else {
+                            $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = $data->answers[$q->id];
+                        }
                     }else{
                         $alldata[$data->interviewee_id][$q->get_parent->question_number.$q->question_number] = '';
                     }
@@ -174,6 +204,16 @@ class EmsQuestionsAnswers extends Model {
         }
 
         return $alldata;
+    }
+
+    public static function getAllByState($state, $alldata){
+        $statedata = array();
+        foreach($alldata as $data) {
+            if (in_array($state, $data)) {
+                $statedata[] = $data;
+            }
+        }
+        return $statedata;
     }
 
     /**

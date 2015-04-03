@@ -21,7 +21,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect.
     -->
-    <link href="{{ asset('/dist/css/skins/skin-blue.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!--link href="{{ asset('/dist/css/skins/skin-blue.min.css') }}" rel="stylesheet" type="text/css"/-->
+
+    <link href="{{ asset('/dist/css/skins/_all-skins.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- DATA TABLES -->
     <link href="{{ asset('/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>
@@ -40,9 +42,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <![endif]-->
     <link href="{{ asset('/css/fonts/fonts.css') }}" rel="stylesheet" type="text/css"/>
 
+    <link href="{{ asset('/css/ems-custom.css') }}" rel="stylesheet" type="text/css"/>
+
 
     <!-- jQuery 2.1.3 -->
-    <script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
+    <script src="{{ asset('/js/jquery-2.1.3.min.js') }}"></script>
+
+
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -207,7 +213,7 @@ desired effect
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         @foreach(\App\EmsForm::all() as $form)
-                        <li><a href="/dataentry/{{ urlencode($form->name)}}">{{ $form->name }}</a></li>
+                        <li><a href="/{{ urlencode($form->name)}}/dataentry">{{ $form->name }}</a></li>
                         @endforeach
                     </ul>
                 </li>
@@ -256,12 +262,66 @@ desired effect
 
 <!-- REQUIRED JS SCRIPTS -->
 
+<script type="text/javascript">
+
+</script>
+<!--script src="{{ asset('/plugins/jquery-validation/jquery.validate.min.js') }}" type="text/javascript"></script-->
+<script src="{{ asset('/plugins/jquery-validation/jquery.validate.js') }}" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+    if (typeof ajaxURL === 'undefined') {
+        var ajaxURL = '/ajax';
+    }
+    $(function(){
+
+        $("#interviewer_id").focusout(function() {
+            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val() } )
+                    .success(function( data ) {
+                        var json = JSON.parse(data);
+                        if(json.status == true){
+                            $( "p.flash" ).html( json.message );
+
+                        }
+                        if(json.status == false){
+                            $( "p.flash" ).html( json.message );
+                        }
+                    });
+        });
+
+        $("#row1").on('mouseleave', function() {
+            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() } )
+                    .success(function( data ) {
+                        var json = JSON.parse(data);
+                        if(json.status == true){
+                            $( "p.flash" ).html( json.message );
+
+                        }
+                        if(json.status == false){
+                            $( "p.flash" ).html( json.message );
+                        }
+                    });
+        });
+
+        $("#interviewee_id").change(function() {
+            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() } )
+                    .success(function( data ) {
+                        var json = JSON.parse(data);
+                        if(json.status == true){
+                            $( "p.flash" ).html( json.message );
+
+                        }
+                        if(json.status == false){
+                            $( "p.flash" ).html( json.message );
+                        }
+                    });
+        }).change();
+
+
+    });
+</script>
 <!-- Bootstrap 3.3.2 JS -->
 <script src="{{ asset('/js/bootstrap.min.js') }}" type="text/javascript"></script>
-<!-- InputMask -->
-<script src="{{ asset('/plugins/input-mask/jquery.inputmask.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/plugins/input-mask/jquery.inputmask.date.extensions.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/plugins/input-mask/jquery.inputmask.extensions.js') }}" type="text/javascript"></script>
 
 <script src="{{ asset('/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
 <script src="{{ asset('/plugins/datatables/dataTables.bootstrap.js') }}" type="text/javascript"></script>
@@ -275,7 +335,7 @@ desired effect
 <script src="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
 
 
-<script type="text/javascript">
+<!--script type="text/javascript">
     jQuery.noConflict();
     (function( $ ) {
         $(document).ready(function ($) {
@@ -358,30 +418,23 @@ desired effect
 
         });
     })(jQuery);
-</script>
-
-
-
-<script type="text/javascript">
-    jQuery.noConflict();
-    (function( $ ) {
-        $(document).ready(function ($) {
-
-            $("[data-mask]").inputmask();
-            $("#email").inputmask({ alias: "email"});
-        });
-    })(jQuery);
-
-</script>
-    <style type="text/css">
-        #gender-chart { height:300px;}
-    </style>
+</script-->
 
 
 
 
-<!-- jQuery 2.1.3 -->
-<script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
+
+<script src="{{ asset('/plugins/Garlic/garlic.min.js') }}" type="text/javascript"></script>
+
+
+<!-- AdminLTE App -->
+<script src="{{ asset('/dist/js/app.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
+
+
+
+<script src="{{ asset('/js/ems-custom.js') }}" type="text/javascript"></script>
+
 <!-- FLOT CHARTS -->
 <script src="{{ asset('/plugins/flot/jquery.flot.min.js') }}" type="text/javascript"></script>
 <!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
@@ -392,12 +445,49 @@ desired effect
 <script src="{{ asset('/plugins/flot/jquery.flot.categories.min.js') }}" type="text/javascript"></script>
 
 
-<script src="{{ asset('/plugins/Garlic/garlic.min.js') }}" type="text/javascript"></script>
-
+<style type="text/css">
+    #gender-chart { height:300px;}
+</style>
 <script type="text/javascript">
-    jQuery.noConflict();
-    (function( $ ) {
-        $( document ).ready(function( $ ) {
+    if (typeof ayeyarwady === 'undefined') {
+        var ayeyarwady = '';
+    }
+    if (typeof bago_west === 'undefined') {
+        var bago_west = '';
+    }
+    if (typeof bago_east === 'undefined') {
+        var bago_east = '';
+    }
+    if (typeof chin === 'undefined') {
+        var chin = '';
+    }
+    if (typeof sagaing === 'undefined') {
+        var sagaing = '';
+    }
+    if (typeof mandalay === 'undefined') {
+        var mandalay = '';
+    }
+    if (typeof magway === 'undefined') {
+        var magway = '';
+    }
+    if (typeof kachin === 'undefined') {
+        var kachin = '';
+    }
+    if (typeof rakhaing === 'undefined') {
+        var rakhaing = '';
+    }
+    if (typeof kayin === 'undefined') {
+        var kayin = '';
+    }
+    if (typeof shan_north === 'undefined') {
+        var shan_north = '';
+    }
+    if (typeof shan_south === 'undefined') {
+        var shan_south = '';
+    }
+
+        $(function( ) {
+
             var data = {
                 data: [["Ayeyawady", ayeyarwady], ["Bago (West)", bago_west], ["Bago (East)", bago_east], ["Chin", chin], ["Sagaing", sagaing],
                     ["Mandalay", mandalay], ["Magway", magway], ["Kachin", kachin], ["Kayin", kayin], ["Rakhaing", rakhaing], ["Shan (North)", shan_north], ["Shan (South)", shan_south]],
@@ -429,23 +519,25 @@ desired effect
                     tickSize: 1
                 }
             });
-            $( 'form' ).garlic();
+
         });
-    })(jQuery);
-
-
-
 
 </script>
+<script src="{{ asset('/js/jquery-2.1.3.min.js') }}"></script>
+<script src="{{ asset('/js/jquery-migrate-1.2.1.js') }}" type="text/javascript"></script>
+<!-- InputMask -->
+<script src="{{ asset('/plugins/input-mask/jquery.inputmask.bundle.js') }}" type="text/javascript"></script>
+<!--script src="{{ asset('/plugins/input-mask/jquery.inputmask.date.extensions.js') }}" type="text/javascript"></script>
+<script src="{{ asset('/plugins/input-mask/jquery.inputmask.extensions.js') }}" type="text/javascript"></script-->
 
-
-
-
-
-<!-- jQuery 2.1.3 -->
-<script src="{{ asset('/plugins/jQuery/jQuery-2.1.3.min.js') }}"></script>
-<!-- AdminLTE App -->
-<script src="{{ asset('/dist/js/app.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+    var dom = {};
+    dom.query = jQuery.noConflict( true );
+    dom.query(document).ready(function($){
+        $("[data-mask]").inputmask();
+        $("#email").inputmask({ alias: "email"});
+    });
+</script>
 
 </body>
 </html>

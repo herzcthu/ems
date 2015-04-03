@@ -303,71 +303,136 @@ class ParticipantsController extends Controller {
 
 	private function CreatAndStore($input)
 	{
+
 		$participant['name'] = $input['name'];
-		$participant['email'] = $input['email'];
+
+		if(isset($input['email'])){
+			$participant['email'] = $input['email'];
+		}
+		if(null == $input['email'] || empty($input['email']) || $input['email'] == ''){
+			$participant['email'] = snake_case($input['name']).'@'.substr(strstr(url(),'.'), 1);
+		}
 		$participant['nrc_id'] = $input['nrc_id'];
 		$participant['ethnicity'] = $input['ethnicity'];
 		$participant['dob'] = $input['dob'];
-		$participant['participant_type'] = $input['participant_type'];
+		if(isset($input['participant_type'])) {
+			$participant['participant_type'] = $input['participant_type'];
+		}elseif(isset($input['type'])) {
+			$participant['participant_type'] = $input['type'];
+		}else{
+			$participant['participant_type'] = 'enumerator';
+		}
 		//$participant['location'] = $input['location'];
-		$participant['user_gender'] = $input['user_gender'];
-		$participant['user_biography'] = $input['user_biography'];
-		$participant['user_mobile_phone'] = $input['user_mobile_phone'];
-		$participant['user_line_phone'] = $input['user_line_phone'];
-		$participant['current_org'] = $input['current_org'];
-		$participant['user_mailing_address'] = $input['user_mailing_address'];
-		$participant['education_level'] = $input['education_level'];
-
-		if(isset($input['location'])) {
-			try {
-				$village_id = Villages::where('village', '=', $input['location'])->pluck('village_id');
-			}catch (QueryException $e){
-
-			}
-			try {
-				$state_id = States::where('state', '=', $input['location'])->pluck('state_id');
-			}catch (QueryException $e){
-
-			}
-			try {
-				$district_id = Districts::where('district', '=', $input['location'])->pluck('id');
-			}catch (QueryException $e){
-
-			}
+		if(isset($input['user_gender'])) {
+			$participant['user_gender'] = $input['user_gender'];
+		}elseif(isset($input['gender'])) {
+			$participant['user_gender'] = $input['gender'];
+		}else{
+			$participant['user_gender'] = '';
+		}
+		if(isset($input['user_biography'])) {
+			$participant['user_biography'] = $input['user_biography'];
+		}else{
+			$participant['user_biography'] = '';
+		}
+		if(isset($input['user_mobile_phone'])) {
+			$participant['user_mobile_phone'] = $input['user_mobile_phone'];
+		}elseif(isset($input['mobile'])) {
+			$participant['user_mobile_phone'] = $input['mobile'];
+		}else{
+			$participant['user_mobile_phone'] = '';
+		}
+		if(isset($input['user_line_phone'])) {
+			$participant['user_line_phone'] = $input['user_line_phone'];
+		}elseif(isset($input['line_phone'])) {
+			$participant['user_line_phone'] = $input['line_phone'];
+		}else{
+			$participant['user_line_phone'] = '';
+		}
+		if(isset($input['current_org'])) {
+			$participant['current_org'] = $input['current_org'];
+		}
+		if(null == $input['current_org'] || empty($input['current_org']) || $input['current_org'] == ''){
+			$participant['current_org'] = 'No Organization';
+		}
+		if(isset($input['user_mailing_address'])) {
+			$participant['user_mailing_address'] = $input['user_mailing_address'];
+		}elseif(isset($input['mailing_address'])){
+			$participant['user_mailing_address'] = $input['mailing_address'];
+		}else{
+			$participant['user_mailing_address'] = '';
+		}
+		if(isset($input['education_level'])) {
+			$participant['education_level'] = $input['education_level'];
+		}
+		if(isset($input['payment_type'])) {
+			$participant['payment_type'] = $input['payment_type'];
+		}
+		if(isset($input['bank'])) {
+			$participant['bank'] = $input['bank'];
 		}
 
-		if(isset($input['village'])){
-			try {
-				$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
-			}catch (QueryException $e){
+		if(isset($input['location_id'])){
+			$location_id = $input['location_id'];
+			preg_match('/([1-9][0-9]{2})([0-9]{3})/', $location_id, $matches);
 
+				$state_id = $matches[1];
+				$village_id = $matches[2];
+
+		}else {
+
+
+			if (isset($input['location'])) {
+				try {
+					$village_id = Villages::where('village', '=', $input['location'])->pluck('village_id');
+				} catch (QueryException $e) {
+
+				}
+				try {
+					$state_id = States::where('state', '=', $input['location'])->pluck('state_id');
+				} catch (QueryException $e) {
+
+				}
+				try {
+					$district_id = Districts::where('district', '=', $input['location'])->pluck('id');
+				} catch (QueryException $e) {
+
+				}
 			}
-		}
 
-		if(isset($input['state'])){
-			try {
-				$state_id = States::where('state', '=', $input['state'])->pluck('state_id');
-			}catch (QueryException $e){
+			if (isset($input['village'])) {
+				try {
+					$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
+				} catch (QueryException $e) {
 
+				}
 			}
-		}
 
-		if(isset($input['district'])){
-			try {
-				$district_id = Districts::where('district', '=', $input['district'])->pluck('id');
-			}catch (QueryException $e){
+			if (isset($input['state'])) {
+				try {
+					$state_id = States::where('state', '=', $input['state'])->pluck('state_id');
+				} catch (QueryException $e) {
 
+				}
 			}
-		}
 
-		if(isset($input['region'])){
-			try {
-				$district_id = Districts::where('district', '=', $input['region'])->pluck('id');
-			}catch (QueryException $e){
+			if (isset($input['district'])) {
+				try {
+					$district_id = Districts::where('district', '=', $input['district'])->pluck('id');
+				} catch (QueryException $e) {
 
+				}
 			}
-		}
 
+			if (isset($input['region'])) {
+				try {
+					$district_id = Districts::where('district', '=', $input['region'])->pluck('id');
+				} catch (QueryException $e) {
+
+				}
+			}
+
+		}
 		$last = Participant::all();
 
 
@@ -376,12 +441,6 @@ class ParticipantsController extends Controller {
 
 
 		if($participant['participant_type'] == 'coordinator'){
-			if(isset($line['state'])) {
-				$state_id = States::where('state', '=', $input['state'])->pluck('state_id');
-			}
-			if(isset($line['district'])) {
-				$district_id = Districts::where('district', '=', $input['district'])->pluck('id');
-			}
 			$participant['parent_id'] = null;
 			if(isset($state_id)) {
 				$participant['participant_id'] = $state_id . $new_pid;
@@ -425,12 +484,12 @@ class ParticipantsController extends Controller {
 		$nrc_id_format =  preg_replace_callback($pattern, function($matches){
 			return $matches[1]."/".ucwords($matches[2]).ucwords($matches[3]).ucwords($matches[4])."(".ucwords($matches[5]).")".$matches[7];
 		}, $nrc_id);
-
-		try {
+		//try {
 			$new_participant = Participant::updateOrCreate(['nrc_id' => $nrc_id_format], $participant);
-		}catch (QueryException $e){
-			$update_error = true;
-		}
+		//	$new_participant = Participant::find($new_participant->id);
+		//}catch (QueryException $e){
+		//	$update_error = true;
+		//}
 
 
 		if($participant['participant_type'] == 'coordinator')

@@ -80,16 +80,16 @@ class EmsQuestionsAnswersRequest extends Request {
 			// Check to see if valid numeric array
 			//foreach ($this->input('enu_id') as $item) {
 				if (strlen($this->input('interviewer_id')) != 6) {
-					$validator->errors()->add('interviewer_id', 'Interviewer ID need to be exactly 6 digits');				//	break;
+					$validator->errors()->add('interviewer_id', 'Enumerator ID need to be exactly 6 digits');				//	break;
 
 				}else{
 
-					preg_match('/([1-9]{3})([0-9]{3})/',$interviewer_id, $matches);
+					preg_match('/([1-9][0-9]{2})([0-9]{3})/',$interviewer_id, $matches);
 
 					try {
 						$state = States::where('state_id', '=', (int)$matches[1]);
 					}catch (\Exception $e){
-						$validator->errors()->add('interviewer_id', 'No state with ID '.$matches[1].'. Check again interviewer ID!');
+						$validator->errors()->add('interviewer_id', 'No state with ID '.$matches[1].'. Check again Enumerator ID!');
 					}
 					try {
 						$village_id = Villages::where('village_id', '=', (int)$matches[2])->first()['id'];
@@ -104,13 +104,13 @@ class EmsQuestionsAnswersRequest extends Request {
 
 
 					}catch (\Exception $e){
-						$validator->errors()->add('interviewer_id', 'No village with ID '.$matches[2].'. Check again interviewer ID!');
+						$validator->errors()->add('interviewer_id', 'No village with ID '.$matches[2].'. Check again Enumerator ID!');
 					}
 
 
 					if(isset($state_for_village) && $state_for_village->state_id != (int) $matches[1]){
 
-						$validator->errors()->add('interviewer_id', $village->village.' does not exist in '.$state->first()['state'].'. Check again interviewer ID!');
+						$validator->errors()->add('interviewer_id', $village->village.' does not exist in '.$state->first()['state'].'. Check again Enumerator ID!');
 					}
 
 
@@ -121,6 +121,9 @@ class EmsQuestionsAnswersRequest extends Request {
 			//	break;
 			//}
 			$answers_count = count($this->input('answers'));
+			//print($answers_count);
+			//print(count(EmsFormQuestions::OfNotMain($this->input('form_id'))->get()));
+			//die($answers_count);
 			if( $answers_count != count(EmsFormQuestions::OfNotMain($this->input('form_id'))->get()))
 			{
 				$validator->errors()->add('answers', 'You need to complete all answers!');

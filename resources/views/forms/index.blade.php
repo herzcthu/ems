@@ -82,7 +82,7 @@
                                             <td>{{ $form->end_date }}</td>
                                             @permission('view.table')
                                             <td>
-                                                <a href={{ url("/dataentry/".urlencode($form->name) ) }}>Results</a>
+                                                <a href={{ url("/".urlencode($form->name) )."/dataentry" }}>Results</a>
                                             </td>
                                             <td><a href={{ url("/forms/".urlencode($form->name) ) }}>View</a></td>
                                             @endpermission
@@ -96,7 +96,7 @@
                                             </td>
                                             @endpermission
                                             @permission('add.data')
-                                            <td><a href={{ url("/dataentry/".urlencode($form->name)."/create" ) }}>Add
+                                            <td><a href={{ url("/".urlencode($form->name)."/dataentry/create" ) }}>Add
                                                     Data</a>
                                             </td>
                                             @endpermission

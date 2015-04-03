@@ -39,7 +39,7 @@
 						@if (Session::has('answer_success'))
 							<div class="alert alert-success">{{ Session::get('answer_success') }}</div>
 						@endif
-						{!! Form::open(['url' => 'dataentry/'.$form_name_url.'/create', 'class' => 'form-horizontal']) !!}
+						{!! Form::open(['url' => ''.$form_name_url.'/dataentry/create', 'class' => 'form-horizontal', 'id' => 'dataentry']) !!}
 						@include('dataentry._dform', ['submitButton' => 'Add Data', 'formtype' => 'create'])
 						{!! Form::close() !!}
 				</div>
@@ -54,5 +54,7 @@
 	<!-- /.content -->
 </div><!-- /.content-wrapper -->
 
-
+<script type="text/javascript">
+	var ajaxURL = "{{ '/'.$form_name_url.'/ajax' }}";
+</script>
 @endsection
