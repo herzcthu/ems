@@ -3,6 +3,7 @@
 use App\EmsForm;
 use App\EmsQuestionsAnswers;
 use App\GeneralSettings;
+use Stevebauman\Translation\Facades\Translation;
 
 class HomeController extends Controller {
 
@@ -34,6 +35,7 @@ class HomeController extends Controller {
 	 */
 	public function index()
 	{
+
 		$form_id = GeneralSettings::options('options', 'form_for_dashboard');
 
 		//return $form_id;

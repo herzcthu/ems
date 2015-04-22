@@ -94,13 +94,13 @@ class AjaxController extends Controller {
 				if (isset($state_for_village) && !empty($state_for_village)) {
 					if ($state_for_village->state_id != (int)$matches[1]) {
 						$ajax_response['status'] = false;
-						$ajax_response['message'] = '<p class="text-red">' . $village->village . ' does not exist in ' . $state->first()['state'] . '. Check again Enumerator ID!</p>';
+						$ajax_response['message'] = '<p class="text-red">' . _t(':village does not exist in :state. Check again Enumerator ID!',array('village' => $village->village, 'state' => $state->first()["state"])).'</p>';
 					} elseif (isset($enumerator)) {
 						$ajax_response['status'] = true;
-						$ajax_response['message'] = '<p class="text-green">' . $village->village . ' exist in ' . $state->first()['state'] . '. Enumerator name is ' . $enumerator . '!</p>';
+						$ajax_response['message'] = '<p class="text-green">'._t(":village exist in :state. Enumerator name is :enumerator !",array('village' => $village->village, 'state' => $state->first()["state"], 'enumerator' => $enumerator)).'</p>';
 					} else {
 						$ajax_response['status'] = false;
-						$ajax_response['message'] = '<p class="text-red">Enumerator cannot find in database!</p>';
+						$ajax_response['message'] = '<p class="text-red">_t("Enumerator cannot find in database!")</p>';
 					}
 				}
 

@@ -79,24 +79,24 @@
                             <table id="datatable-allfeatures" class="table table-bordered table-striped">
                                 <thead>
                                 <th>No.</th>
-                                <th>State</th>
-                                <th>District</th>
-                                <th>Township</th>
-                                <th>Village Track</th>
-                                <th>Village/Ward</th>
-                                <th lang="mm">Village Burmese</th>
+                                <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('State') }}</th>
+                                <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('District') }}</th>
+                                <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Township') }}</th>
+                                <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Village Track') }}</th>
+                                <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Village/Ward') }}</th>
+                                <th  lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Village Burmese') }}</th>
                                 </thead>
                                 <tbody>
                                 @role('admin')
                                 @foreach ($locations as $k => $location )
                                     <tr>
                                         <td>{{ $k + 1 }}</td>
-                                        <td>{{ $location->township->district->state->state }}</td>
-                                        <td>{{ $location->township->district->district }}</td>
-                                        <td>{{{ $location->township->township }}}</td>
-                                        <td>{{{ isset($location->villagetrack ) ? $location->villagetrack : '' }}}</td>
-                                        <td>{{{ isset($location->village ) ? $location->village : '' }}}</td>
-                                        <td lang="mm">{{{ isset($location->village_my ) ? $location->village_my : '' }}}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($location->township->district->state->state) }}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($location->township->district->district) }}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{{ _t($location->township->township) }}}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{{ isset($location->villagetrack ) ? $location->villagetrack : '' }}}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{{ isset($location->village ) ? $location->village : '' }}}</td>
+                                        <td lang="my">{{{ isset($location->village_my ) ? $location->village_my : '' }}}</td>
                                     </tr>
                                 @endforeach
 

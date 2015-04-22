@@ -14,7 +14,7 @@
 		"baum/baum": "~1.1",
 	  	"franzose/closure-table": "4.*",
 		"felixkiss/uniquewith-validator": "2.*",
-	  	"stevebauman/translation": "1.0.*"
+	  	"stevebauman/translation": "1.1.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

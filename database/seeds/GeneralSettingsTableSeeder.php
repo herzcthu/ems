@@ -11,7 +11,7 @@ class GeneralSettingsTableSeeder extends Seeder {
 
         GeneralSettings::create( [
             'options_name' => 'options' ,
-            'options' => array('site_name' => 'EMS','site_descriptions' => 'Election Monitoring System', 'answers_per_question' => 10, 'form_for_dashboard' => 1)
+            'options' => array('site_name' => 'EMS','site_descriptions' => 'Election Monitoring System', 'answers_per_question' => 10, 'form_for_dashboard' => 1, 'locale' => 'my')
         ] );
     }
 }

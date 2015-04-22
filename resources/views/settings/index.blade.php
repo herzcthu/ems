@@ -19,7 +19,7 @@
 		<!-- Main content -->
 		<section class="content">
 			<div class="row">
-				<div class="col-xs-12">
+				<div class="col-xs-12" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 						@if (count($errors) > 0)
 							<div class="alert alert-danger">
 								<strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -41,27 +41,33 @@
 							{!! Form::model($options, ["method" => "PATCH", "action" => ["GeneralSettingsController@update"], "class" => "form-horizontal"]) !!}
 
 							<div class="form-group">
-								{!! Form::label("options['site_name']", "Site Name: ", ["class" => "col-sm-3 control-label"]) !!}
+								{!! Form::label("options['site_name']", _t("Site Name: "), ["class" => "col-sm-3 control-label"]) !!}
 								<div class="col-sm-6">
 									{!! Form::text("options[site_name]", isset($options[0]) ? $options[0]['options']['site_name']: null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">
-								{!! Form::label("options[site_descriptions]", "Site Descriptions: ", ["class" => "col-sm-3 control-label"]) !!}
+								{!! Form::label("options[site_descriptions]", _t("Site Descriptions: "), ["class" => "col-sm-3 control-label"]) !!}
 								<div class="col-sm-6">
 									{!! Form::text("options[site_descriptions]", isset($options[0]) ? $options[0]['options']['site_descriptions']: null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">
-								{!! Form::label("options[answers_per_question]", "Nos. of answers per question: ", ["class" => "col-sm-3 control-label"]) !!}
+								{!! Form::label("options[answers_per_question]", _t("Nos. of answers per question: "), ["class" => "col-sm-3 control-label"]) !!}
 								<div class="col-sm-6">
 									{!! Form::text("options[answers_per_question]", isset($options[0]) ? $options[0]['options']['answers_per_question']:null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">
-								{!! Form::label("options[form_for_dashboard]", "Select Form to show on Dashboard: ", ["class" => "col-sm-3 control-label"]) !!}
+								{!! Form::label("options[form_for_dashboard]", _t("Select Form to show on Dashboard: "), ["class" => "col-sm-3 control-label"]) !!}
 								<div class="col-sm-6">
 									{!! Form::select("options[form_for_dashboard]", $forms,isset($options[0]) ? $options[0]['options']['form_for_dashboard']:null, ["class" => "form-control"]) !!}
+								</div>
+							</div>
+							<div class="form-group">
+								{!! Form::label("options[locale]", _t("Select default language: "), ["class" => "col-sm-3 control-label"]) !!}
+								<div class="col-sm-6">
+									{!! Form::select("options[locale]", $locales,isset($options[0]) ? $options[0]['options']['locale']:null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 

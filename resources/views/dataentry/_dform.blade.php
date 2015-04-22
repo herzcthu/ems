@@ -1,8 +1,8 @@
 <table class="table">
 
-    <tr id="row1">
+    <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
         <td>
-            {!! Form::label('interviewer_id', 'Enumerator ID: ', ['class' => 'control-label']) !!}
+            {!! Form::label('interviewer_id', _t('Enumerator ID: '), ['class' => 'control-label']) !!}
         </td>
         <td class="">
 
@@ -12,7 +12,7 @@
         </td>
 
         <td>
-            {!! Form::label('interviewee_id', $form_name.' ID: ', ['class' => 'control-label']) !!}
+            {!! Form::label('interviewee_id', _t($form_name.' ID: '), ['class' => 'control-label']) !!}
         </td>
         <td>
 
@@ -21,14 +21,14 @@
         </td>
 
     </tr>
-    <tr id="row2">
+    <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
         <td>
-            {!! Form::label('interviewee_gender', 'Interviewee Gender', ['class' => 'control-label']) !!}
+            {!! Form::label('interviewee_gender', _t('Interviewee Gender'), ['class' => 'control-label']) !!}
         </td>
         <td>
 
-                {!! Form::select('interviewee_gender',['M' => 'Male', 'F' => 'Female', 'U' => 'Unspecified'], ['class' => 'form-control']) !!}
+                {!! Form::select('interviewee_gender',['M' => _t('Male'), 'F' => _t('Female'), 'U' => _t('Unspecified')], ['class' => 'form-control']) !!}
 
         </td>
         <td>
@@ -36,7 +36,7 @@
         </td>
         <td>
 
-            {!! Form::select('psu',['1' => 'Urban', '2' => 'Rural'], ['class' => 'form-control']) !!}
+            {!! Form::select('psu',['1' => _t('Urban'), '2' => _t('Rural')], ['class' => 'form-control']) !!}
 
         </td>
     </tr>
@@ -48,17 +48,17 @@
             @if($question->q_type == 'single')
                 <td><h4 class="{{ $question->question_number }}">{{ $question->question_number }}</h4></td>
                 <td colspan="7">
-                    <h4 class="{{ $question->question_number.'-question' }}">{{ $question->question }}</h4>
+                    <h4 class="{{ $question->question_number.'-question' }}" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($question->question) }}</h4>
                     @if($question->a_view == 'notes')
                         {!! Form::text("notes[$question->id]", null, ['class' => 'form-control']) !!}
                     @endif
                     <div class="col-xs-offset-1">
                         @if($question->input_type == 'radio')
-                            <ul class="radio">
+                            <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                 @foreach($question->answers as $answer_k => $answer_v)
                                     @if(!empty($answer_v))
                                         <li>
-                                            {!! Form::radio("answers[$question->id]",$answer_k,null ) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                            {!! Form::radio("answers[$question->id]",$answer_k,null ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                         </li>
                                     @endif
                                 @endforeach
@@ -67,7 +67,7 @@
                         @if($question->input_type == 'choice')
                             @foreach($question->answers as $answer_k => $answer_v)
                                 @if(!empty($answer_v))
-                                    {!! Form::checkbox("answers[$question->id]", $answer_k, null) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                    {!! Form::checkbox("answers[$question->id]", $answer_k, null) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                 @endif
                             @endforeach
                         @endif
@@ -101,7 +101,7 @@
 
                 <td><h4 class="{{ $question->question_number }}">{{ $question->question_number }}</h4></td>
                 <td colspan="7">
-                    <h4 class="{{ $question->question_number.'-question' }}">{{ $question->question }}</h4>
+                    <h4 class="{{ $question->question_number.'-question' }}" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($question->question) }}</h4>
                     @if($question->a_view == 'notes')
                         {!! Form::text("notes[$question->id]", null, ['class' => 'form-control']) !!}
                     @endif
@@ -111,7 +111,7 @@
                             <th> </th>
                             @if(is_array($question->answers))
                                 @foreach($question->get_children as $children)
-                                    <th>{{ $children->question_number }}. {{ $children->question }}</th>
+                                    <th lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ $children->question_number }}. {{ _t($children->question) }}</th>
                                     @if($children->a_view == 'notes')
                                         {!! Form::text("notes[$children->id]", null, ['class' => 'form-control']) !!}
                                     @endif
@@ -119,12 +119,12 @@
                                 @endforeach
                                 @foreach($question->answers as $answer_k => $answer_v)
                                     <tr>
-                                        <td>{{ $answer_v }}</td>
+                                        <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($answer_v) }}</td>
                                         @foreach($question->get_children as $children)
 
                                             @if(!empty($answer_v))
                                                 <td>
-                                                    <div class="radio">
+                                                    <div class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                     {!! Form::radio("answers[$children->id]",$answer_k ,null ) !!} {{ $answer_k }}
                                                     </div>
                                                 </td>
@@ -150,12 +150,11 @@
                     @else
                         @foreach($question->get_children as $children)
                             <div class="col-xs-offset-1">
-                                <h4 class="{{ $children->question_number }}">{{ $children->question_number }}. {{ $children->question }}</h4>
+                                <h4 class="{{ $children->question_number }}" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ $children->question_number }}. {{ _t($children->question) }}</h4>
                                 @if($children->a_view == 'notes')
                                     {!! Form::text("notes[$children->id]", null, ['class' => 'form-control']) !!}
                                 @endif
                                 @if($children->a_view == 'categories')
-                                    {!! Form::checkbox("answers[$children->id][1][1]", '0', null) !!} {{ 'No Answers' }}
                                     <script type="text/javascript">
                                         $(document).ready(function() {
                                             $('#addCat').on('click', function(e) {
@@ -170,16 +169,21 @@
 
                                                 }).change();
                                             });
+                                            $(".delCat").on('click', function(e){
+                                                e.preventDefault();
+                                                $(this).parent('div').remove();
+                                            });
                                         });
                                     </script>
-                                    <a href="#" class="btn btn-box-tool" id="addCat"><i class="fa fa-plus"></i> Click to add answer</a>
-                                    <div class="categories" data-prototype='<div class="addinput">{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf('Category_%03d', $n); }, range(1, 15) )), '__NAME__', ['class' => '', 'id'=>'cat-__NAME__']) !!}
+                                    <a href="#" class="btn btn-box-tool" id="addCat"><i class="fa fa-plus"></i> <span lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Click here to answer') }}</span></a>
 
-                                    <ul class="radio">
+                                    <div class="categories" data-prototype='<div class="addinput"><a href="#" class="btn btn-box-tool delCat" id="delCat"><i class="fa fa-minus"></i></a>{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf('Category_%03d', $n); }, range(1, 15) )), '__NAME__', ['class' => '', 'id'=>'cat-__NAME__']) !!}
+
+                                    <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                         @foreach($question->answers as $answer_k => $answer_v)
                                             @if(!empty($answer_v))
                                                 <li>
-                                                    {!! Form::radio("answers[ $children->id ][ __NAME__ ][]",$answer_k,null, ['class' => 'ans-radio-cat-__NAME__'] ) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                                    {!! Form::radio("answers[ $children->id ][ __NAME__ ][]",$answer_k,null, ['class' => 'ans-radio-cat-__NAME__'] ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                                 </li>
                                             @endif
                                         @endforeach
@@ -189,11 +193,11 @@
                                     </div>
                                 @elseif(is_array($question->answers) && $children->q_type == 'same')
                                     @if($children->input_type == 'radio')
-                                        <ul class="radio">
+                                        <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                             @foreach($question->answers as $answer_k => $answer_v)
                                                 @if(!empty($answer_v))
                                                     <li>
-                                                        {!! Form::radio("answers[$children->id]",$answer_k ) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                                        {!! Form::radio("answers[$children->id]",$answer_k ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                                     </li>
                                                 @endif
                                             @endforeach
@@ -202,7 +206,7 @@
                                     @if($children->input_type == 'choice')
                                         @foreach($question->answers as $answer_k => $answer_v)
                                             @if(!empty($answer_v))
-                                                {!! Form::checkbox("answers[$children->id]", $answer_k, null) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                                {!! Form::checkbox("answers[$children->id]", $answer_k, null) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                             @endif
                                         @endforeach
                                     @endif
@@ -229,11 +233,11 @@
                                 @else
                                     @if($children->input_type == 'radio')
                                         <ul class="radio">
-                                            <div class="">
+                                            <div class="" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                 @foreach($children->answers as $answer_k => $answer_v)
                                                     @if(!empty($answer_v))
                                                         <li>
-                                                            {!! Form::radio("answers[$children->id]", $answer_k ) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                                            {!! Form::radio("answers[$children->id]", $answer_k ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                                         </li>
                                                     @endif
                                                 @endforeach
@@ -245,7 +249,7 @@
                                         <div class="">
                                             @foreach($children->answers as $answer_k => $answer_v)
                                                 @if(!empty($answer_v))
-                                                    {!! Form::checkbox("answers[$children->id]", $answer_k ) !!} {{ $answer_k.' ('.$answer_v.')' }}
+                                                    {!! Form::checkbox("answers[$children->id]", $answer_k ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                                 @endif
                                             @endforeach
                                         </div>

@@ -1,5 +1,25 @@
 <?php
 
+
+
+// app/filters.php
+use App\GeneralSettings;
+use Stevebauman\Translation\Facades\Translation;
+
+Route::filter('localization', function() {
+	try {
+		$system_locale = GeneralSettings::options('options', 'locale');
+	}catch (\Illuminate\Database\QueryException $e){
+
+	}
+	if(isset($system_locale)) {
+		Translation::setLocale($system_locale);
+	}else{
+		$current_locale = Translation::getLocale();
+		Translation::setLocale($current_locale);
+	}
+});
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -10,6 +30,10 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
+// app/routes.php
+Route::group(['before' => 'localization'], function() {
+
 
 Route::get('/', 'WelcomeController@index');
 
@@ -95,3 +119,6 @@ Route::controllers([
 	//'forms' => 'EmsFormsController'
 ]);
 
+	Route::resource('languages', 'LocalizationController');
+	Route::post('ajax/langupdate', 'LocalizationController@update');
+});

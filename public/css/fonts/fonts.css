@@ -1,1 +1,11 @@
-*:lang(mm){font-family: 'Myanmar Sans Pro' !important}
+@font-face {
+    font-family: 'Tharlonmy';
+    src: local('Tharlon');
+    unicode-range: U+1000-1FFF;
+}
+:lang(my){
+    font-family: 'Tharlonmy', "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+    font-size-adjust: 0.55;
+    line-height: 130%;
+}

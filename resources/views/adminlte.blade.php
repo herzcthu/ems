@@ -8,6 +8,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta charset="UTF-8">
     <title>{!! App\GeneralSettings::options('options', 'site_name') !!}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
     <!-- Bootstrap 3.3.2 -->
     <link href="{{ asset('/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
     <!-- Font Awesome Icons -->
@@ -209,7 +211,7 @@ desired effect
                 </li>
                 @permission('view.table')
                 <li class="treeview">
-                    <a href="#"><i class="fa fa-user"></i><span>Results</span> <i
+                    <a href="#"><i class="fa fa-bar-chart"></i><span>Results</span> <i
                                 class="fa fa-angle-left pull-right"></i></a>
                     <ul class="treeview-menu">
                         @foreach(\App\EmsForm::all() as $form)
@@ -218,6 +220,9 @@ desired effect
                     </ul>
                 </li>
                 @endpermission
+                @role('admin')
+                <li><a href="/languages"><i class="fa fa-language"></i><span>Languages</span></a></li>
+                @endrole
             </ul>
             <!-- /.sidebar-menu -->
         </section>
@@ -435,94 +440,6 @@ desired effect
 
 <script src="{{ asset('/js/ems-custom.js') }}" type="text/javascript"></script>
 
-<!-- FLOT CHARTS -->
-<script src="{{ asset('/plugins/flot/jquery.flot.min.js') }}" type="text/javascript"></script>
-<!-- FLOT RESIZE PLUGIN - allows the chart to redraw when the window is resized -->
-<script src="{{ asset('/plugins/flot/jquery.flot.resize.min.js') }}" type="text/javascript"></script>
-<!-- FLOT PIE PLUGIN - also used to draw donut charts -->
-<script src="{{ asset('/plugins/flot/jquery.flot.pie.min.js') }}" type="text/javascript"></script>
-<!-- FLOT CATEGORIES PLUGIN - Used to draw bar charts -->
-<script src="{{ asset('/plugins/flot/jquery.flot.categories.min.js') }}" type="text/javascript"></script>
-
-
-<style type="text/css">
-    #gender-chart { height:300px;}
-</style>
-<script type="text/javascript">
-    if (typeof ayeyarwady === 'undefined') {
-        var ayeyarwady = '';
-    }
-    if (typeof bago_west === 'undefined') {
-        var bago_west = '';
-    }
-    if (typeof bago_east === 'undefined') {
-        var bago_east = '';
-    }
-    if (typeof chin === 'undefined') {
-        var chin = '';
-    }
-    if (typeof sagaing === 'undefined') {
-        var sagaing = '';
-    }
-    if (typeof mandalay === 'undefined') {
-        var mandalay = '';
-    }
-    if (typeof magway === 'undefined') {
-        var magway = '';
-    }
-    if (typeof kachin === 'undefined') {
-        var kachin = '';
-    }
-    if (typeof rakhaing === 'undefined') {
-        var rakhaing = '';
-    }
-    if (typeof kayin === 'undefined') {
-        var kayin = '';
-    }
-    if (typeof shan_north === 'undefined') {
-        var shan_north = '';
-    }
-    if (typeof shan_south === 'undefined') {
-        var shan_south = '';
-    }
-
-        $(function( ) {
-
-            var data = {
-                data: [["Ayeyawady", ayeyarwady], ["Bago (West)", bago_west], ["Bago (East)", bago_east], ["Chin", chin], ["Sagaing", sagaing],
-                    ["Mandalay", mandalay], ["Magway", magway], ["Kachin", kachin], ["Kayin", kayin], ["Rakhaing", rakhaing], ["Shan (North)", shan_north], ["Shan (South)", shan_south]],
-                color: "#3c8dbc"
-            };
-
-            $.plot($("#gender-chart"), [data], {
-                grid: {
-                    borderWidth: 1,
-                    borderColor: "#f3f3f3",
-                    tickColor: "#f3f3f3"
-                },
-                series: {
-                    bars: {
-                        show: true,
-                        barWidth: 0.5,
-                        align: "center"
-                    }
-                },
-                xaxis: {
-                    mode: "categories",
-                    tickLength: 0,
-                    tickDecimals: 0,
-                    tickSize: 1
-                },
-                yaxis: {
-                    tickLength: 0,
-                    tickDecimals: 0,
-                    tickSize: 1
-                }
-            });
-
-        });
-
-</script>
 <script src="{{ asset('/js/jquery-2.1.3.min.js') }}"></script>
 <script src="{{ asset('/js/jquery-migrate-1.2.1.js') }}" type="text/javascript"></script>
 <!-- InputMask -->

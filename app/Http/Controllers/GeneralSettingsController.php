@@ -8,15 +8,17 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Facades\Validator;
 
 class GeneralSettingsController extends Controller {
 
-	public function __construct()
+	public function __construct(Config $config)
 	{
 		$this->middleware('auth');
 		$this->current_user_id = Auth::id();
 		$this->auth_user = User::find($this->current_user_id);
+		$this->config = $config;
 	}
 	/**
 	 * Display a listing of the resource.
@@ -27,12 +29,16 @@ class GeneralSettingsController extends Controller {
 	{
 		if ($this->auth_user->is('admin'))
 		{
+
+			$locales = $this->config->get('translation.locales');
 			$options = GeneralSettings::all();
+
+			//return $locales;
 			//return $options[0]->options;
 			//$options = json_decode($settings[0]->options, true);
 			$forms = EmsForm::lists('name', 'id');
 			//return $options[0]['options']['site_name'];
-			return view('settings.index', compact('options','forms'));
+			return view('settings.index', compact('options','forms', 'locales'));
 		}
 	}
 
