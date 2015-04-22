@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('PermissionsTableSeeder');
 		$this->call('GeneralSettingsTableSeeder');
 		$this->call('PGroupsTableSeeder');
-		$this->call('EmsFormQuestionsTableSeeder');
+		//$this->call('EmsFormQuestionsTableSeeder');
 	}
 
 }

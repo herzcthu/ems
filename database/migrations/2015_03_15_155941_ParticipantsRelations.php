@@ -41,6 +41,35 @@ class ParticipantsRelations extends Migration {
 			$table->foreign('villages_id')->references('id')->on('villages')->onDelete('cascade');
 			$table->foreign('enumerators_id')->references('id')->on('participants')->onDelete('cascade');
 		});
+		Schema::create('spotcheckers_townships', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->integer('townships_id')->unsigned()->index();
+			$table->integer('spotcheckers_id')->unsigned()->index();
+			$table->timestamps();
+			$table->foreign('townships_id')->references('id')->on('townships')->onDelete('cascade');
+			$table->foreign('spotcheckers_id')->references('id')->on('participants')->onDelete('cascade');
+		});
+
+		Schema::create('participants_geolocations', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->integer('location_id')->unsigned()->nullable()->index();
+			$table->integer('participant_id')->unsigned()->nullable()->index();
+			$table->integer('pace_id')->unique();
+			$table->timestamps();
+			$table->foreign('location_id')->references('id')->on('geolocations')->onDelete('cascade');
+			$table->foreign('participant_id')->references('id')->on('participants')->onDelete('cascade');
+		});
+
+		Schema::create('participants_relations', function(Blueprint $table)
+		{
+			$table->integer('parent_id')->unsigned()->nullable()->index();
+			$table->integer('child_id')->unsigned()->nullable()->index();
+			$table->timestamps();
+			$table->foreign('parent_id')->references('id')->on('participants')->onDelete('cascade');
+			$table->foreign('child_id')->references('id')->on('participants')->onDelete('cascade');
+		});
 	}
 
 	/**
@@ -54,6 +83,9 @@ class ParticipantsRelations extends Migration {
 		Schema::drop('coordinators_regions');
 		Schema::drop('coordinators_states');
 		Schema::drop('enumerators_villages');
+		Schema::drop('spotcheckers_townships');
+		Schema::drop('participants_geolocations');
+		//Schema::drop('participants_relations');
 	}
 
 }

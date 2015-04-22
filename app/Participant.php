@@ -14,7 +14,12 @@ class Participant extends Model {
   protected $fillable = [ 'name', 'user_image', 'email', 'nrc_id', 'ethincity', 'education_level',
       'user_gender', 'dob','current_org', 'user_line_phone',
       'user_mobile_phone', 'user_mailing_address',
-      'user_biography','payment_type','bank', 'parent_id', 'participant_type','participant_id'];
+      'user_biography','payment_type','bank', 'participant_type','participant_id'];
+
+    public function location()
+    {
+        return $this->belongsToMany('App\Geolocations', 'participants_geolocations', 'participant_id', 'location_id')->withPivot('pace_id')->withTimestamps();
+    }
 
     public function states()
     {
@@ -25,6 +30,10 @@ class Participant extends Model {
   {
     return $this->belongsToMany('App\Districts', 'coordinators_regions', 'coordinators_id', 'region_id')->withTimestamps();
   }
+    public function townships()
+    {
+        return $this->belongsToMany('App\Townships', 'spotcheckers_townships', 'spotcheckers_id', 'townships_id')->withTimestamps();
+    }
   public function villages()
   {
     return $this->belongsToMany('App\Villages', 'enumerators_villages', 'enumerators_id')->withTimestamps();
@@ -40,18 +49,18 @@ class Participant extends Model {
       return $this->belongsTo('App\ParticipantType', 'participant_id');
   }
 
-    public function get_parent()
+    public function parents()
     {
-        return $this->belongsTo('App\Participant', 'participants', 'parent_id', 'id');
+        return $this->belongsToMany('App\Participant', 'participants_relations', 'child_id', 'parent_id');
     }
 
-    public function get_children()
+    public function children()
     {
-        return $this->hasMany('App\Participant', 'parent_id', 'id');
+        return $this->belongsToMany('App\Participant', 'participants_relations', 'parent_id', 'child_id');
     }
 
     public function answers(){
-        return $this->hasMany('App\EmsQuestionsAnswers', 'enumerators_answers', '');
+        return $this->hasMany('App\EmsQuestionsAnswers', 'interviewer_id', 'participant_id');
     }
 
     public function scopeCoordinator($query)

@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Input;
 use Maatwebsite\Excel\Facades\Excel;
+use Psy\Exception\ErrorException;
 
 class ParticipantsController extends Controller {
 
@@ -303,88 +304,102 @@ class ParticipantsController extends Controller {
 
 	private function CreatAndStore($input)
 	{
+		//dd($input);
 
 		$participant['name'] = $input['name'];
 
-		if(isset($input['email'])){
+
+		if (isset($input['email'])) {
 			$participant['email'] = $input['email'];
+		} else {
+			$participant['email'] = '';
 		}
-		if(null == $input['email'] || empty($input['email']) || $input['email'] == ''){
-			$participant['email'] = snake_case($input['name']).'@'.substr(strstr(url(),'.'), 1);
-		}
+
 		$participant['nrc_id'] = $input['nrc_id'];
 		$participant['ethnicity'] = $input['ethnicity'];
 		$participant['dob'] = $input['dob'];
-		if(isset($input['participant_type'])) {
+		if (isset($input['participant_type'])) {
 			$participant['participant_type'] = $input['participant_type'];
-		}elseif(isset($input['type'])) {
+		} elseif (isset($input['type'])) {
 			$participant['participant_type'] = $input['type'];
-		}else{
+		} else {
 			$participant['participant_type'] = 'enumerator';
 		}
 		//$participant['location'] = $input['location'];
-		if(isset($input['user_gender'])) {
+		if (isset($input['user_gender'])) {
 			$participant['user_gender'] = $input['user_gender'];
-		}elseif(isset($input['gender'])) {
+		} elseif (isset($input['gender'])) {
 			$participant['user_gender'] = $input['gender'];
-		}else{
+		} else {
 			$participant['user_gender'] = '';
 		}
-		if(isset($input['user_biography'])) {
+		if (isset($input['user_biography'])) {
 			$participant['user_biography'] = $input['user_biography'];
-		}else{
+		} else {
 			$participant['user_biography'] = '';
 		}
-		if(isset($input['user_mobile_phone'])) {
+		if (isset($input['user_mobile_phone'])) {
 			$participant['user_mobile_phone'] = $input['user_mobile_phone'];
-		}elseif(isset($input['mobile'])) {
+		} elseif (isset($input['mobile'])) {
 			$participant['user_mobile_phone'] = $input['mobile'];
-		}else{
+		} else {
 			$participant['user_mobile_phone'] = '';
 		}
-		if(isset($input['user_line_phone'])) {
+		if (isset($input['user_line_phone'])) {
 			$participant['user_line_phone'] = $input['user_line_phone'];
-		}elseif(isset($input['line_phone'])) {
+		} elseif (isset($input['line_phone'])) {
 			$participant['user_line_phone'] = $input['line_phone'];
-		}else{
+		} else {
 			$participant['user_line_phone'] = '';
 		}
-		if(isset($input['current_org'])) {
+		if (isset($input['current_org'])) {
 			$participant['current_org'] = $input['current_org'];
 		}
-		if(null == $input['current_org'] || empty($input['current_org']) || $input['current_org'] == ''){
+		if (null == $input['current_org'] || empty($input['current_org']) || $input['current_org'] == '') {
 			$participant['current_org'] = 'No Organization';
 		}
-		if(isset($input['user_mailing_address'])) {
+		if (isset($input['user_mailing_address'])) {
 			$participant['user_mailing_address'] = $input['user_mailing_address'];
-		}elseif(isset($input['mailing_address'])){
+		} elseif (isset($input['mailing_address'])) {
 			$participant['user_mailing_address'] = $input['mailing_address'];
-		}else{
+		} else {
 			$participant['user_mailing_address'] = '';
 		}
-		if(isset($input['education_level'])) {
+		if (isset($input['education_level'])) {
 			$participant['education_level'] = $input['education_level'];
 		}
-		if(isset($input['payment_type'])) {
+		if (isset($input['payment_type'])) {
 			$participant['payment_type'] = $input['payment_type'];
 		}
-		if(isset($input['bank'])) {
+		if (isset($input['bank'])) {
 			$participant['bank'] = $input['bank'];
 		}
 
-		if(isset($input['location_id'])){
-			$location_id = $input['location_id'];
+		//dd((int)$input['location_id']);
+
+		if (isset($input['location_id'])) {
+
+			//die('this is true');
+			$location_id = (int) $input['location_id'];
+			//dd($location_id);
 			preg_match('/([1-9][0-9]{2})([0-9]{3})/', $location_id, $matches);
 
-				$state_id = $matches[1];
-				$village_id = $matches[2];
+			$state_id = $matches[1];
+			$village_id = $matches[2];
 
-		}else {
+
+
+		} else {
 
 
 			if (isset($input['location'])) {
 				try {
 					$village_id = Villages::where('village', '=', $input['location'])->pluck('village_id');
+				} catch (QueryException $e) {
+
+				}
+				try {
+					$township_id = Townships::where('township', '=', $input['location'])->pluck('id');
 				} catch (QueryException $e) {
 
 				}
@@ -431,109 +446,246 @@ class ParticipantsController extends Controller {
 
 				}
 			}
+			if (isset($input['township'])) {
+				try {
+					$township_id = Townships::where('township', '=', $input['township'])->pluck('id');
+				} catch (QueryException $e) {
 
-		}
-		$last = Participant::all();
-
-
-		$current_inserting_participant_id = $last->last()['id'] + 1;
-		$new_pid =  sprintf('%04d',$current_inserting_participant_id);
-
-
-		if($participant['participant_type'] == 'coordinator'){
-			$participant['parent_id'] = null;
-			if(isset($state_id)) {
-				$participant['participant_id'] = $state_id . $new_pid;
-			}
-			if(isset($district_id)){
-				$participant['participant_id'] = $district_id . $new_pid;
+				}
 			}
 
-		}else{
-			//$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
-			//$participant['parent_id'] = $line['parent_id'];
-
-			//return $village_id;
-
-			$get_locations = Villages::getLocations($village_id);
-
-			$state_id = $get_locations['state']['id'];
-
-			$state_id_for_enu = $get_locations['state']['state_id'];
-
-			//return $state_id_for_enu;
-
-			$coordinator = States::find($state_id);
-
-			//return $coordinator->coordinators;
-
-			$participant['parent_id'] = $coordinator->coordinators->first()->pivot->coordinators_id;
-
-			$participant['participant_id'] = $state_id_for_enu.sprintf('%03d', $village_id);
-
-
 		}
-
-
+		$parent_id = array();
 		$nrc_id = $participant['nrc_id'];
 		$nrc_id = preg_replace('/\s+/', '', $nrc_id);
 
 		$nrc_id = strtolower($nrc_id);
 
 		$pattern = '/(\d+){1,2}\/(\w+a|ah)(\w+a|ah)(\w+a|ah)\((\w)(\w+)?\)(\d+)/i';
-		$nrc_id_format =  preg_replace_callback($pattern, function($matches){
-			return $matches[1]."/".ucwords($matches[2]).ucwords($matches[3]).ucwords($matches[4])."(".ucwords($matches[5]).")".$matches[7];
+		$nrc_id_format = preg_replace_callback($pattern, function ($matches) {
+			return $matches[1] . "/" . ucwords($matches[2]) . ucwords($matches[3]) . ucwords($matches[4]) . "(" . ucwords($matches[5]) . ")" . $matches[7];
 		}, $nrc_id);
+
+		$last = Participant::firstOrNew(['name' => $participant['name'], 'nrc_id' => $nrc_id_format, 'participant_type' => 'coordinator']);
+		//dd($last);
+		if ($participant['participant_type'] == 'coordinator') {
+			if($last->id){
+				$current_inserting_participant_id = $last->participant_id;
+			}else{
+				$current_inserting_participant_id = count(Participant::where('participant_type', '=', 'coordinator')->get()) + 1;
+			}
+			//dd($current_inserting_participant_id);
+
+			$new_pid = sprintf('%04d', $current_inserting_participant_id);
+
+
+				$participant['participant_id'] = $new_pid;
+
+
+		} elseif ($participant['participant_type'] == 'spotchecker') {
+			if(isset($input['state_id'])){
+
+				$state_id_for_spotchecker = $input['state_id'];
+				$state_id = States::where('state_id', '=', $input['state_id'])->pluck('id');
+			}elseif( isset($township_id) && (!empty($township_id) || null != $township_id)){
+
+				$get_locations = Townships::getLocations($township_id);
+				$state_id = $get_locations['state']['id'];
+
+				$state_id_for_spotchecker = $get_locations['state']['state_id'];
+
+			}else{
+				$state_id_for_spotchecker = rand(500, 999);
+			}
+			if(isset($input['spotchecker_id'])) {
+				$participant['participant_id'] = $input['spotchecker_id'];
+			}else{
+				$participant['participant_id'] = $township_id.$state_id_for_spotchecker;
+			}
+
+			$coordinator = States::find($state_id);
+
+			//return $coordinator->coordinators;
+			if (null != $coordinator->coordinators->first() || !empty($coordinator->coordinators->first()) || $coordinator->coordinators->first() != '') {
+				try {
+					$parent_id[] = $coordinator->coordinators->first()->pivot->coordinators_id;
+				} catch (ErrorException $e) {
+
+				}
+			} else {
+				$parent_id[] = null;
+			}
+
+		} else {
+			//$village_id = Villages::where('village', '=', $input['village'])->pluck('village_id');
+			//$participant['parent_id'] = $line['parent_id'];
+
+			//var_dump($village_id);
+			if(isset($village_id) && (!empty($village_id) || null != $village_id) ){
+
+			$get_locations = Villages::getLocations($village_id);
+
+			$state_id = $get_locations['state']['id'];
+
+			$township_id = $get_locations['township']['id'];
+
+			$state_id_for_enu = $get_locations['state']['state_id'];
+
+			$spotchecker_tsp = Townships::find($township_id);
+
+				$coordinator = States::find($state_id);
+
+				//return $coordinator->coordinators;
+				if (null != $coordinator->coordinators->first() || !empty($coordinator->coordinators->first()) || $coordinator->coordinators->first() != '') {
+					try {
+						$parent_id[] = $coordinator->coordinators->first()->pivot->coordinators_id;
+					} catch (ErrorException $e) {
+
+					}
+				}
+
+				if (null != $spotchecker_tsp->spotcheckers->first() || !empty($spotchecker_tsp->spotcheckers->first()) || $spotchecker_tsp->spotcheckers->first() != '') {
+					//dd($spotchecker_tsp->spotcheckers);
+					try {
+						$parent_id[] = $spotchecker_tsp->spotcheckers->first()->pivot->spotcheckers_id;
+					} catch (ErrorException $e) {
+
+					}
+				}
+
+
+			$participant['participant_id'] = (int) $state_id_for_enu . sprintf('%03d', $village_id);
+			}else{
+				return;
+			}
+
+
+		}
+		//dd($participant);
+		if (null == $participant['name'] || empty($participant['name']) || $participant['name'] == '') {
+			$participant['name'] = (string) $participant['participant_id'];
+		}
+
+		if ((!empty($participant['name']) || $participant['name'] != '' ) && (null == $participant['email'] || empty($participant['email']) || $participant['email'] == '')) {
+			$participant['email'] = snake_case($participant['name'].$participant['participant_id']) . '@' . substr(strstr(url(), '.'), 1);
+		}
+
+		$participant['participant_id'] = (int) $participant['participant_id'];
+
+			//dd($participant);
+		try {
+			$new_participant = Participant::updateOrCreate(['name' => $participant['name'], 'email' => $participant['email'], 'participant_id' => $participant['participant_id']], $participant);
+		}catch(QueryException $e){
+			//dd($participant);
+		}
 		//try {
-			$new_participant = Participant::updateOrCreate(['nrc_id' => $nrc_id_format], $participant);
+
 		//	$new_participant = Participant::find($new_participant->id);
 		//}catch (QueryException $e){
 		//	$update_error = true;
 		//}
 
+		if(isset($new_participant) && (!empty($new_participant) || null != $new_participant || $new_participant != '')){
 
-		if($participant['participant_type'] == 'coordinator')
-		{
+			$new_participant->parents()->sync($parent_id, false);
+
+		if ($participant['participant_type'] == 'coordinator') {
 			//return var_dump($new_participant->states());
-			if(isset($state_id)) {
+			if (isset($state_id)) {
 				//return var_dump($state_id);
+				try {
+					$p_id = Participant::find($new_participant->id);
+
+				}catch(QueryException $e){
+
+				}
+//				var_dump($p_id->states->toArray());
+//dd($p_id->states());
+
+				if(!empty($p_id->states->toArray())){
+//					dd($p_id->states);
+					$previous_state_id = $p_id->states->first()->id;
+				}
+				//dd($state_id);
+				//dd($previous_state_id);
+
 				$realstateid = States::where('state_id', '=', $state_id)->pluck('id');
 
-				$new_participant->states()->sync([$realstateid]);
+
+				if(isset($previous_state_id)){
+
+					//dd($realstateid);
+					$new_participant->states()->sync([$realstateid, $previous_state_id], false);
+
+				}else {
+					//dd($previous_state_id);
+					$new_participant->states()->sync([$realstateid]);
+				}
 
 
 			}
-			if(isset($district_id)){
+			if (isset($district_id)) {
 
 				$new_participant->districts()->sync([$district_id]);
 			}
-		}
-		elseif($participant['participant_type'] == 'enumerator')
-		{
+		} elseif ($participant['participant_type'] == 'spotchecker') {
+			//$township = Townships::where('township', '=', $input['township'])->get();
+			if(isset($input['enumerator_id'])){
 
-			if(isset($village_id)) {
+				$enumerators = explode(',', $input['enumerator_id']);
+				$townships = array();
+				foreach($enumerators as $enumerator_id) {
+
+					preg_match('/[0-9]{3}([0-9]{3})/', $enumerator_id, $matches);
+
+					$village_id = (int) $matches[1];
+					$townships[] = Villages::where('village_id', '=', $village_id)->pluck('townships_id');
+				}
+
+
+			}else{
+				$townships = array($township_id);
+			}
+			try {
+				$new_participant->townships()->sync($townships, false);
+			}catch(QueryException $e){
+
+			}
+		}elseif ($participant['participant_type'] == 'enumerator') {
+
+			if (isset($village_id)) {
 
 				try {
 
 					$realvillageid = Villages::where('village_id', '=', $village_id)->pluck('id');
-					//return var_dump($new_participant->villages());
-					//return var_dump($new_participant);
-					$new_participant->villages()->attach([$realvillageid]);
-				}catch (QueryException $e){
+					$new_participant->villages()->sync([$realvillageid], false);
+				} catch (QueryException $e) {
 
 				}
 			}
-		}
-		else
-		{
-			$township = Townships::where('township', '=', $input['township'])->get();
-		}
 
+			if (isset($input['spotchecker_id']) && '' != $input['spotchecker_id']){
+				try {
+					$spotchecker_id = Participant::where('participant_id', '=', $input['spotchecker_id'])->pluck('id');
+					$spotchecker = Participant::find($spotchecker_id);
+					//dd($new_participant->villages);
+					$township_id = $new_participant->villages->first()->townships_id;
+
+					$spotchecker->townships()->sync([$township_id], false);
+				} catch(QueryException $e) {
+
+				}
+			}
+		} else{
+			return;
+		}
 
 
 		$pgroup = PGroups::all();
 
 
 		$new_participant->pgroups()->sync([$pgroup->first()->id]);
+
+	}
 	}
 }

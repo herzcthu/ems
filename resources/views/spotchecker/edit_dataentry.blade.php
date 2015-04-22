@@ -39,7 +39,7 @@
 						@if (Session::has('answer_success'))
 							<div class="alert alert-success">{{ Session::get('answer_success') }}</div>
 						@endif
-						{!! Form::open(['url' => ''.$form_name_url.'/dataentry/create', 'class' => 'form-horizontal', 'id' => 'dataentry']) !!}
+						{!! Form::model($dataentry, ['method' => 'PATCH', 'action' => ['EmsQuestionsAnswersController@update', $form_name_url, $interviewee], 'class' => 'form-horizontal']) !!}
 						@include('dataentry._dform', ['submitButton' => 'Add Data', 'formtype' => 'create'])
 						{!! Form::close() !!}
 				</div>
@@ -53,5 +53,6 @@
 	</section>
 	<!-- /.content -->
 </div><!-- /.content-wrapper -->
+
 
 @endsection

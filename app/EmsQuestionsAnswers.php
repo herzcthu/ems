@@ -2,6 +2,7 @@
 
 use App\Villages;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\QueryException;
 use Request;
 use Illuminate\Support\Collection;
 
@@ -17,14 +18,17 @@ class EmsQuestionsAnswers extends Model {
 
 
     protected $fillable = ['answers', 'notes', 'form_id',
-        'enu_id', 'q_id', 'user_id', 'interviewee_id',
-        'interviewee_gender', 'interviewee_age', 'interviewer_id', 'psu'];
+        'enu_id', 'user_id', 'interviewee_id',
+        'interviewee_gender', 'form_complete', 'interviewer_id', 'psu'];
 
-
-
-    public function village()
+    public function participant()
     {
-        return $this->belongsTo('App\Villages', 'interviewee_villageid');
+        return $this->belongsTo('App\Participant', 'interviewer_id', 'participant_id');
+    }
+
+    public function ScAnswers()
+    {
+        return $this->belongsTo('App\SpotCheckerAnswers', 'interviewee_id');
     }
 
     public function scopeOfFormId($query, $formid)
@@ -32,12 +36,6 @@ class EmsQuestionsAnswers extends Model {
         return $query->whereFormId($formid);
     }
 
-    public function setAnswersAttribute($value)
-    {
-        // return $value;
-        $this->attributes['answers'] = json_encode($value);
-        // return json_encode($value);
-    }
     private function compare($a, $b)
     {
         $a = preg_replace('/^[\-]/', '', $a);
@@ -77,6 +75,12 @@ class EmsQuestionsAnswers extends Model {
         // return json_encode($value);
     }
 
+    public function setAnswersAttribute($value)
+    {
+        // return $value;
+        $this->attributes['answers'] = json_encode($value);
+        // return json_encode($value);
+    }
     /**
      * Decode Answers json string from database
      * @param $value
@@ -129,9 +133,12 @@ class EmsQuestionsAnswers extends Model {
             $form_array = '';
         }
         //return $form->toArray();
-
-        if (empty($form_array)) {
+        try {
             $getform = EmsForm::find($form_name_url);
+        }catch(QueryException $e){
+            $error = $e;
+        }
+        if (null !== $getform) {
             $id = $getform->id;
         } elseif (!empty($form_array)) {
             $id = $getform->first()['id'];
@@ -146,9 +153,16 @@ class EmsQuestionsAnswers extends Model {
         if (!empty($dataentry->toArray())) {
             foreach ($dataentry as $data) {
 
+                //var_dump($data->ScAnswers);
+
             $alldata[$data->interviewee_id]['Interviewee ID'] = $data->interviewee_id;
             $alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
             $alldata[$data->interviewee_id]['Interviewer ID'] = $data->interviewer_id;
+                if($data->form_complete == true) {
+                    $alldata[$data->interviewee_id]['Form Status'] = 'Complete';
+                }else{
+                    $alldata[$data->interviewee_id]['Form Status'] = 'Incomplete';
+                }
 
             preg_match('/([1-9][0-9]{2})([0-9]{3})/', $data->interviewer_id, $matches);
 

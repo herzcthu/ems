@@ -147,12 +147,7 @@
                                 @foreach($dataentry as $data)
 
                                     <tr>
-                                        @if($form->type == 'spotchecker')
-                                        <td>{!! $data->enumerator_form_id !!}</td>
-                                        @endif
-                                        @if($form->type == 'enumerator')
                                         <td>{!! $data->interviewee_id !!}</td>
-                                        @endif
                                         @permission('edit.data')
                                         <!--td>Edit</td-->
                                         @endpermission
@@ -161,7 +156,6 @@
 
                                         @foreach($questions as $q)
                                             @if(array_key_exists($q->id, $data->answers))
-                                                @if($form->type == 'enumerator')
 
                                                     @if(array_key_exists($q->id, $data->notes))
 
@@ -198,47 +192,6 @@
                                                             <td>
                                                             {{ $data->answers[$q->id] }}
                                                             </td>
-                                                        @endif
-                                                    @endif
-                                                @endif
-                                                    @if($form->type == 'spotchecker')
-
-                                                        @if(array_key_exists($q->id, (array) $data->notes))
-
-                                                            <td>
-                                                                <a href='#' data-toggle='modal' data-target='#popupModal' data-notequestion='{{ $q->question }}'
-                                                                   data-notes='{{ $data->notes[$q->id] }}'>
-                                                                    {{ $data->answers[$q->id] }}
-                                                                </a>
-                                                            </td>
-
-                                                        @else
-                                                            @if(is_array($data->answers[$q->id]))
-                                                                @for($i = 1; $i <= 15; $i++)
-                                                                    @if(in_array($i, $data->notes))
-                                                                        <td>
-                                                                            @foreach($data->notes as $note)
-                                                                                @if($note == $i)
-                                                                                    @foreach($data->answers[$q->id] as $da)
-                                                                                        @if(array_key_exists($note, $da))
-                                                                                            {{ $da[$note] }}
-                                                                                        @endif
-                                                                                    @endforeach
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </td>
-                                                                    @else
-                                                                        <td>
-
-                                                                        </td>
-
-                                                                    @endif
-                                                                @endfor
-                                                            @else
-                                                                <td>
-                                                                    {{ $data->answers[$q->id] }}
-                                                                </td>
-                                                            @endif
                                                         @endif
                                                     @endif
 

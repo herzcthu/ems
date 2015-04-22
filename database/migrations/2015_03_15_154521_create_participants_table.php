@@ -14,12 +14,12 @@ class CreateParticipantsTable extends Migration {
     Schema::create('participants', function(Blueprint $table) {
       $table->engine = 'InnoDB';
       $table->increments('id');
-      $table->integer('parent_id')->unsigned()->nullable();
+      //$table->integer('parent_id')->unsigned()->nullable();
       // Add needed columns here (f.ex: name, slug, path, etc.)
       $table->string('user_image')->default('user.png');
       $table->string('name');
-      $table->string('nrc_id')->unique()->index();
-      $table->string('email')->unique()->index();
+      $table->string('nrc_id')->index();
+      $table->string('email')->unique()->nullable()->index();
       $table->string('user_gender');
       $table->string('ethnicity');
       $table->enum('education_level', array('none','primary','middle','highschool','under_graduate','graduated','post_graduated'));
@@ -38,7 +38,7 @@ class CreateParticipantsTable extends Migration {
 
     Schema::table('participants', function(Blueprint $table)
     {
-      $table->foreign('parent_id')->references('id')->on('participants')->onDelete('SET NULL');
+      //$table->foreign('parent_id')->references('id')->on('participants')->onDelete('SET NULL');
     });
   }
 

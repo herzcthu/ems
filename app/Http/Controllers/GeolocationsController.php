@@ -9,6 +9,7 @@ use App\States;
 use App\Districts;
 use App\Townships;
 use App\Villages;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
@@ -33,6 +34,8 @@ class GeolocationsController extends Controller {
 		{
 			//$locations = Villages::paginate(30);
 			$locations = Villages::all();
+
+			//return $locations->toArray();
 			//return var_dump($locations[0]->township->toArray());
 			//return var_dump($locations[16]->districts[0]->townships[0]->villages->toArray());
 			//die();
@@ -173,28 +176,60 @@ class GeolocationsController extends Controller {
 			$file = $file->getRealPath();
 			$excel = Excel::load($file, 'UTF-8');
 			$csv_array = $excel->get()->toArray();
+
 			foreach ($csv_array as $line) {
+				if (isset($line['location_id'])) {
+					//dd(current($line));
+					$location_id = (int)$line['location_id'];
+					preg_match('/([1-9][0-9]{2})([0-9]{3})/', $location_id, $matches);
 
-				$state['state_id'] = $line['state_id'];
-				$state['state'] = $line['state'];
-				$new_state = States::updateOrCreate(array('state' => $line['state']), $state);
+					$state_id = $matches[1];
+					$village_id = $matches[2];
 
-				//return $new_state;
+				} else {
+					if (isset($line['state_id']))
+						$state_id = $line['state_id'];
 
-				$district['states_id'] = $new_state['id'];
-				$district['district'] = $line['district'];
-				$new_district = Districts::updateOrCreate(array('district' => $line['district']), $district);
+					if (isset($line['village_id']))
+						$village_id = $line['village_id'];
+				}
 
-				$township['districts_id'] = $new_district['id'];
-				$township['township'] = $line['township'];
-				$new_township = Townships::updateOrCreate(array('township' => $line['township']), $township);
+				$state['state_id'] = $state_id;
+				if (isset($line['state'])) {
+					$state['state'] = $line['state'];
+					$new_state = States::updateOrCreate(array('state' => $line['state']), $state);
 
-				$village['townships_id'] = $new_township['id'];
+					//return $new_state;
+
+					$district['states_id'] = $new_state['id'];
+				}
+
+				if (isset($line['district'])) {
+					$district['district'] = $line['district'];
+					$new_district = Districts::updateOrCreate(array('district' => $line['district']), $district);
+
+					$township['districts_id'] = $new_district['id'];
+				}
+
+				if (isset($line['township'])) {
+					$township['township'] = $line['township'];
+					$new_township = Townships::updateOrCreate(array('township' => $line['township']), $township);
+
+					$village['townships_id'] = $new_township['id'];
+				}
 				$village['villagetrack'] = $line['villagetrack'];
 				$village['village'] = $line['village'];
-				$village['village_my'] = $line['village_my'];
-				$village['village_id'] = $line['village_id'];
-				$new_village = Villages::updateOrCreate(array('villagetrack' => $line['villagetrack'], 'village' => $line['village']), $village);
+				if (isset($line['village_my']) && !empty($line['village_my'])) {
+					$village['village_my'] = $line['village_my'];
+				} else {
+					$village['village_my'] = '';
+				}
+				$village['village_id'] = $village_id;
+				try {
+					$new_village = Villages::updateOrCreate(array('townships_id' => $village['townships_id'], 'village_id' => $village_id, 'villagetrack' => $line['villagetrack'], 'village' => $line['village']), $village);
+				}catch(QueryException $e){
+					//var_dump(current($csv_array));
+				}
 			}
 			$message = 'Location data imported!';
 			\Session::flash('location_import_success', $message);

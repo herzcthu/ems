@@ -40,7 +40,7 @@
 							<div class="alert alert-success">{{ Session::get('answer_success') }}</div>
 						@endif
 						{!! Form::model($dataentry, ['method' => 'PATCH', 'action' => ['EmsFormsController@dataentry_update', $form_name_url, $interviewee], 'class' => 'form-horizontal']) !!}
-						@include('forms._dedit', ['submitButton' => 'Add Data', 'formtype' => 'create'])
+						@include('forms._dform', ['submitButton' => 'Add Data', 'formtype' => 'create'])
 						{!! Form::close() !!}
 				</div>
 				<!-- /.box-body -->

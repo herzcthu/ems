@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EmsQuestionsAnswersRequest;
 use App\Participant;
 use App\PGroups;
+use App\SpotCheckerAnswers;
 use App\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -56,9 +57,23 @@ class EmsQuestionsAnswersController extends Controller
 
         $form = EmsForm::find($id);
         $questions = EmsFormQuestions::OfNotMain($id)->get();
-        $dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->paginate(50);
+        //dd($form->type);
 
-        $alldata = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
+        if($form->type == 'spotchecker'){
+
+            $dataentry = SpotCheckerAnswers::where('form_id', '=', $id)->paginate(50);
+
+
+            $alldata = SpotCheckerAnswers::where('form_id', '=', $id)->get();
+
+        }else {
+
+            $dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->paginate(50);
+            $alldata = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
+        }
+        //dd($dataentry);
+        //dd($alldata);
+
         foreach($questions as $k => $q){
            // print $q->id;
            // print("<br>");
@@ -88,8 +103,10 @@ class EmsQuestionsAnswersController extends Controller
      *
      * @return Response
      */
-    public function create($form_name_url)
+    public function create($form_name_url, Request $request)
     {
+        $form_name = $request->route('form');
+        //dd($form_name);
         if ($this->auth_user->can("add.data")) {
             $form_name = urldecode($form_name_url);
 
@@ -121,9 +138,9 @@ class EmsQuestionsAnswersController extends Controller
                 $form_answers_count = GeneralSettings::options('options', 'answers_per_question');
             }
             //$forms = EmsForm::lists('name', 'id');
-            $questions = EmsFormQuestions::OfSingleMain($id)->questionNumberAscending()->get();
+            $questions = EmsFormQuestions::OfNotSub($id)->ListIdAscending()->get();
             $form_id = $id;
-            return view('dataentry/dataentry', compact('questions', 'form_name', 'form_name_url', 'form_id', 'enumerators', 'form_answers_count'));
+            return view('dataentry/dataentry', compact('questions', 'form', 'form_name', 'form_name_url', 'form_id', 'enumerators', 'form_answers_count'));
 
         } else {
             return view('errors/403');
@@ -155,8 +172,44 @@ class EmsQuestionsAnswersController extends Controller
 
             $form_id = $form->first()['id'];
 
+            $form_type = $form->first()['type'];
+
             $input = $request->all();
 
+            if($form_type == 'spotchecker'){
+                $enu_interviewee_id = $input['enu_form_id'];
+
+                $answers['enumerator_form_id'] = $enu_interviewee_id;
+                preg_match('/([0-9]{6})[0-9]/', $enu_interviewee_id, $matches);
+                $enu_id = $matches[1];
+                $participant_id = Participant::where('participant_id', '=', $enu_id)->pluck('id');
+                $participant = Participant::find($participant_id);
+                foreach($participant->parents as $parent){
+                    if($parent->participant_type == 'coordinator'){
+                        $coordinator = $parent;
+                    }
+                    if($parent->participant_type == 'spotchecker'){
+                        $spotchecker = $parent;
+                    }
+                }
+
+                //dd($coordinator);
+                //dd($spotchecker->participant_id);
+                $answers['spotchecker_id'] = $spotchecker->participant_id;
+                $answers['user_id'] = $this->current_user_id;
+                $answers['psu'] = $input['psu'];
+                $answers['answers'] = $input['answers'];
+
+                if (isset($form_id)) {
+                    $answers['form_id'] = $form_id;
+                } else {
+                    $answers['form_id'] = $input['form_id'];
+                }
+                $new_answer = SpotCheckerAnswers::updateOrCreate(array('enumerator_form_id' => $answers['enumerator_form_id']), $answers);
+
+                $message = 'New Data Added for form ' . $form_name . '!';
+                \Session::flash('answer_success', $message);
+            }else{
             //return $input;
 
             $answers['interviewer_id'] = $input['interviewer_id'];
@@ -167,9 +220,17 @@ class EmsQuestionsAnswersController extends Controller
             //$answers['interviewee_age'] = $input['interviewee_age'];
 
             $answers['answers'] = $input['answers'];
-            if(isset($input['notes'])) {
+
+            $answers['form_complete'] = (bool) true;
+                foreach($input['answers'] as $q => $a){
+                    $question = EmsFormQuestions::find($q);
+                    if($question->a_view != 'categories' && $a == 0){
+                        $answers['form_complete'] = (bool) false;
+                    }
+                }
+            if (isset($input['notes'])) {
                 $answers['notes'] = $input['notes'];
-            }else{
+            } else {
                 $answers['notes'] = array();
             }
             if (isset($form_id)) {
@@ -178,11 +239,13 @@ class EmsQuestionsAnswersController extends Controller
                 $answers['form_id'] = $input['form_id'];
             }
 
-           // return $answers;
+            //return $answers;
             $new_answer = EmsQuestionsAnswers::updateOrCreate(array('interviewee_id' => $answers['interviewee_id']), $answers);
 
             $message = 'New Data Added for form ' . $form_name . '!';
             \Session::flash('answer_success', $message);
+
+        }
         } else {
             $message = 'Not allow to add new data for' . $form_name . '!';
             \Session::flash('answer_success', $message);
@@ -248,7 +311,7 @@ class EmsQuestionsAnswersController extends Controller
                 $form_answers_count = GeneralSettings::options('options', 'answers_per_question');
             }
             //$forms = EmsForm::lists('name', 'id');
-            $questions = EmsFormQuestions::OfSingleMain($id)->questionNumberAscending()->get();
+            $questions = EmsFormQuestions::OfNotSub($id)->questionNumberAscending()->get();
             $form_id = $id;
             $dataentry = EmsQuestionsAnswers::where('interviewee_id', '=', $interviewee)->lists('answers', 'id');
 

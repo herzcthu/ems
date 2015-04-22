@@ -55,6 +55,7 @@
                                     <th>No.</th>
                                     <th>Form Name</th>
                                     <th>Descriptions</th>
+                                    <th>Type</th>
                                     <th>Start Date</th>
                                     <th>End Date</th>
                                     @permission('view.table')
@@ -78,6 +79,7 @@
                                             <td>{{ $k + 1}}</td>
                                             <td>{{ $form->name }}</td>
                                             <td>{{ $form->descriptions }}</td>
+                                            <td>{{ ucwords($form->type) }}</td>
                                             <td>{{ $form->start_date }}</td>
                                             <td>{{ $form->end_date }}</td>
                                             @permission('view.table')

@@ -1,7 +1,10 @@
 <div class="form-group" id="form-name">
     {!! Form::label('form_id', 'Form Name: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('form_id',$forms, isset($question->form_id) ? $question->form_id : null, ['class' => 'form-control']) !!}
+        {!! Form::select('form_id',$forms, isset($form_id) ? $form_id : null, ['class' => 'form-control', isset($form_id) ? 'disabled' : '']) !!}
+        @if(isset($form_id))
+            {!! Form::hidden('form_id', $form_id) !!}
+        @endif
     </div>
 </div>
 
@@ -25,14 +28,26 @@
         {!! Form::radio('q_type','main',false,['id' => 'main', 'class' => 'mainhide']) !!} Main
         {!! Form::radio('q_type','sub',false, ['id' => 'sub', 'class' => 'mainshow']) !!} Sub Question
         {!! Form::radio('q_type','same',false, ['id' => 'same', 'class' => 'mainshow']) !!} Same Answers as Main
+        @if($form_type == 'spotchecker')
+            {!! Form::radio('q_type','spotchecker',false, ['id' => 'spotchecker', 'class' => 'show-spotchecker mainshow']) !!} Spotchecker Question
+        @endif
     </div>
 </div>
+@if($form_type == 'spotchecker')
+    <div class="form-group" id="enumerator-question-list">
+        {!! Form::label('main_id', 'Enumerator Question: ', ['class' => 'col-md-4 control-label']) !!}
+        <div class="col-md-6">
+            {!! Form::select('main_id',$main_questions, isset($question->parent_id) ? $question->parent_id:null, ['class' => 'form-control']) !!}
+        </div>
+    </div>
+@else
 <div class="form-group" id="main-question-list">
     {!! Form::label('main_id', 'Main Question: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::select('main_id',$questions, isset($question->parent_id) ? $question->parent_id:null, ['class' => 'form-control']) !!}
+        {!! Form::select('main_id',$main_questions, isset($question->parent_id) ? $question->parent_id:null, ['class' => 'form-control']) !!}
     </div>
 </div>
+@endif
 <div class="form-group" id="input-type">
     {!! Form::label('input_type', 'Input Type: ', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">

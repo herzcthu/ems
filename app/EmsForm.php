@@ -13,11 +13,11 @@ class EmsForm extends Model {
     protected $table = 'ems_forms';
 
 
-    protected $fillable = ['pgroup_id', 'name', 'descriptions', 'q_prefix', 'no_of_answers', 'start_date', 'end_date'];
+    protected $fillable = ['pgroup_id', 'name', 'type', 'enu_form_id', 'descriptions', 'q_prefix', 'no_of_answers', 'start_date', 'end_date'];
 
     public function questions()
     {
-        return $this->hasMany('App\EmsFormQuestions', 'form_id');
+        return $this->belongsToMany('App\EmsFormQuestions', 'form_types', 'form_id', 'question_id');
     }
 
     public function setStartDateAttributes($date)
@@ -45,6 +45,16 @@ class EmsForm extends Model {
     public function pgroup()
     {
         return $this->belongsTo('App\PGroups');
+    }
+
+    public function spotchecker()
+    {
+        return $this->hasOne('App\EmsForm', 'enu_form_id');
+    }
+
+    public function enumerator()
+    {
+        return $this->belongsTo('App\EmsForm', 'enu_form_id');
     }
 
 }

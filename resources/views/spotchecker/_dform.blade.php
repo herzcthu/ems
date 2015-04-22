@@ -7,24 +7,10 @@
             <td class="">
 
                 {!! Form::text('enu_form_id', null, ['class' => 'form-control']) !!}
-                <p id="spotcheck" class="btn btn-info btn-xs">Click to check</p>
+                <p class="flash" id="flash"></p>
 
             </td>
-            <td colspan="2" rowspan="2">
-                <div class="flash" id="flash">
-                    <p></p>
-                <table class='table table-bordered'>
-                    <tr><td>Enumerator Name: </td><td id="enu_name">__NAME__</td></tr>
-                    <tr><td>Village: </td><td id="village">__Village__</td></tr>
-                </table>
-                </div>
-            </td>
 
-
-
-        </tr>
-
-        <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
             <td>
                 {!! Form::label('psu', 'PSU :', ['class' => 'control-label']) !!}
             </td>
@@ -33,6 +19,7 @@
                 {!! Form::select('psu',['1' => _t('Urban'), '2' => _t('Rural')], ['class' => 'form-control']) !!}
 
             </td>
+
         </tr>
     @else
 
@@ -43,31 +30,19 @@
         <td class="">
 
                 {!! Form::text('interviewer_id', null, ['class' => 'form-control']) !!}
-            <p id="enucheck" class="btn btn-info btn-xs">Click to check</p>
+            <p class="flash" id="flash"></p>
 
         </td>
-        <td colspan="2" rowspan="2">
-            <div class="flash" id="flash">
-                <p></p>
-                <table class='table table-bordered'>
-                    <tr><td>Enumerator Name: </td><td id="enumerator">__NAME__</td></tr>
-                    <tr><td>State: </td><td id="state">__State__</td></tr>
-                    <tr><td>Village: </td><td id="village">__Village__</td></tr>
-                </table>
-            </div>
-        </td>
 
-
-    </tr>
-    <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
         <td>
             {!! Form::label('interviewee_id', _t($form_name.' ID: '), ['class' => 'control-label']) !!}
         </td>
         <td>
 
-            {!! Form::select('interviewee_id',array_combine(range(1,9), range(1,9)), ['class' => 'form-control']) !!}
+               {!! Form::select('interviewee_id',array_combine(range(1,9), range(1,9)), ['class' => 'form-control']) !!}
 
         </td>
+
     </tr>
     <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
@@ -155,13 +130,6 @@
                     @endif
 
                     @if($question->a_view == 'validated-table')
-                        @foreach($question->answers as $answer_k => $answer_v)
-                            @if(!empty($answer_v))
-                                @if( in_array($answer_k, array('0', '-9')) )
-                                    {!! Form::radio("answers[$children->id]",$answer_k ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
-                                @endif
-                            @endif
-                        @endforeach
                         <table id="validated-table" class="table">
                             <th> </th>
                             @if(is_array($question->answers))
@@ -173,8 +141,6 @@
 
                                 @endforeach
                                 @foreach($question->answers as $answer_k => $answer_v)
-                                        @if( !in_array($answer_k, array('0', '-9')) )
-
                                     <tr>
                                         <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($answer_v) }}</td>
                                         @foreach($question->get_children as $children)
@@ -188,7 +154,6 @@
                                             @endif
                                   @endforeach
                                     </tr>
-                                        @endif
                                 @endforeach
                             @endif
                         </table>
@@ -197,13 +162,9 @@
                                 $(this).toggleClass('validate');
                             });
                             var radioButton = $("tr");
-                            radioButton.mousedown( function() {
+                            radioButton.mousedown(function() {
                                 if($(this).hasClass('validate')){
-                                    if($("tr.validate").find("tr.validate input:radio").val() == 0 || $("tr.validate").find("tr.validate input:radio").val() == '-8' || $("tr.validate").find("tr.validate input:radio").val() == '-9' ) {
-                                    }else{
-                                        $("tr.validate").find("tr.validate input:radio:checked").prop('checked', false);
-                                        //alert($("tr.validate").find("tr.validate input:radio").val());
-                                    }
+                                    $("tr.validate").find("tr.validate input:radio:checked").prop('checked',false);
                                 }
                                 //return false;
                             });
@@ -217,18 +178,6 @@
                                     {!! Form::text("notes[$children->id]", null, ['class' => 'form-control']) !!}
                                 @endif
                                 @if($children->a_view == 'categories')
-                                    <div class="col-md-12">
-                                        @foreach($question->answers as $answer_k => $answer_v)
-                                            @if(!empty($answer_v))
-                                                @if( in_array($answer_k, array('0', '-8', '-9')) )
-                                                    {!! Form::radio("answers[$children->id]",$answer_k ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
-                                                @endif
-                                            @endif
-                                        @endforeach
-                                            <p>
-                                                <a href="#" class="btn btn-box-tool" id="addCat"><i class="fa fa-plus"></i> <span lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Click here to answer') }}</span></a>
-                                            </p>
-                                    </div>
                                     <script type="text/javascript">
                                         $(document).ready(function() {
                                             $('#addCat').on('click', function(e) {
@@ -249,18 +198,16 @@
                                             });
                                         });
                                     </script>
+                                    <a href="#" class="btn btn-box-tool" id="addCat"><i class="fa fa-plus"></i> <span lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Click here to answer') }}</span></a>
 
-                                    <div class="categories" data-prototype='<div class="addinput">{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf('Category_%03d', $n); }, range(1, 15) )), '__NAME__', ['class' => '', 'id'=>'cat-__NAME__']) !!}
+                                    <div class="categories" data-prototype='<div class="addinput"><a href="#" class="btn btn-box-tool delCat" id="delCat"><i class="fa fa-minus"></i></a>{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf('Category_%03d', $n); }, range(1, 15) )), '__NAME__', ['class' => '', 'id'=>'cat-__NAME__']) !!}
 
                                     <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                         @foreach($question->answers as $answer_k => $answer_v)
                                             @if(!empty($answer_v))
-                                                @if( !in_array($answer_k, array('0', '-8', '-9')) )
-
                                                 <li>
                                                     {!! Form::radio("answers[ $children->id ][ __NAME__ ][]",$answer_k,null, ['class' => 'ans-radio-cat-__NAME__'] ) !!} {{ $answer_k.' ('._t($answer_v).')' }}
                                                 </li>
-                                                @endif
                                             @endif
                                         @endforeach
                                     </ul>
@@ -368,9 +315,7 @@
             @if($question->q_type == 'spotchecker')
                 <td><h4 class="{{ $question->question_number }}">{{ $question->question_number }}</h4></td>
 
-                    <td><h4 class="{{ $question->get_parent->question_number.'-question' }}" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ $question->get_parent->question_number }} {{ _t($question->get_parent->question) }}</h4>
-                        Enumerator Answer: <p class="enuanswer" id="{{ $question->get_parent->question_number }}"></p>
-                    </td>
+                    <td><h4 class="{{ $question->get_parent->question_number.'-question' }}" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ $question->get_parent->question_number }} {{ _t($question->get_parent->question) }}</h4></td>
 
                     <td>
                     @if($question->get_parent->a_view == 'notes')
@@ -447,81 +392,25 @@
                     .success(function( data ) {
                         var json = JSON.parse(data);
                         if(json.status == true){
-                            $( "div.flash table").show();
-                            $( "p.enuanswer").show();
-                            $( "div.flash p").hide();
-                            $.each(json.message,function(key, value){
-                                $( "#" + key ).html("<b>" + value + "</b>");
-                            });
+                            $( "p.flash" ).html( json.message );
 
                         }
                         if(json.status == false){
-                            $( "div.flash p").show();
-                            $( "div.flash p" ).html( json.message );
-                            $( "div.flash table" ).hide();
-                            $( "p.enuanswer" ).hide();
-                        }
-                    });
-        });
-        $("#spotcheck").on('click', function() {
-            $.get( ajaxURL, { enu_form_id: $('#enu_form_id').val() } )
-                    .success(function( data ) {
-                        var json = JSON.parse(data);
-                        if(json.status == true){
-                            $( "div.flash table").show();
-                            $( "p.enuanswer").show();
-                            $( "div.flash p").hide();
-                            $.each(json.message,function(key, value){
-                                $( "#" + key ).html("<b>" + value + "</b>");
-                            });
-
-                        }
-                        if(json.status == false){
-                            $( "div.flash p").show();
-                            $( "div.flash p" ).html( json.message );
-                            $( "div.flash table" ).hide();
-                            $( "p.enuanswer" ).hide();
+                            $( "p.flash" ).html( json.message );
                         }
                     });
         });
         @else
-        $("#enucheck").on('click', function() {
-                    $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() }  )
-                            .success(function( data ) {
-                                var json = JSON.parse(data);
-                                if(json.status == true){
-                                    $( "div.flash table").show();
-                                    $( "p.enuanswer").show();
-                                    $( "div.flash p").hide();
-                                    $.each(json.message,function(key, value){
-                                        $( "#" + key ).html("<b>" + value + "</b>");
-                                    });
-                                }
-                                if(json.status == false){
-                                    $( "div.flash p").show();
-                                    $( "div.flash p" ).html( json.message );
-                                    $( "div.flash table" ).hide();
-                                    $( "p.flash" ).html( json.message );
-                                }
-                            });
-                });
 
         $("#interviewer_id").focusout(function() {
-            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() }  )
+            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val() } )
                     .success(function( data ) {
                         var json = JSON.parse(data);
                         if(json.status == true){
-                            $( "div.flash table").show();
-                            $( "p.enuanswer").show();
-                            $( "div.flash p").hide();
-                            $.each(json.message,function(key, value){
-                                $( "#" + key ).html("<b>" + value + "</b>");
-                            });
+                            $( "p.flash" ).html( json.message );
+
                         }
                         if(json.status == false){
-                            $( "div.flash p").show();
-                            $( "div.flash p" ).html( json.message );
-                            $( "div.flash table" ).hide();
                             $( "p.flash" ).html( json.message );
                         }
                     });
@@ -532,17 +421,10 @@
                     .success(function( data ) {
                         var json = JSON.parse(data);
                         if(json.status == true){
-                            $( "div.flash table").show();
-                            $( "p.enuanswer").show();
-                            $( "div.flash p").hide();
-                            $.each(json.message,function(key, value){
-                                $( "#" + key ).html("<b>" + value + "</b>");
-                            });
+                            $( "p.flash" ).html( json.message );
+
                         }
                         if(json.status == false){
-                            $( "div.flash p").show();
-                            $( "div.flash p" ).html( json.message );
-                            $( "div.flash table" ).hide();
                             $( "p.flash" ).html( json.message );
                         }
                     });
@@ -553,17 +435,10 @@
                     .success(function( data ) {
                         var json = JSON.parse(data);
                         if(json.status == true){
-                            $( "div.flash table").show();
-                            $( "p.enuanswer").show();
-                            $( "div.flash p").hide();
-                            $.each(json.message,function(key, value){
-                                $( "#" + key ).html("<b>" + value + "</b>");
-                            });
+                            $( "p.flash" ).html( json.message );
+
                         }
                         if(json.status == false){
-                            $( "div.flash p").show();
-                            $( "div.flash p" ).html( json.message );
-                            $( "div.flash table" ).hide();
                             $( "p.flash" ).html( json.message );
                         }
                     });

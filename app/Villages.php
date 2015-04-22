@@ -29,10 +29,6 @@ class Villages extends Model {
         return $this->belongsToMany('App\Participant', 'enumerators_villages', 'villages_id', 'enumerators_id');
     }
 
-    public function interviewee()
-    {
-        return $this->hasMany('App\EmsQuestionsAnswers');
-    }
 
     public static function getLocations($village_id)
     {

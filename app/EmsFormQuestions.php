@@ -13,11 +13,11 @@ class EmsFormQuestions extends Model {
     protected $table = 'ems_form_questions';
 
 
-    protected $fillable = ['parent_id', 'form_id', 'question_number', 'question', 'q_type', 'input_type', 'a_view', 'answers'];
+    protected $fillable = ['parent_id', 'form_id', 'list_id', 'question_number', 'question', 'q_type', 'input_type', 'a_view', 'answers'];
 
     public function form()
     {
-        return $this->belongsTo('App\EmsForm', 'form_id');
+        return $this->belongsToMany('App\EmsForm', 'form_types', 'question_id', 'form_id');
 
     }
 
@@ -75,6 +75,16 @@ class EmsFormQuestions extends Model {
     public function scopeIdAscending($query)
     {
         return $query->orderBy('id','ASC');
+    }
+
+    public function scopeListIdDescending($query)
+    {
+        return $query->orderBy('list_id','DESC');
+    }
+
+    public function scopeListIdAscending($query)
+    {
+        return $query->orderBy('list_id','ASC');
     }
 
     public function scopeQuestionNumberDescending($query)
@@ -166,6 +176,16 @@ class EmsFormQuestions extends Model {
         $query->where(function($query)
         {
             $query->where('q_type', '!=', 'main');
+        });
+        return $query;
+    }
+
+    public function scopeOfNotSub($query, $form_id)
+    {
+        $query->where('form_id', '=', $form_id);
+        $query->where(function($query)
+        {
+            $query->where('q_type', '!=', 'sub');
         });
         return $query;
     }

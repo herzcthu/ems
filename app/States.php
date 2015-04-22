@@ -31,9 +31,12 @@ class States extends Model {
 
     public function townships()
     {
-        return $this->hasManyThrough('App\Townships', 'Districts', 'states_id', 'districts_id');
+        return $this->hasManyThrough('App\Townships', 'App\Districts', 'states_id', 'districts_id');
     }
+    public static function villages()
+    {
 
+    }
 
 
 }

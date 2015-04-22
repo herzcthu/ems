@@ -87,14 +87,24 @@ desired effect
             <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                 <span class="sr-only">Toggle navigation</span>
             </a>
+
+
+
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
+
+
                 <ul class="nav navbar-nav">
                     <!-- User Account Menu -->
                     @if (Auth::guest())
                         <li><a href="{{ url('/auth/login') }}">Login</a></li>
                         <li><a href="{{ url('/auth/register') }}">Register</a></li>
                     @else
+                        @if(\App\User::find(Auth::user()->id)->roles->first()->slug == 'admin')
+                            <li class="dropdown messages-menu pull-left">
+                                <a style="padding: 5px; margin:0px;"><span class="hidden-xs"><h4>Dataentry ID: <b>{{ sprintf('%02d', Auth::user()->id )}}</b></h4></span></a>
+                            </li>
+                        @endif
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <img src="/dist/img/avatar5.png" class="user-image" alt="User Image"/>
@@ -111,7 +121,13 @@ desired effect
                                         <small>Member since {{ \App\User::find(Auth::user()->id)->created_at }}</small>
                                     </p>
                                 </li>
-                                <li class="user-body"></li>
+                                <li class="user-body">
+                                    <div class="text-center">
+                                        @if(\App\User::find(Auth::user()->id)->roles->first()->slug == 'dataentry')
+                                        <p>Dataentry ID: {{ sprintf('%02d', Auth::user()->id )}}</p>
+                                        @endif
+                                    </div>
+                                </li>
                                 <li class="user-footer">
                                     <div class="pull-left">
                                         <a class="btn btn-default btn-flat" href="{{ url('/auth/logout') }}">Logout</a>
@@ -274,57 +290,6 @@ desired effect
 <script src="{{ asset('/plugins/jquery-validation/jquery.validate.js') }}" type="text/javascript"></script>
 
 
-<script type="text/javascript">
-    if (typeof ajaxURL === 'undefined') {
-        var ajaxURL = '/ajax';
-    }
-    $(function(){
-
-        $("#interviewer_id").focusout(function() {
-            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val() } )
-                    .success(function( data ) {
-                        var json = JSON.parse(data);
-                        if(json.status == true){
-                            $( "p.flash" ).html( json.message );
-
-                        }
-                        if(json.status == false){
-                            $( "p.flash" ).html( json.message );
-                        }
-                    });
-        });
-
-        $("#row1").on('mouseleave', function() {
-            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() } )
-                    .success(function( data ) {
-                        var json = JSON.parse(data);
-                        if(json.status == true){
-                            $( "p.flash" ).html( json.message );
-
-                        }
-                        if(json.status == false){
-                            $( "p.flash" ).html( json.message );
-                        }
-                    });
-        });
-
-        $("#interviewee_id").change(function() {
-            $.get( ajaxURL, { interviewer_id: $('#interviewer_id').val(), interviewee_id: $('#interviewee_id').val() } )
-                    .success(function( data ) {
-                        var json = JSON.parse(data);
-                        if(json.status == true){
-                            $( "p.flash" ).html( json.message );
-
-                        }
-                        if(json.status == false){
-                            $( "p.flash" ).html( json.message );
-                        }
-                    });
-        }).change();
-
-
-    });
-</script>
 <!-- Bootstrap 3.3.2 JS -->
 <script src="{{ asset('/js/bootstrap.min.js') }}" type="text/javascript"></script>
 

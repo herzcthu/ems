@@ -20,7 +20,7 @@ class CoordinatorFromRequest extends Request {
 
 		if ( $this->current_user->is('admin') ){
 			return true;
-		}elseif ($this->current_user->level() < 6 )
+		}elseif ($this->current_user->level() > 6 )
 		{
 			return true;
 		}else{

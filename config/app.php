@@ -170,6 +170,11 @@ return [
 		'Stevebauman\Translation\TranslationServiceProvider',
 
 		/*
+		 *https://github.com/kristijanhusak/laravel-form-builder
+		 */
+		'Kris\LaravelFormBuilder\FormBuilderServiceProvider',
+
+		/*
 		 * Application Service Providers...
 		 */
 		'App\Providers\AppServiceProvider',
@@ -228,6 +233,7 @@ return [
 		'Form'		=> 'Illuminate\Html\FormFacade',
 		'Excel' 	=> 'Maatwebsite\Excel\Facades\Excel',
 		'Translation' => 'Stevebauman\Translation\Facades\Translation',
+		'FormBuilder' => 'Kris\LaravelFormBuilder\Facades\FormBuilder',
 
 
 	],

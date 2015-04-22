@@ -1,13 +1,25 @@
 <div class="form-group">
     {!! Form::label('name','Form Name',['id'=>'','class'=>'control-label col-md-4 ']) !!}
     <div class="col-md-6">
-        {!! Form::text('name',isset($form->name) ? $form->name:null,['id'=>'','class'=>'form-control file']) !!}
+        {!! Form::text('name',isset($form->name) ? $form->name:null,['id'=>'','class'=>'form-control']) !!}
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('type','Form Type',['id'=>'','class'=>'control-label col-md-4 ']) !!}
+    <div class="col-md-6">
+        {!! Form::select('type',['enumerator' => 'Enumerator', 'spotchecker' => 'Spot Checker'],isset($form->type) ? $form->type:null,['id'=>'','class'=>'form-control']) !!}
+    </div>
+</div>
+<div class="form-group">
+    {!! Form::label('enumerator_form','Enumerator Form',['id'=>'','class'=>'control-label col-md-4 ']) !!}
+    <div class="col-md-6">
+        {!! Form::select('enumerator_form', $forms, null,['id'=>'','class'=>'form-control']) !!}
     </div>
 </div>
 <div class="form-group">
     {!! Form::label('descriptions','Descriptions',['id'=>'','class'=>'control-label col-md-4 ']) !!}
     <div class="col-md-6">
-        {!! Form::text('descriptions',isset($form->descriptions) ? $form->descriptions:null,['id'=>'','class'=>'form-control file']) !!}
+        {!! Form::text('descriptions',isset($form->descriptions) ? $form->descriptions:null,['id'=>'','class'=>'form-control']) !!}
     </div>
 </div>
 <div class="form-group">

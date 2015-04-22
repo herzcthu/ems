@@ -21,6 +21,7 @@ class CreateEmsQuestionsAnswersTable extends Migration {
 			$table->integer('interviewee_id')->unique()->unsigned()->nullable();
 			$table->enum('interviewee_gender', array('M','F','U'));
 			$table->integer('interviewee_age');
+			$table->boolean('form_complete');
 			$table->text('notes');
 			$table->integer('psu');
 			$table->text('answers');

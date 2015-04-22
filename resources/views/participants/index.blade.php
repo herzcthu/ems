@@ -110,11 +110,12 @@
                                         <td>{{ $participant->dob }}</td>
                                         <td>{!! ucwords($participant->participant_type) !!}</td>
                                         @if($participant->participant_type == 'coordinator')
-                                            <td>{{ isset($participant->districts->toArray()[0]['district']) ? $participant->districts->toArray()[0]['district'] : $participant->states->toArray()[0]['state']  }}</td>
+                                            <td>{{ implode(', ', $participants->find($participant->id)->states->lists('state') ) }}</td>
 
                                         @elseif($participant->participant_type == 'enumerator')
                                             <td>{{ isset($participant->villages->toArray()[0]['village']) ? $participant->villages->toArray()[0]['village'] : 'undefined'  }}</td>
-
+                                        @elseif($participant->participant_type == 'spotchecker')
+                                            <td>{{ implode(', ', $participants->find($participant->id)->townships->lists('township')) }}</td>
                                         @endif
                                         <td><a href={{ url("/participants/".$participant->id ) }}>Edit</a></td>
                                         <td><a href={{ url("/participants/".$participant->id."/delete")}}>Delete</a>
