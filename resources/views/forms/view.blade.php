@@ -95,7 +95,7 @@
 										@endpermission
 									</tr>
 
-								@elseif( $question->q_type == 'main' )
+								@elseif( $question->q_type == 'main' || $question->q_type == 'spotchecker')
 									<tr>
 										<td>{{ ( ( $questions->currentPage() * $questions->perPage()) - $questions->perPage() ) + $k + 1 }}</td>
 										<td>{{ $question->question }}
