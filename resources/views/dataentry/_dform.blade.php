@@ -364,7 +364,7 @@
     @if($form->type == 'spotchecker')
     <tr><th></th><th>Section/Question</th><th>Spotchecker Answer</th><th></th><th></th></tr>
     @foreach($questions as $k => $question)
-
+            <tr>
             @if($question->q_type == 'spotchecker')
                 <td><h4 class="{{ $question->question_number }}">{{ $question->question_number }}</h4></td>
 
@@ -420,7 +420,7 @@
             <td>
                 </td>
             @endif
-        </t>
+        </tr>
     @endforeach
     @endif
     <tr>
