@@ -57,7 +57,11 @@ class HomeController extends Controller {
 		}
 		*/
 		$incomplete_form = EmsQuestionsAnswers::where('form_id', $form_id)->where('form_complete', false)->get();
-		$no_answers_percent = ( count($incomplete_form) / count($dataentry) ) * 100;
+		if(0 === count($incomplete_form) || 0 === count($dataentry)){
+			$no_answers_percent = 0;
+		}else {
+			$no_answers_percent = (count($incomplete_form) / count($dataentry)) * 100;
+		}
 
 		$all_state = States::lists('state', 'id');
 		//dd($all_state);
