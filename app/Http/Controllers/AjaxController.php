@@ -88,14 +88,16 @@ class AjaxController extends Controller {
 				} catch (\ErrorException $e) {
 
 				}
-					foreach($participant->parents as $parent){
-						if($parent->participant_type == 'coordinator'){
+				if(isset($participant)) {
+					foreach ($participant->parents as $parent) {
+						if ($parent->participant_type == 'coordinator') {
 							$coordinator = $parent;
 						}
-						if($parent->participant_type == 'spotchecker'){
+						if ($parent->participant_type == 'spotchecker') {
 							$spotchecker = $parent;
 						}
 					}
+				}
 				if (!isset($spotchecker)){
 					$ajax_response['status'] = false;
 					$ajax_response['message'] = '<p class="text-red">Spot Checker not found!</p>';
