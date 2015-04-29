@@ -13,7 +13,7 @@ class EmsFormQuestions extends Model {
     protected $table = 'ems_form_questions';
 
 
-    protected $fillable = ['parent_id', 'form_id', 'list_id', 'question_number', 'question', 'q_type', 'input_type', 'a_view', 'answers'];
+    protected $fillable = ['parent_id', 'form_id', 'list_id', 'question_number', 'question', 'q_type', 'input_type', 'a_view', 'answers', 'pre-answers', 'optional'];
 
     public function form()
     {
@@ -190,6 +190,17 @@ class EmsFormQuestions extends Model {
         return $query;
     }
 
+    public static function enu_child($query, $enu_qid)
+    {
+
+    }
+    public static function enu_parent($enu_qid)
+    {
+        //$query->where('id',$enu_qid);
+        $enu_question = self::find($enu_qid);
+        $parent = $enu_question->get_parent;
+        return $parent;
+    }
 }
 /*
  * ->where('name', '=', 'John')

@@ -60,28 +60,7 @@
                                 <th>Interviewee</th-->
 
                                 @foreach($questions as $qk => $q)
-                                        @if($q->q_type == 'same' && $q->a_view == 'categories')
-                                            @for($i =1; $i <= 15; $i++)
-                                                <th>
-                                                    <a href='#' data-toggle='modal' data-target='#popupModal'
-                                                       data-mainquestion='{{ $q->get_parent->question_number." ".$q->get_parent->question}}'
-                                                       data-subquestion='{{ $q->question_number." ".$q->question }}' data-answers='&lt;ul&gt;
-                                                   @foreach($q->get_parent->answers as $k => $answer)
-                                                       @if(is_array($answer))
-
-                                                       @else
-                                                    {{ "&lt;li&gt;(".$k.") ".$answer." " }}
-
-
-                                                       &lt;/li&gt;
-                                                       @endif
-                                                    @endforeach
-                                                            &lt;/ul&gt;'>
-                                                        {{ $q->get_parent->question_number.' '.$q->question_number.'.'.$i }}
-                                                    </a>
-                                                </th>
-                                            @endfor
-                                        @elseif($q->q_type == 'same')
+                                        @if($q->q_type == 'same')
                                             <th>
                                             <a href='#' data-toggle='modal' data-target='#popupModal'
                                                data-mainquestion='{{ $q->get_parent->question_number." ".$q->get_parent->question}}'
@@ -163,7 +142,7 @@
                                             @if(array_key_exists($q->id, $data->answers))
                                                 @if($form->type == 'enumerator')
 
-                                                    @if(array_key_exists($q->id, $data->notes))
+                                                    @if(array_key_exists($q->id, (array)$data->notes))
 
                                                             <td>
                                                             <a href='#' data-toggle='modal' data-target='#popupModal' data-notequestion='{{ $q->question }}'
@@ -173,27 +152,38 @@
                                                             </td>
 
                                                     @else
+
                                                         @if(is_array($data->answers[$q->id]))
-                                                        @for($i = 1; $i <= 15; $i++)
-                                                            @if(in_array($i, $data->notes))
                                                                 <td>
-                                                                @foreach($data->notes as $note)
-                                                                    @if($note == $i)
-                                                                        @foreach($data->answers[$q->id] as $da)
-                                                                            @if(array_key_exists($note, $da))
-                                                                            {{ $da[$note] }}
+                                                            @if(!empty($data->notes))
+                                                                @for($i = 1; $i <= 15; $i++)
+                                                                    @if(in_array($i, $data->notes))
+
+                                                                        @foreach($data->notes as $nk =>$note)
+                                                                            @if($note == $i)
+                                                                                @foreach($data->answers[$q->id] as $da)
+                                                                                    @if(is_array($da))
+                                                                                        @if(array_key_exists($note, $da))
+                                                                                        <p>{{ '('.$nk.') '.$da[$note] }}</p>
+                                                                                        @endif
+                                                                                    @endif
+                                                                                @endforeach
                                                                             @endif
                                                                         @endforeach
+
                                                                     @endif
-                                                                @endforeach
-                                                                </td>
-                                                            @else
-                                                                <td>
-
-                                                                </td>
-
+                                                                @endfor
                                                             @endif
-                                                        @endfor
+                                                            <?php $i =1; ?>
+                                                            @foreach(array_filter($data->answers[$q->id]) as $aq => $av)
+                                                                @if(is_array($av))
+
+                                                                @else
+                                                               <p>{{ '('.$i.') '.$av }}</p>
+                                                                @endif
+                                                                <?php $i++; ?>
+                                                            @endforeach
+                                                                </td>
                                                         @else
                                                             <td>
                                                             {{ $data->answers[$q->id] }}
@@ -214,26 +204,36 @@
 
                                                         @else
                                                             @if(is_array($data->answers[$q->id]))
-                                                                @for($i = 1; $i <= 15; $i++)
-                                                                    @if(in_array($i, $data->notes))
-                                                                        <td>
-                                                                            @foreach($data->notes as $note)
-                                                                                @if($note == $i)
-                                                                                    @foreach($data->answers[$q->id] as $da)
-                                                                                        @if(array_key_exists($note, $da))
-                                                                                            {{ $da[$note] }}
-                                                                                        @endif
-                                                                                    @endforeach
-                                                                                @endif
-                                                                            @endforeach
-                                                                        </td>
-                                                                    @else
-                                                                        <td>
+                                                                <td>
+                                                                    @if(!empty($data->notes))
+                                                                        @for($i = 1; $i <= 15; $i++)
+                                                                            @if(in_array($i, $data->notes))
 
-                                                                        </td>
+                                                                                @foreach($data->notes as $nk =>$note)
+                                                                                    @if($note == $i)
+                                                                                        @foreach($data->answers[$q->id] as $da)
+                                                                                            @if(is_array($da))
+                                                                                                @if(array_key_exists($note, $da))
+                                                                                                    <p>{{ '('.$nk.') '.$da[$note] }}</p>
+                                                                                                @endif
+                                                                                            @endif
+                                                                                        @endforeach
+                                                                                    @endif
+                                                                                @endforeach
 
+                                                                            @endif
+                                                                        @endfor
                                                                     @endif
-                                                                @endfor
+                                                                    <?php $i =1; ?>
+                                                                    @foreach(array_filter($data->answers[$q->id]) as $aq => $av)
+                                                                        @if(is_array($av))
+
+                                                                        @else
+                                                                            <p>{{ '('.$i.') '.$av }}</p>
+                                                                        @endif
+                                                                        <?php $i++; ?>
+                                                                    @endforeach
+                                                                </td>
                                                             @else
                                                                 <td>
                                                                     {{ $data->answers[$q->id] }}

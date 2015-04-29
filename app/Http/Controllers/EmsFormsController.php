@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 
 class EmsFormsController extends Controller
 {
@@ -100,13 +102,30 @@ class EmsFormsController extends Controller
             $forms = EmsForm::lists('name', 'id');
             if($form_type == 'spotchecker'){
                 //dd($enu_form_id);
-                $main_questions = EmsFormQuestions::OfSingleMain($enu_form_id)->lists('question_number', 'id');;
+                $enu_questions = EmsFormQuestions::ofNotMain($enu_form_id)->lists('question_number', 'id');
+                //dd($enu_questions);
+                foreach($enu_questions as $key => $value){
+                    // if you want to change array values then "&" before the $value is mandatory.
+                    $enu_parent_questions = EmsFormQuestions::find($key);
+                    if(null !== $enu_parent_questions->parent_id) {
+                        $parent_number = $enu_parent_questions->get_parent->question_number;
+                        $enu_questions[$key] = $parent_number . $value;
+                    }else{
+                        $enu_questions[$key] = $value;
+                    }
+                }
+
+                //dd($enu_questions);
+
 
             }else {
-                $main_questions = EmsFormQuestions::where('q_type', '=', 'main')->lists('question_number', 'id');
-            }
+                $enu_questions = array();
 
-            return view('forms/build_qform', compact('forms', 'main_questions', 'form_name_url', 'form_answers_count', 'form_id', 'form_name', 'form_type'));
+            }
+            $main_questions = EmsFormQuestions::where('form_id', $form_id)->where('q_type', 'main')->lists('question_number', 'id');
+
+
+            return view('forms/build_qform', compact('forms', 'enu_questions', 'main_questions', 'form_name_url', 'form_answers_count', 'form_id', 'form_name', 'form_type'));
         } else {
             return view('errors/403');
         }
@@ -146,14 +165,19 @@ class EmsFormsController extends Controller
             }
             $forms = EmsForm::lists('name', 'id');
             //dd($form_type);
+            $form = EmsForm::find($question->form_id);
             if($form_type == 'spotchecker'){
-                $enu_form = EmsForm::find($question->form->first()->enu_form_id);
+                //dd($form);
 
-                $main_questions = EmsFormQuestions::OfSingleMain($enu_form->id)->lists('question_number', 'id');
+                //dd($form->enumerator->id);
+
+                $main_questions = EmsFormQuestions::OfSingleMain($form->id)->lists('question_number', 'id');
+                $enu_questions = EmsFormQuestions::where('form_id', $form->enumerator->id)->lists('question_number', 'id');
             }else {
                 $main_questions = EmsFormQuestions::where('q_type', '=', 'main')->lists('question_number', 'id');
+                $enu_questions = '';
             }
-            return view('forms/edit_qform', compact('forms', 'main_questions', 'question', 'id', 'form_answers_count', 'form_type'));
+            return view('forms/edit_qform', compact('forms', 'main_questions', 'question', 'id', 'form_answers_count', 'form_type','enu_questions'));
         } else {
             return view('errors/403');
         }
@@ -166,53 +190,7 @@ class EmsFormsController extends Controller
     public function save_question(EmsFormQuestionsRequest $request, $form_url)
     {
        //return $request->all();
-        if ($this->auth_user->can("create.form")) {
-            $form_input = $request->all();
-            $q['form_id'] = $form_input['form_id'];
-
-            if(isset($form_input['list_id'])) {
-                $q['list_id'] = $form_input['list_id'];
-            }else{
-                $form = EmsForm::find($form_input['form_id']);
-                //dd($form->questions->toArray());
-                $q['list_id'] = count($form->questions->toArray()) + 1;
-            }
-
-            $q['question_number'] = $form_input['question_number'];
-
-            $q['question'] = $form_input['question'];
-
-            $q['q_type'] = $form_input['q_type'];
-
-            $q['a_view'] = $form_input['a_view'];
-
-            if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same' || $form_input['q_type'] == 'spotchecker') {
-                $q['parent_id'] = $form_input['main_id'];
-            } else {
-                $q['parent_id'] = null;
-            }
-            if ($form_input['q_type'] != 'main') {
-                $q['input_type'] = $form_input['input_type'];
-
-                $q['answers'] = $form_input['answers'];
-            }
-            if ( $form_input['q_type'] == 'main' && $form_input['input_type'] == 'same')
-            {
-                $q['input_type'] = $form_input['input_type'];
-
-                $q['answers'] = $form_input['answers'];
-            }
-
-            //return $form['answers'];
-            $question = EmsFormQuestions::create($q);
-            $question->form()->sync([$form_input['form_id']], false);
-            //$form = EmsForm::find($q['form_id']);
-            //$form->questions()->attach($question->id);
-            $message = 'New Question Created!';
-            \Session::flash('form_build_success', $message);
-
-
-        }
+        $this->SaveOrUpdate($request);
         return redirect('forms/' . $form_url . '/add_question');
     }
 
@@ -228,36 +206,7 @@ class EmsFormsController extends Controller
         //
 
         $question = EmsFormQuestions::findOrFail($id);
-        $form_input = $request->all();
-        $question->form_id = $form_input['form_id'];
-
-        $question->question_number = $form_input['question_number'];
-
-        $question->question = $form_input['question'];
-
-        $question->q_type = $form_input['q_type'];
-
-        $question->a_view = $form_input['a_view'];
-
-        if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same' || $form_input['q_type'] == 'spotchecker') {
-            $question->parent_id = $form_input['main_id'];
-        } else {
-            $question->parent_id = null;
-        }
-        if ($form_input['q_type'] != 'main') {
-            $question->input_type = $form_input['input_type'];
-            $question->answers = $form_input['answers'];
-        }
-        if ( $form_input['q_type'] == 'main' && $form_input['input_type'] == 'same')
-        {
-            $question->input_type = $form_input['input_type'];
-
-            $question->answers = $form_input['answers'];
-        }
-
-        //return $question;
-        $question->push();
-        $question->form()->sync([$form_input['form_id']], false);
+        $this->SaveOrUpdate($request, $id);
         return redirect('forms/question/' . $id);
     }
 
@@ -777,15 +726,21 @@ class EmsFormsController extends Controller
         if($form_type == 'spotchecker'){
             $data_array = SpotCheckerAnswers::get_alldataentry($id);
         }
+        $keys = array();
+        foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($data_array)) as $key => $val) $keys[$key] = '';
+        $data = array();
+        foreach($data_array as $values) {
+            $data[] = array_merge($keys, $values);
+        }
 
-       // print_r($data_array);
-       // return;
+        //dd($data);
+        //return;
 
-        $excel->create($form_name_url, function($excel) use($data_array) {
+        $excel->create($form_name_url, function($excel) use($data) {
 
-            $excel->sheet('Sheetname', function($sheet) use($data_array) {
+            $excel->sheet('Sheetname', function($sheet) use($data) {
 
-                $sheet->fromArray($data_array);
+                $sheet->fromArray($data);
                 //$sheet->fromArray($data_array,null, 'A1', false, true);
 
                // $sheet->loadview('results/excel');
@@ -879,7 +834,7 @@ class EmsFormsController extends Controller
 
         $questions = EmsFormQuestions::OfSingleMain($id)->idAscending()->paginate(30);
 
-        return view('forms/view', compact('questions', 'id', 'form_answers_count'));
+        return view('forms/view', compact('questions', 'id', 'form_answers_count','form_name_url'));
     }
 
     /**
@@ -1020,6 +975,118 @@ class EmsFormsController extends Controller
         \Session::flash('flash_message', $message);
 
         return redirect('forms/' . $id);
+    }
+
+    private function SaveOrUpdate($request, $qid = null)
+    {
+        if ($this->auth_user->can("create.form")) {
+            $form_input = $request->all();
+            $q['form_id'] = $form_input['form_id'];
+
+            if(isset($form_input['list_id'])) {
+                $q['list_id'] = $form_input['list_id'];
+            }else{
+                $form = EmsForm::find($form_input['form_id']);
+                //dd($form->questions->toArray());
+                $q['list_id'] = count($form->questions->toArray()) + 1;
+            }
+
+            $q['question_number'] = $form_input['question_number'];
+
+            $q['question'] = $form_input['question'];
+
+            if(isset($form_input['optional']))
+                $q['optional'] = true;
+
+            $q['q_type'] = $form_input['q_type'];
+
+            $q['a_view'] = $form_input['a_view'];
+            $answers = array();
+            foreach($form_input['answers'] as $k => $a){
+                if($a['text'] !== '' || !empty($a['text'])){
+                    $answers[$k] = $a;
+                }
+
+            }
+            $form_input_type = $form_input['input_type'];
+            if(null !== $answers || !empty($answers)) {
+                array_walk($answers, function (&$value, $key, $form_input_type) {
+                    if ($value['type'] == 'same') {
+                        if ($form_input_type != 'none' || $form_input_type != 'different') {
+                            $value['type'] = $form_input_type;
+                        } else {
+                            $value['type'] = 'radio';
+                        }
+                        if( in_array($key, array('0', '-97', '-98', '-99')) ){
+                            $value['type'] = 'radio';
+                        }
+                    }
+                }, $form_input_type);
+                $q['answers'] = $answers;
+            }
+
+            if ($form_input['q_type'] == 'sub' || $form_input['q_type'] == 'same' ) {
+                $q['parent_id'] = $form_input['main_id'];
+            } elseif($form_input['q_type'] == 'spotchecker'){
+                $q['parent_id'] = $form_input['enu_id'];
+            }else {
+                $q['parent_id'] = null;
+            }
+            if ($form_input['q_type'] != 'main') {
+                $q['input_type'] = $form_input['input_type'];
+
+
+            }
+            if ( $form_input['q_type'] == 'main' && $form_input['input_type'] == 'same')
+            {
+                $q['input_type'] = $form_input['input_type'];
+
+
+            }
+            if(isset($form_input['pre-answers'])) {
+                $pre_answers = $form_input['pre-answers'];
+
+                //dd($pre_answers);
+                if (array_key_exists('dont-know', $pre_answers)) {
+                    $q['answers'][-97]['text'] = "Don't Know";
+                    $q['answers'][-97]['type'] = 'radio';
+                    $q['answers'][-97]['value'] = -8;
+                }
+                if (array_key_exists('refuse', $pre_answers)) {
+                    $q['answers'][-98]['text'] = "Refuse to Answer";
+                    $q['answers'][-98]['type'] = 'radio';
+                    $q['answers'][-98]['value'] = -9;
+                }
+                if (array_key_exists('no-answer', $pre_answers)) {
+                    $q['answers'][-99]['text'] = "No Answer";
+                    $q['answers'][-99]['type'] = 'radio';
+                    $q['answers'][-99]['value'] = 0;
+                }
+            }
+
+            //dd($q);
+            if($qid == null) {
+                $question = EmsFormQuestions::create($q);
+                $message = 'New Question Created!';
+            }else{
+                $question = EmsFormQuestions::findOrNew($qid);
+                $list_id = $question->list_id;
+                foreach($q as $k => $a){
+                    $question->$k = $a;
+
+                }
+                $question->list_id = $list_id;
+                $question->push();
+                $message = 'Question Updated!';
+            }
+            $question->form()->sync([$form_input['form_id']], false);
+            //$form = EmsForm::find($q['form_id']);
+            //$form->questions()->attach($question->id);
+
+            \Session::flash('form_build_success', $message);
+
+
+        }
     }
 
 

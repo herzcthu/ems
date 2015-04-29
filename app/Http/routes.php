@@ -107,6 +107,10 @@ Route::resource('{form}/dataentry', 'EmsQuestionsAnswersController');
 
 Route::get('{form}/ajax', 'AjaxController@check');
 
+Route::get('{form}/ajaxsort', 'AjaxController@sort');
+
+Route::post('{form}/ajaxsort', 'AjaxController@sort');
+
 Route::post('roles', 'UserRoleController@update');
 
 Route::get('settings', 'GeneralSettingsController@index');

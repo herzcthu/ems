@@ -40,33 +40,6 @@ $(document).ready(function ($) {
         "sScrollX": "90%",
         "bScrollCollapse": true
        });
-    $('.datepicker').datepicker({
-        format: 'dd-mm-yyyy',
-        startDate: '-3d'
-    });
-    $('.dobdatepicker').datepicker({
-        format: 'dd-mm-yyyy'
-    });
-    $('.year-picker').datepicker({
-        format: 'yyyy',
-        startView: 2,
-        minViewMode: 2
-        //defaultViewDate: year
-    });
-    $('.month-picker').datepicker({
-        format: 'mm',
-        startView: 1,
-        minViewMode: 1
-        //defaultViewDate: year
-    });
-    $('.date-picker').datepicker({
-        format: 'dd-mm-yyyy'
-    });
-    $('.time-picker').timepicker({
-        showMeridian: false,
-        showInputs: false,
-        disableFocus: true
-    });
     // http://www.sanwebe.com/2014/01/how-to-select-all-deselect-checkboxes-jquery
     $('#cb').click(function (event) {  //on click
         if (this.checked) { // check select status
@@ -79,13 +52,49 @@ $(document).ready(function ($) {
             });
         }
     });
-
-    $(".mainhide").click(function(){
+    if($( "input:checked" ).val() == 'single'){
         $("#main-question-list").hide();
-    });
-
-    $(".mainshow").click(function(){
+        $("#enumerator-question-list").hide();
+    }
+    if($( "input:checked" ).val() == 'main'){
+        $("#main-question-list").hide();
+        $("#enumerator-question-list").hide();
+    }
+    if($( "input:checked" ).val() == 'sub'){
         $("#main-question-list").show();
+        $("#enumerator-question-list").hide();
+    }
+    if($( "input:checked" ).val() == 'same'){
+        $("#main-question-list").show();
+        $("#enumerator-question-list").hide();
+    }
+    if($( "input:checked" ).val() == 'spotchecker'){
+        $("#main-question-list").hide();
+        $("#enumerator-question-list").show();
+    }
+
+    $( "input[type=radio]" ).on( "click", function() {
+        if($( "input:checked" ).val() == 'single'){
+            $("#main-question-list").hide();
+            $("#enumerator-question-list").hide();
+        }
+        if($( "input:checked" ).val() == 'main'){
+            $("#main-question-list").hide();
+            $("#enumerator-question-list").hide();
+        }
+        if($( "input:checked" ).val() == 'sub'){
+            $("#main-question-list").show();
+            $("#enumerator-question-list").hide();
+        }
+        if($( "input:checked" ).val() == 'same'){
+            $("#main-question-list").show();
+            $("#enumerator-question-list").hide();
+        }
+        if($( "input:checked" ).val() == 'spotchecker'){
+            $("#main-question-list").hide();
+            $("#enumerator-question-list").show();
+        }
+
     });
 
 });

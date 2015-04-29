@@ -93,6 +93,7 @@ class EmsQuestionsAnswersController extends Controller
                 }
             }
         }
+
         //return;
 
         return view('dataentry/index', compact('form_name_url','dataentry', 'form', 'questions', 'alldata'));
@@ -139,7 +140,11 @@ class EmsQuestionsAnswersController extends Controller
             }
             //$forms = EmsForm::lists('name', 'id');
             $questions = EmsFormQuestions::OfNotSub($id)->ListIdAscending()->get();
+            //$questions_array = $questions->toArray();
+            //dd($questions_array);
             $form_id = $id;
+
+
             return view('dataentry/dataentry', compact('questions', 'form', 'form_name', 'form_name_url', 'form_id', 'enumerators', 'form_answers_count'));
 
         } else {
@@ -176,6 +181,64 @@ class EmsQuestionsAnswersController extends Controller
 
             $input = $request->all();
 
+            $input_answers = $input['answers'];
+            array_walk($input_answers, function(&$value, $key){
+                // if you want to change array values then "&" before the $value is mandatory.
+                $question = EmsFormQuestions::find($key);
+                if(in_array($question->input_type, array('text','year','time','date','month'))) {
+                    if (is_array($value) && !empty($value)) {
+                        array_walk($value, function(&$val, $k){
+                            if (empty($val) || in_array(strtolower($val), array('00:00', 'no', 'no answers', 'no answer', '0'))) {
+                                $val = '0';
+                            }
+                        });
+
+                    } else {
+
+                        if (empty($value) || in_array(strtolower($value), array('00:00', 'no', 'no answers', 'no answer', '0'))) {
+                            $value = '0';
+                        }
+                    }
+                }
+            });
+
+            $answers['user_id'] = $this->current_user_id;
+            $answers['psu'] = $input['psu'];
+            $answers['answers'] = $input_answers;
+
+            $answers['form_complete'] = (bool) true;
+            foreach($answers['answers'] as $q => $a){
+
+                $question = EmsFormQuestions::find($q);
+
+
+                if(is_array($a)) {
+                        if (in_array('0', array_values($a))) {
+                            if ($question->a_view != 'categories' && $question->optional == false) {
+                                $answers['form_complete'] = (bool)false;
+
+                            }
+                        }
+
+                }else{
+                    if (in_array($a, array('-99','0'))) {
+                        if ($question->a_view != 'categories' && $question->optional == false) {
+                            $answers['form_complete'] = (bool)false;
+                        }
+                    }
+                }
+            }
+            if (isset($input['notes'])) {
+                $answers['notes'] = $input['notes'];
+            } else {
+                $answers['notes'] = array();
+            }
+            if (isset($form_id)) {
+                $answers['form_id'] = $form_id;
+            } else {
+                $answers['form_id'] = $input['form_id'];
+            }
+            //dd($input_answers);
             if($form_type == 'spotchecker'){
                 $enu_interviewee_id = $input['enu_form_id'];
 
@@ -192,19 +255,15 @@ class EmsQuestionsAnswersController extends Controller
                         $spotchecker = $parent;
                     }
                 }
-
-                //dd($coordinator);
-                //dd($spotchecker->participant_id);
                 $answers['spotchecker_id'] = $spotchecker->participant_id;
-                $answers['user_id'] = $this->current_user_id;
-                $answers['psu'] = $input['psu'];
-                $answers['answers'] = $input['answers'];
+
 
                 if (isset($form_id)) {
                     $answers['form_id'] = $form_id;
                 } else {
-                    $answers['form_id'] = $input['form_id'];
+                    $answers['form_id'] = $input_answers;
                 }
+                //return $answers;
                 $new_answer = SpotCheckerAnswers::updateOrCreate(array('enumerator_form_id' => $answers['enumerator_form_id']), $answers);
 
                 $message = 'New Data Added for form ' . $form_name . '!';
@@ -213,31 +272,8 @@ class EmsQuestionsAnswersController extends Controller
             //return $input;
 
             $answers['interviewer_id'] = $input['interviewer_id'];
-            $answers['user_id'] = $this->current_user_id;
             $answers['interviewee_id'] = $input['interviewer_id'] . $input['interviewee_id'];
             $answers['interviewee_gender'] = $input['interviewee_gender'];
-            $answers['psu'] = $input['psu'];
-            //$answers['interviewee_age'] = $input['interviewee_age'];
-
-            $answers['answers'] = $input['answers'];
-
-            $answers['form_complete'] = (bool) true;
-                foreach($input['answers'] as $q => $a){
-                    $question = EmsFormQuestions::find($q);
-                    if($question->a_view != 'categories' && $a == 0){
-                        $answers['form_complete'] = (bool) false;
-                    }
-                }
-            if (isset($input['notes'])) {
-                $answers['notes'] = $input['notes'];
-            } else {
-                $answers['notes'] = array();
-            }
-            if (isset($form_id)) {
-                $answers['form_id'] = $form_id;
-            } else {
-                $answers['form_id'] = $input['form_id'];
-            }
 
             //return $answers;
             $new_answer = EmsQuestionsAnswers::updateOrCreate(array('interviewee_id' => $answers['interviewee_id']), $answers);

@@ -16,6 +16,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 
 class AjaxController extends Controller {
 
@@ -51,16 +52,37 @@ class AjaxController extends Controller {
 					$answer_id = EmsQuestionsAnswers::where('interviewee_id', '=', $enu_form_id)->pluck('id');
 					$answer = EmsQuestionsAnswers::find($answer_id);
 					$participant = Participant::find($answer->participant->id);
+
 					$enu_answers = $answer->answers;
 					$enu_form_id = $answer->form_id;
+					//var_dump($enu_answer);
+					//var_dump($enu_form_id);
 					$q_a = array();
+					$spotchecker_questions = EmsFormQuestions::where('q_type','spotchecker')->lists('parent_id');
+					foreach($spotchecker_questions as $q_id){
+						$question = EmsFormQuestions::find($q_id);
 
-					foreach($enu_answers as $k => $enu_answer){
-						$question = EmsFormQuestions::find($k);
 						$question_number = $question->question_number;
-						$question_answer = $question->answers[$enu_answer];
-						$q_a[$question_number] = '('.$enu_answer.') '.$question_answer;
+
+						if(in_array($question->q_type, array('same','sub'))){
+							foreach($question->get_parent->answers as $ans_k => $ans_v){
+								if ($ans_v['value'] === $enu_answers[$q_id]) {
+									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '.$ans_v['text'];
+								}
+							}
+						}else{
+							foreach($question->answers as $ans_k => $ans_v){
+								if ($ans_v['value'] === $enu_answers[$q_id]) {
+									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '.$ans_v['text'];
+								}
+							}
+						}
+
 					}
+
+					//dd($q_a);
+
+
 
 
 				} catch (\ErrorException $e) {
@@ -74,17 +96,14 @@ class AjaxController extends Controller {
 							$spotchecker = $parent;
 						}
 					}
-					//dd($answer);
-					//dd($q_a);
-					//dd($participant->villages->first()->village);
-					//dd($answer->participant->name)
-					//dd($coordinator);
-					//dd($spotchecker);
 				if (!isset($spotchecker)){
 					$ajax_response['status'] = false;
 					$ajax_response['message'] = '<p class="text-red">Spot Checker not found!</p>';
 					echo json_encode($ajax_response);
 					return;
+				}else{
+					$q_a['spotchecker_id'] = $spotchecker->participant_id;
+					$q_a['spotchecker_name'] = $spotchecker->name;
 				}
 				if (isset($answer) && !empty($answer)) {
 
@@ -192,6 +211,57 @@ class AjaxController extends Controller {
 		}
 
 		echo json_encode($ajax_response);
+
+	}
+
+	public function sort(Request $request)
+	{
+		$form_url = $request->route('form');
+
+		//$form_name = urldecode($form_url);
+		if ($this->auth_user->can("create.form")) {
+
+			$form_name = urldecode($form_url);
+			try {
+				$getform = EmsForm::where('name', '=', $form_name)->get();
+				$form_array = $getform->toArray();
+			}catch (QueryException $e){
+				$form_array = '';
+			}
+			//return $form->toArray();
+
+			if (empty($form_array)) {
+				$getform = EmsForm::find($form_url);
+				$id = $getform->id;
+				$form_name = $getform->name;
+				$form_answers_count = $getform->no_of_answers;
+			} elseif (!empty($form_array)) {
+				$id = $getform->first()['id'];
+				$form_answers_count = $getform->first()['no_of_answers'];
+			} else {
+				return view('errors/404');
+			}
+
+			if(Input::has('listid'))
+			{
+				$i = 1;
+				foreach(Input::get('listid') as $qid)
+				{
+					//$question = EmsFormQuestions::find($id);
+					$question = EmsFormQuestions::firstOrNew(array('id' => $qid,'form_id' => $id, 'list_id' => $i));
+					$question->list_id = $i;
+					$question->save();
+					$i++;
+				}
+				return Response::json(array('success' => true));
+			}
+			else
+			{
+				return Response::json(array('success' => false));
+			}
+
+
+		}
 
 	}
 

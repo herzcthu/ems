@@ -39,7 +39,8 @@
 						{!! Form::open(['url' => 'forms', 'class' => 'form-horizontal']) !!}
 
 						{!! Form::close() !!}
-						<table class="table">
+						<table id="sortable-table" class="table">
+							<span id="message"></span>
 							<thead>
 
 							<th>No.</th>
@@ -53,14 +54,14 @@
 							@role('admin')
 							@foreach ($questions as $k => $question )
 								@if( $question->q_type == 'single' )
-									<tr>
+									<tr id="listid-{{ $question->id }}">
 										<td>{{ ( ( $questions->currentPage() * $questions->perPage()) - $questions->perPage() ) + $k + 1 }}</td>
 											<td>{{ $question->question }}
 											<div class="col-xs-offset-1">
 													@if($question->input_type == 'radio')
 														@foreach($question->answers as $answer_k => $answer_v)
 															@if(!empty($answer_v))
-															{!! Form::radio($question->id.'-'.$answer_k,$answer_k ) !!} {{ $answer_v }}
+															{!! Form::radio($question->id.'-'.$answer_k,$answer_k ) !!} {{ $answer_v['text'] }}
 															@endif
 														@endforeach
 																<!--{!! Form::input('date', 'dob', date('d-m-Y'), ['class' => 'form-control']) !!} -->
@@ -68,7 +69,7 @@
 													@if($question->input_type == 'choice')
 														@foreach($question->answers as $answer_k => $answer_v)
 															@if(!empty($answer_v))
-															{!! Form::checkbox($question->id.'-'.$answer_k, $answer_k,false) !!} {{ $answer_v }}
+															{!! Form::checkbox($question->id.'-'.$answer_k, $answer_k,false) !!} {{ $answer_v['text'] }}
 															@endif
 														@endforeach
 													@endif
@@ -96,7 +97,7 @@
 									</tr>
 
 								@elseif( $question->q_type == 'main' || $question->q_type == 'spotchecker')
-									<tr>
+									<tr id="listid-{{ $question->id }}">
 										<td>{{ ( ( $questions->currentPage() * $questions->perPage()) - $questions->perPage() ) + $k + 1 }}</td>
 										<td>{{ $question->question }}
 											<div class="col-md-offset-1">
@@ -112,7 +113,7 @@
 																<div class="">
 																	@foreach($children->answers as $answer_k => $answer_v)
 																		@if(!empty($answer_v))
-																		{!! Form::radio($children->id.'-'.$answer_k, $answer_k ) !!} {{ $answer_v }}
+																		{!! Form::radio($children->id.'-'.$answer_k, $answer_k ) !!} {{ $answer_v['text'] }}
 																		@endif
 																	@endforeach
 																</div>			<!--{!! Form::input('date', 'dob', date('d-m-Y'), ['class' => 'form-control']) !!} -->
@@ -121,7 +122,7 @@
 																<div class="">
 																	@foreach($children->answers as $answer_k => $answer_v)
 																		@if(!empty($answer_v))
-																		{!! Form::checkbox($children->id.'-'.$answer_k, $answer_k,false) !!} {{ $answer_v }}
+																		{!! Form::checkbox($children->id.'-'.$answer_k, $answer_k,false) !!} {{ $answer_v['text'] }}
 																		@endif
 																	@endforeach
 																</div>
@@ -173,5 +174,41 @@
 	<!-- /.content -->
 </div><!-- /.content-wrapper -->
 
+<script type="text/javascript">
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	if (typeof ajaxURL === 'undefined') {
+		var ajaxURL = "{{ '/'.$form_name_url.'/ajaxsort' }}";
+	}
+	$(document).ready(function ($) {
+		$("#sortable-table tbody").sortable({
+			cursor: 'move',
+			axis: 'y',
+			update: function (event, ui) {
+				var order = $(this).sortable("serialize");
 
+
+				//send ajax request
+				$.ajax({
+					url    : ajaxURL,
+					type   : 'POST',
+					data   : order,
+					success: function (data) {
+						if(data.success){
+							$("#message").html('Sorted');
+							$("#message").addClass('text-green');
+						}else{
+							$("#message").html('Something wrong');
+							$("#message").addClass('text-red');
+						}
+					}
+
+				});
+			}
+		});
+	});
+</script>
 @endsection

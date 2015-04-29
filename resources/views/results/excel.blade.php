@@ -44,7 +44,7 @@
                                 @endif
 
                                 </section>
-                                {!! $data_array !!}
+
 
                                 <table id="datatable-results" class="table table-bordered table-striped">
                                 <thead>

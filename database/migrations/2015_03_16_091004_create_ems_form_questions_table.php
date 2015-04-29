@@ -20,8 +20,9 @@ class CreateEmsFormQuestionsTable extends Migration {
 			$table->integer('list_id');
 			$table->string('question_number');
 			$table->text('question');
+			$table->boolean('optional');
 			$table->enum('q_type',array('single', 'main', 'sub', 'same', 'spotchecker'));
-			$table->enum('input_type', array('none','same','radio','choice','select','text','textarea','date','year','month','time'));
+			$table->enum('input_type', array('none','different','radio','choice','select','text','textarea','date','year','month','time'));
 			$table->string('a_view');
 			$table->text('answers');
 			$table->timestamps();
@@ -30,7 +31,7 @@ class CreateEmsFormQuestionsTable extends Migration {
 		{
 			$table->foreign('parent_id')->references('id')->on('ems_form_questions')->onDelete('cascade');
 			$table->foreign('form_id')->references('id')->on('ems_forms')->onDelete('cascade');
-			$table->unique(['form_id', 'list_id']);
+			//$table->unique(['form_id', 'list_id']);
 		});
 	}
 

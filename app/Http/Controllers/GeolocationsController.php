@@ -219,10 +219,12 @@ class GeolocationsController extends Controller {
 				}
 				$village['villagetrack'] = $line['villagetrack'];
 				$village['village'] = $line['village'];
-				if (isset($line['village_my']) && !empty($line['village_my'])) {
-					$village['village_my'] = $line['village_my'];
-				} else {
-					$village['village_my'] = '';
+				if (isset($line['village_my'])){
+					if(!empty($line['village_my'])) {
+						$village['village_my'] = $line['village_my'];
+					}else {
+						$village['village_my'] = '';
+					}
 				}
 				$village['village_id'] = $village_id;
 				try {

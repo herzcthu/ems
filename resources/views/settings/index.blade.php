@@ -61,7 +61,7 @@
 							<div class="form-group">
 								{!! Form::label("options[form_for_dashboard]", _t("Select Form to show on Dashboard: "), ["class" => "col-sm-3 control-label"]) !!}
 								<div class="col-sm-6">
-									{!! Form::select("options[form_for_dashboard]", $forms,isset($options[0]) ? $options[0]['options']['form_for_dashboard']:null, ["class" => "form-control"]) !!}
+									{!! Form::select("options[form_for_dashboard]", $forms, array_key_exists('form_form_dashboard', $options[0]['options']) ? $options[0]['options']['form_for_dashboard']:null, ["class" => "form-control"]) !!}
 								</div>
 							</div>
 							<div class="form-group">

@@ -31,10 +31,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link href="{{ asset('/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css"/>
 
     <!-- Date Picker -->
-    <link href="{{ asset('/plugins/datepicker/datepicker3.css') }}" rel="stylesheet" type="text/css"/>
+    <!--link href="{{ asset('/plugins/datepicker/datepicker3.css') }}" rel="stylesheet" type="text/css"/>
 
     <!-- Time Picker -->
-    <link href="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css"/>
+    <!--link href="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.css') }}" rel="stylesheet" type="text/css"/>
+
+
+    <!-- DateTime Picker -->
+    <link href="{{ asset('/plugins/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" type="text/css"/>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -46,9 +50,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <link href="{{ asset('/css/ems-custom.css') }}" rel="stylesheet" type="text/css"/>
 
-
+    <!-- JQuery UI 1.11.4 -->
+    <link href="{{ asset('/plugins/jquery-ui-1.11.4/jquery-ui.min.css') }}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <!-- jQuery 2.1.3 -->
     <script src="{{ asset('/js/jquery-2.1.3.min.js') }}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="{{ asset('/plugins/jquery-ui-1.11.4/jquery-ui.min.js') }}"></script>
 
 
 </head>
@@ -300,12 +308,52 @@ desired effect
 <!-- FastClick -->
 <script src="{{ asset('/plugins/fastclick/fastclick.min.js') }}"></script>
 <!-- Date Picker -->
-<script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+<!--script src="{{ asset('/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
 <!-- Time Picker -->
-<script src="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
+<!--script src="{{ asset('/plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
 
-
+<!-- Bootstrap DateTime Picker -->
+<script src="{{ asset('/plugins/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js') }}"></script>
+<script type="text/javascript">
+    if (typeof startDate === 'undefined') {
+        var startDate = new Date();
+    }
+    $(".date-picker").datetimepicker({initialDate: startDate, format: 'dd-mm-yyyy', autoclose: true, forceParse: true});
+    $(".month-picker").datetimepicker({startView:2, format: 'yyyy', autoclose: true, forceParse: true});
+    $(".year-picker").datetimepicker({startView:4, format: 'yyyy', autoclose: true, forceParse: true});
+    $(".time-picker").datetimepicker({initialDate: startDate, startDate: startDate, startView:0, format: 'hh:ii', autoclose: true,forceParse: true, minuteStep:1});
+    $(".dobdatepicker").datetimepicker({format: 'dd-mm-yyyy'});
+</script>
 <!--script type="text/javascript">
+
+
+    $('.datepicker').datepicker({
+        format: 'dd-mm-yyyy',
+        startDate: '-3d'
+    });
+    $('.dobdatepicker').datepicker({
+        format: 'dd-mm-yyyy'
+    });
+    $('.year-picker').datepicker({
+        format: 'yyyy',
+        startView: 2,
+        minViewMode: 2
+        //defaultViewDate: year
+    });
+    $('.month-picker').datepicker({
+        format: 'mm',
+        startView: 1,
+        minViewMode: 1
+        //defaultViewDate: year
+    });
+    $('.date-picker').datepicker({
+        format: 'dd-mm-yyyy'
+    });
+    $('.time-picker').timepicker({
+        showMeridian: false,
+        showInputs: false,
+        disableFocus: true
+    });
     jQuery.noConflict();
     (function( $ ) {
         $(document).ready(function ($) {
@@ -399,7 +447,7 @@ desired effect
 
 <!-- AdminLTE App -->
 <script src="{{ asset('/dist/js/app.js') }}" type="text/javascript"></script>
-<script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script>
+<!--script src="{{ asset('/dist/js/demo.js') }}" type="text/javascript"></script-->
 
 
 

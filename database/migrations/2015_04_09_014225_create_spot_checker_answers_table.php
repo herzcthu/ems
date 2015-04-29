@@ -20,6 +20,8 @@ class CreateSpotCheckerAnswersTable extends Migration {
 			$table->integer('user_id')->unsigned()->nullable();
 			$table->integer('psu');
 			$table->integer('spotchecker_id')->unsigned()->nullable();
+			$table->boolean('form_complete');
+			$table->boolean('accuracy');
 			$table->text('notes');
 			$table->text('answers');
 			$table->timestamps();
