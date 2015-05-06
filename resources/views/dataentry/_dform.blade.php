@@ -675,7 +675,7 @@
                                 {!! Form::text("answers[$question->id]", null, ['class' => 'form-control '.$question->input_type.'-picker', 'placeholder' => $ans_v["value"]]) !!}
 
                         @elseif($question->input_type == 'radio')
-                            <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                            <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                             <div class="col-xs-offset-1">
                             @foreach($answers as $ans_k => $ans_v)
                             <div class="radio">
@@ -684,7 +684,7 @@
                             @endforeach
                             </div>
                         @elseif($question->input_type == 'text')
-                            <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                            <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                             @if(is_array($answers))
 
                                 @foreach($answers as $answer_k => $answer_v)
@@ -707,15 +707,15 @@
                                 {!! Form::text("answers[$question->id]", null, ['class' => 'form-control']) !!}
                             @endif
                         @elseif($question->input_type == 'textarea')
-                            <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                            <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                             {!! Form::textarea("answers[$question->id]", null, ['class' => 'form-control']) !!}
                         @elseif($question->input_type == 'choice')
-                            <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                            <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                             {!! Form::text("answers[$question->id]", null, ['class' => 'form-control']) !!}
                         @elseif($question->input_type == 'different')
 
-                            <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
-                            <table class="table">
+                            <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                            <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             @foreach($answers as $ans_k => $ans_v)
                                 <tr>
                                 <?php $as_no = $ans_k + 1; ?>
