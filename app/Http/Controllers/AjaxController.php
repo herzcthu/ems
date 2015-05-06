@@ -45,7 +45,7 @@ class AjaxController extends Controller {
 				if (strlen($enu_form_id) != 7) {
 
 					$ajax_response['status'] = false;
-					$ajax_response['message'] = '<p class="text-red">Enumerator Form ID need to be exactly 7 digits</p>';                //	break;
+					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator Form ID need to be exactly 7 digits').'</p>';                //	break;
 
 				}else{
 				try {
@@ -67,13 +67,13 @@ class AjaxController extends Controller {
 						if(in_array($question->q_type, array('same','sub'))){
 							foreach($question->get_parent->answers as $ans_k => $ans_v){
 								if ($ans_v['value'] === $enu_answers[$q_id]) {
-									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '.$ans_v['text'];
+									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '._t($ans_v['text']);
 								}
 							}
 						}else{
 							foreach($question->answers as $ans_k => $ans_v){
 								if ($ans_v['value'] === $enu_answers[$q_id]) {
-									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '.$ans_v['text'];
+									$q_a['q-'.$q_id] = '('.$ans_v['value'].') '._t($ans_v['text']);
 								}
 							}
 						}
@@ -100,7 +100,7 @@ class AjaxController extends Controller {
 				}
 				if (!isset($spotchecker)){
 					$ajax_response['status'] = false;
-					$ajax_response['message'] = '<p class="text-red">Spot Checker not found!</p>';
+					$ajax_response['message'] = '<p class="text-red">'._t('Spot Checker not found!').'</p>';
 					echo json_encode($ajax_response);
 					return;
 				}else{
@@ -119,7 +119,7 @@ class AjaxController extends Controller {
 					//$ajax_response['village'] = $village;
 				} else {
 					$ajax_response['status'] = false;
-					$ajax_response['message'] = '<p class="text-red">Enumerator Form not found!</p>';
+					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator Form not found!').'</p>';
 				}
 
 			}
@@ -132,7 +132,7 @@ class AjaxController extends Controller {
 				if (strlen($interviewer_id) != 6) {
 
 					$ajax_response['status'] = false;
-					$ajax_response['message'] = '<p class="text-red">Enumerator ID need to be exactly 6 digits</p>';                //	break;
+					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator ID need to be exactly 6 digits').'</p>';                //	break;
 
 				} else {
 
@@ -141,14 +141,14 @@ class AjaxController extends Controller {
 					if (empty($matches)) {
 
 						$ajax_response['status'] = false;
-						$ajax_response['message'] = '<p class="text-red">Wrong Enumerator ID</p>';
+						$ajax_response['message'] = '<p class="text-red">'._t('Wrong Enumerator ID').'</p>';
 					}
 
 					try {
 						$state = States::where('state_id', '=', (int)$matches[1]);
 					} catch (\Exception $e) {
 						$ajax_response['status'] = false;
-						$ajax_response['message'] = '<p class="text-red">No state with ID ' . $matches[1] . '. Check again Enumerator ID!</p>';
+						$ajax_response['message'] = '<p class="text-red">'._t('No state with ID. :state_id. Check again Enumerator ID!', array('state_id' => $matches[1])).'</p>';
 					}
 					try {
 						$village_id = Villages::where('village_id', '=', (int)$matches[2])->first()['id'];
@@ -166,7 +166,7 @@ class AjaxController extends Controller {
 
 					} catch (\Exception $e) {
 						$ajax_response['status'] = false;
-						$ajax_response['message'] = '<p class="text-red">No village with ID ' . $matches[2] . '. Check again Enumerator ID!</p>';
+						$ajax_response['message'] = '<p class="text-red">'._t('No village with ID. :village_id. Check again Enumerator ID!', array('village_id' => $matches[2])).'</p>';
 					}
 
 					if (isset($interviewee_id)) {
@@ -175,7 +175,7 @@ class AjaxController extends Controller {
 
 						if (!empty($answer)) {
 							$ajax_response['status'] = false;
-							$ajax_response['message'] = '<p class="text-red">Data already exists.</p>';
+							$ajax_response['message'] = '<p class="text-red">'._t('Data already exists.').'</p>';
 							echo json_encode($ajax_response);
 							return;
 						}
@@ -193,7 +193,7 @@ class AjaxController extends Controller {
 							$response['village'] = $village->village;
 						} else {
 							$ajax_response['status'] = false;
-							$ajax_response['message'] = '<p class="text-red">_t("Enumerator cannot find in database!")</p>';
+							$ajax_response['message'] = '<p class="text-red">'._t("Enumerator cannot find in database!").'</p>';
 						}
 					}
 
@@ -209,7 +209,7 @@ class AjaxController extends Controller {
 
 		} else {
 			$ajax_response['status'] = false;
-			$ajax_response['message'] = 'User has no permission to add data';
+			$ajax_response['message'] = _t('User has no permission to add data');
 		}
 
 		echo json_encode($ajax_response);

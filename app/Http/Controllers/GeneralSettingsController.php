@@ -36,7 +36,7 @@ class GeneralSettingsController extends Controller {
 			//return $locales;
 			//return $options[0]->options;
 			//$options = json_decode($settings[0]->options, true);
-			$forms = EmsForm::lists('name', 'id');
+			$forms = EmsForm::where('type', 'enumerator')->lists('name', 'id');
 			//return $options[0]['options']['site_name'];
 			return view('settings.index', compact('options','forms', 'locales'));
 		}

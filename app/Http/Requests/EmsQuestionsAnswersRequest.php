@@ -118,7 +118,7 @@ class EmsQuestionsAnswersRequest extends Request {
 			if ($form_type == 'spotchecker') {
 				//dd($form_type);
 				if (strlen($this->input('enu_form_id')) != 7) {
-					$validator->errors()->add('enu_form_id', 'Enumerator Form ID need to be exactly 7 digits');                //	break;
+					$validator->errors()->add('enu_form_id', _t('Enumerator Form ID need to be exactly 7 digits'));                //	break;
 
 				} else {
 					$enu_form_id = $this->input('enu_form_id');
@@ -142,12 +142,12 @@ class EmsQuestionsAnswersRequest extends Request {
 						}
 					}
 					if(!isset($spotchecker)){
-						$validator->errors()->add('enu_form_id', 'Spot Checker not found!');
+						$validator->errors()->add('enu_form_id', _t('Spot Checker not found!'));
 					}
 
 					if(isset($enu_form) && (empty($enu_form->toArray()) || null == $enu_form->toArray())){
 						//dd($enu_form->toArray());
-						$validator->errors()->add('enu_form_id', 'Enumerator Form not found!');
+						$validator->errors()->add('enu_form_id', _t('Enumerator Form not found!'));
 					}
 
 				}
@@ -160,7 +160,7 @@ class EmsQuestionsAnswersRequest extends Request {
 			// Check to see if valid numeric array
 			//foreach ($this->input('enu_id') as $item) {
 			if (strlen($this->input('interviewer_id')) != 6) {
-				$validator->errors()->add('interviewer_id', 'Enumerator ID need to be exactly 6 digits');                //	break;
+				$validator->errors()->add('interviewer_id', _t('Enumerator ID need to be exactly 6 digits'));                //	break;
 
 			} else {
 
@@ -169,7 +169,7 @@ class EmsQuestionsAnswersRequest extends Request {
 				try {
 					$state = States::where('state_id', '=', (int)$matches[1]);
 				} catch (\Exception $e) {
-					$validator->errors()->add('interviewer_id', 'No state with ID ' . $matches[1] . '. Check again Enumerator ID!');
+					$validator->errors()->add('interviewer_id', _t('No state with ID. :state_id. Check again Enumerator ID!', array('state_id' => $matches[1])));
 				}
 				try {
 					$village_id = Villages::where('village_id', '=', (int)$matches[2])->first()['id'];
@@ -184,13 +184,13 @@ class EmsQuestionsAnswersRequest extends Request {
 
 
 				} catch (\Exception $e) {
-					$validator->errors()->add('interviewer_id', 'No village with ID ' . $matches[2] . '. Check again Enumerator ID!');
+					$validator->errors()->add('interviewer_id', _t('No village with ID. :village_id. Check again Enumerator ID!', array('village_id' => $matches[2])));
 				}
 
 
 				if (isset($state_for_village) && $state_for_village->state_id != (int)$matches[1]) {
 
-					$validator->errors()->add('interviewer_id', $village->village . ' does not exist in ' . $state->first()['state'] . '. Check again Enumerator ID!');
+					$validator->errors()->add('interviewer_id', _t(':village does not exist in :state. Check again Enumerator ID!', array('village' => $village->village, 'state' => $state->first()["state"])));
 				}
 
 
@@ -215,10 +215,10 @@ class EmsQuestionsAnswersRequest extends Request {
                                     if (strpos($qk, 'text') !== false && count($answers[$qid]) <= 1) {
                                         if( empty($qa) || '' == $qa ) {
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
                                             }
                                         }
                                     }elseif (strpos($qk, 'text') !== false && count($answers[$qid]) > 1) {
@@ -227,20 +227,20 @@ class EmsQuestionsAnswersRequest extends Request {
                                         if( '' == $qa  ) {
                                             $validator->errors()->add('answers',$qk.'=>'.$qa);
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
                                             }
                                         }
                                     }else{
                                         if( empty($qa) || '' == $qa  ) {
 
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
                                             }
                                         }
                                     }
@@ -248,24 +248,24 @@ class EmsQuestionsAnswersRequest extends Request {
                             }else{
                                 if(empty($answers[$qid]) || '' == $answers[$qid]) {
                                     if($question->q_type == 'single'){
-                                        $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                                     }
                                     if(in_array($question->q_type, array('sub','same','spotchecker'))){
-                                        $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
                                     }
                                 }
                             }
 
                         }else{
                             if($question->q_type == 'single'){
-                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                             }
                             if(in_array($question->q_type, array('sub','same','spotchecker'))){
-                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
                             }
                         }
                     }else{
-                        $validator->errors()->add('answers','No answers');
+                        $validator->errors()->add('answers', _('No answers'));
                     }
                 }
             }
