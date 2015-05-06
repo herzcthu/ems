@@ -472,7 +472,7 @@
                             @foreach($question->get_children as $child)
                                 @if($child->q_type == 'same')
                                 <tr>
-                                    <td>{{ $child->question_number.' '.$child->question }}</td>
+                                    <td>{{ $child->question_number.' '._t($child->question) }}</td>
                                     @foreach($answers as $ans_k => $ans_v)
                                         <td style="text-align: center" class="col-xs-1">
                                             @if(array_key_exists('type', $ans_v))
@@ -549,9 +549,9 @@
                     @elseif($question->a_view == 'table-column')
                         <table class="table table-bordered">
                             <tr>
-                                <th>Question</th>
+                                <th>{{ _t('Question') }}</th>
                                 @foreach($question->get_children as $child)
-                                    <th>{{ $child->question }}</th>
+                                    <th>{{ _t($child->question) }}</th>
                                 @endforeach
                             </tr>
                             @for($i=0; $i < count($question->get_children); $i++)
@@ -561,7 +561,7 @@
                             @foreach($answers as $ans_k => $ans_v)
                                 <?php $as_no = $ans_k + 1; ?>
                                 <tr>
-                                    <td>{{ $ans_v['text'] }}</td>
+                                    <td>{{ _t($ans_v['text']) }}</td>
                                     @foreach($question->get_children as $child)
                                     <td style="text-align: center" class="col-xs-1">
                                         @if(array_key_exists('type', $ans_v))
