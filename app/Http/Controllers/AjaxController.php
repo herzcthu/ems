@@ -249,9 +249,9 @@ class AjaxController extends Controller {
 				$i = 1;
 				foreach(Input::get('listid') as $qid)
 				{
-					//$question = EmsFormQuestions::find($id);
-					$question = EmsFormQuestions::firstOrNew(array('id' => $qid,'form_id' => $id, 'list_id' => $i));
-					$question->list_id = $i;
+					$question = EmsFormQuestions::find($qid);
+					//$question = EmsFormQuestions::firstOrNew(array('id' => $qid,'form_id' => $id, 'list_id' => $i));
+					$question->fill(array('list_id'=> $i));
 					$question->save();
 					$i++;
 				}

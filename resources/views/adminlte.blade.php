@@ -52,7 +52,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- JQuery UI 1.11.4 -->
     <link href="{{ asset('/plugins/jquery-ui-1.11.4/jquery-ui.min.css') }}" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!--script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script-->
     <!-- jQuery 2.1.3 -->
     <script src="{{ asset('/js/jquery-2.1.3.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
@@ -318,10 +318,10 @@ desired effect
     if (typeof startDate === 'undefined') {
         var startDate = new Date();
     }
-    $(".date-picker").datetimepicker({initialDate: startDate, format: 'dd-mm-yyyy', autoclose: true, forceParse: true});
-    $(".month-picker").datetimepicker({startView:2, format: 'yyyy', autoclose: true, forceParse: true});
-    $(".year-picker").datetimepicker({startView:4, format: 'yyyy', autoclose: true, forceParse: true});
-    $(".time-picker").datetimepicker({initialDate: startDate, startDate: startDate, startView:0, format: 'hh:ii', autoclose: true,forceParse: true, minuteStep:1});
+    $(".date-picker").datetimepicker({initialDate: startDate, startView:'month', format: 'dd-mm-yyyy', autoclose: true, forceParse: true, minView:'month', maxView:'month'});
+    $(".month-picker").datetimepicker({startView:'year', format: 'yyyy', autoclose: true, forceParse: true, minView:'year', maxView:'year'});
+    $(".year-picker").datetimepicker({startView:'decade', format: 'yyyy', autoclose: true, forceParse: true, minView:'decade', maxView:'decade'});
+    $(".time-picker").datetimepicker({initialDate: startDate, startDate: startDate, startView:'hour', format: 'hh:ii', autoclose: true,forceParse: true, minuteStep:1, minView:'hour', maxView:'hour'});
     $(".dobdatepicker").datetimepicker({format: 'dd-mm-yyyy'});
 </script>
 <!--script type="text/javascript">

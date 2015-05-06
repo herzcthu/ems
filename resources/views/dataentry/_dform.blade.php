@@ -159,7 +159,7 @@
 
                 <td><h4>{{ $question->question_number }}</h4></td>
                 <td colspan="3">
-                    <h4>{{ $question->question }}</h4>
+                    <h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
 
                     <!-- check form field view -->
                     @if($question->a_view == 'none')
@@ -236,14 +236,13 @@
                                     <table class="table">
                                         <tr>
                                             @if($child->q_type == 'same')
-
-
                                                     @foreach($answers as $ans_k => $ans_v)
                                                         <td style="text-align: center" class="col-xs-1">
                                                             @if(array_key_exists('type', $ans_v))
                                                                 @if($ans_v['type'] == 'text')
                                                                     <div class="">
                                                                         {!! Form::text("answers[$child->id][text-$ans_k]", null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
+                                                                        {!! Form::label("answers[$question->id]", $ans_v['text'], ['class' => 'control-label']) !!}
                                                                     </div>
                                                                 @elseif($ans_v['type'] == 'radio')
                                                                     <div class="radio">
@@ -271,14 +270,13 @@
                                                     @endforeach
 
                                             @elseif($child->q_type == 'sub')
-
-
                                                     @foreach(csort($child->answers) as $ans_k => $ans_v)
                                                         <td style="text-align: center" class="col-xs-1">
                                                             @if(array_key_exists('type', $ans_v))
                                                                 @if($ans_v['type'] == 'text')
                                                                     <div class="">
                                                                         {!! Form::text("answers[$child->id][text-$ans_k]", null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
+                                                                        {!! Form::label("answers[$question->id]", $ans_v['text'], ['class' => 'control-label']) !!}
                                                                     </div>
                                                                 @elseif($ans_v['type'] == 'radio')
                                                                     <div class="radio">
@@ -326,7 +324,7 @@
                                                         </div>
                                                     @elseif($ans_v['type'] == 'radio')
                                                         <div class="radio">
-                                                            {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                            {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                         </div>
                                                     @elseif($ans_v['type'] == 'textarea')
                                                         <div>
@@ -338,12 +336,12 @@
                                                         </div>
                                                     @elseif($ans_v['type'] == 'none')
                                                         <div class="radio">
-                                                            {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                            {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                         </div>
                                                     @endif
                                                 @else
                                                     <div class="radio">
-                                                        {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                        {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -426,7 +424,7 @@
                                                         </div>
                                                     @elseif($ans_v['type'] == 'radio')
                                                         <div class="radio">
-                                                            {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                            {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                         </div>
                                                     @elseif($ans_v['type'] == 'textarea')
                                                         <div>
@@ -438,12 +436,12 @@
                                                         </div>
                                                     @elseif($ans_v['type'] == 'none')
                                                         <div class="radio">
-                                                            {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                            {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                         </div>
                                                     @endif
                                                 @else
                                                     <div class="radio">
-                                                        {!! Form::radio("answers[$child->id]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
+                                                        {!! Form::radio("answers[$child->id][choice]",$ans_v['value'] ,null) !!} {{ $ans_v['value'] }} ( {{ $ans_v['text'] }} )
                                                     </div>
                                                 @endif
                                             @endforeach
@@ -667,13 +665,13 @@
                     <td><h4>{{ $question->question_number }}</h4></td>
 
                         @if(in_array($question->input_type, array('date','month','year','time')))
-                            <td><h4>{{ $question->question }}</h4>
+                            <td><h4>{{ $question->question }}</h4> <p class="btn btn-info btn-xs reset pull-right">reset</p>
                             </td><td colspan="2">
 
                                 {!! Form::text("answers[$question->id]", null, ['class' => 'form-control '.$question->input_type.'-picker', 'placeholder' => $ans_v["value"]]) !!}
 
                         @elseif($question->input_type == 'radio')
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             <div class="col-xs-offset-1">
                             @foreach($answers as $ans_k => $ans_v)
                             <div class="radio">
@@ -682,7 +680,7 @@
                             @endforeach
                             </div>
                         @elseif($question->input_type == 'text')
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             @if(is_array($answers))
 
                                 @foreach($answers as $answer_k => $answer_v)
@@ -705,14 +703,14 @@
                                 {!! Form::text("answers[$question->id]", null, ['class' => 'form-control']) !!}
                             @endif
                         @elseif($question->input_type == 'textarea')
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             {!! Form::textarea("answers[$question->id]", null, ['class' => 'form-control']) !!}
                         @elseif($question->input_type == 'choice')
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             {!! Form::text("answers[$question->id]", null, ['class' => 'form-control']) !!}
                         @elseif($question->input_type == 'different')
 
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             <table class="table">
                             @foreach($answers as $ans_k => $ans_v)
                                 <tr>
@@ -764,7 +762,7 @@
                             @endforeach
                             </table>
                         @else
-                            <td colspan="3"><h4>{{ $question->question }}</h4>
+                            <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                                 <div class="col-xs-offset-1">
                                     @foreach($answers as $ans_k => $ans_v)
                                         <div class="radio">
@@ -787,7 +785,7 @@
                 @elseif($question->a_view == 'table')
 
                     <td><h4>{{ $question->question_number }}</h4></td>
-                    <td colspan="3"><h4>{{ $question->question }}</h4>
+                    <td colspan="3"><h4>{{ $question->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                     <table class="table">
 
                         <tr>
@@ -865,7 +863,7 @@
                 <td><h4>{{$question->question_number}}</h4></td>
                 <td colspan="2">
                     @if(!empty($question->get_parent->answers))
-                    <h4>{{ $question->get_parent->question_number.'. '.$question->get_parent->question }}</h4>
+                    <h4>{{ $question->get_parent->question_number.'. '.$question->get_parent->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                     <div class="col-xs-offset-1">
                         <table class="table">
 
@@ -876,7 +874,7 @@
                                 <td>
 
                                     {!! Form::text("answers[$question->id][text-$ans_k]", null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
-
+                                    {!! Form::label("answers[$question->id]", $ans_v['text'], ['class' => 'control-label']) !!}
                                 </td>
                             @elseif($ans_v['type'] == 'radio')
                                 <td>{{ _t($ans_v['text']) }}</td>
@@ -900,7 +898,7 @@
                     @endforeach
                     @else
 
-                            <h4>{{ \App\EmsFormQuestions::enu_parent($question->get_parent->id)->question_number.' '.$question->get_parent->question_number.'. '.$question->get_parent->question }}</h4>
+                            <h4>{{ \App\EmsFormQuestions::enu_parent($question->get_parent->id)->question_number.' '.$question->get_parent->question_number.'. '.$question->get_parent->question }} <p class="btn btn-info btn-xs reset pull-right">reset</p></h4>
                             <div class="col-xs-offset-1">
                                 <table class="table">
 
@@ -965,10 +963,23 @@
     .QEN {
         display: none;
     }
+    .warning-text {
+        color: red;
+    }
+    .success-text {
+        color: green;
+    }
+    .warning-box {
+        border: 2px solid red;
+    }
+    .success-box {
+        border: 2px solid green;
+    }
 </style>
 <script type="text/javascript">
-    $('tr').hover(function () {
+    $('form tr').hover(function () {
         $(this).toggleClass('validate');
+
     });
     var radioButton = $("#validated-table tr");
     radioButton.mousedown(function () {
@@ -981,6 +992,104 @@
         }
         //return false;
     });
+    $('.reset').on('click',function(){
+        //alert($('form tr.validate').html());
+        $( "form tr.validate").find(':input').each(function() {
+            switch(this.type) {
+                case 'password':
+                case 'text':
+                case 'textarea':
+                case 'file':
+                case 'select-one':
+                case 'select-multiple':
+                    jQuery(this).val('');
+                    break;
+                case 'checkbox':
+                case 'radio':
+                    this.checked = false;
+            }
+        });
+    });
+    $('#dataentry').find(':input').blur().each(function() {
+        var $input = $( this );
+            switch(this.type) {
+                case 'password':
+                    if( !$(this).val() ) {
+                       // $(this).addClass('warning-text');
+                       // $(this).removeClass('success-text');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'text':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-box');
+                      //  $(this).removeClass('success-box');
+                    }else{
+                        $(this).removeClass('warning-box');
+                        $(this).addClass('success-box');
+                    }
+                    break;
+                case 'textarea':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-text');
+                      //  $(this).removeClass('success-text');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'file':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-text');
+                      //  $(this).removeClass('success-text');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'select-one':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-box');
+                      //  $(this).removeClass('success-box');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'select-multiple':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-box');
+                      //  $(this).removeClass('success-box');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'checkbox':
+                    if( !$(this).val() ) {
+                      //  $(this).addClass('warning-box');
+                      //  $(this).removeClass('success-box');
+                    }else{
+                        $(this).removeClass('warning-text');
+                        $(this).addClass('success-text');
+                    }
+                    break;
+                case 'radio':
+                    if( !$(this).prop('checked') ) {
+                      //  $(this).closest('div.radio').addClass('warning-text');
+                      //  $(this).closest('div.radio').removeClass('success-text');
+                    }else{
+                        $(this).closest('div').removeClass('warning-box');
+                        $(this).closest('div.radio').addClass('success-box');
+                    }
+                    break;
+            }
+
+    });
+
+
 </script>
 <script type="text/javascript">
     //startDate: "2013-02-14 10:00",

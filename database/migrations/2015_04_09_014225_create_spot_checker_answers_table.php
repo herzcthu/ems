@@ -29,7 +29,7 @@ class CreateSpotCheckerAnswersTable extends Migration {
 		Schema::table('spot_checker_answers', function(Blueprint $table)
 		{
 			$table->foreign('form_id')->references('id')->on('ems_forms')->onDelete('cascade');
-			$table->foreign('enumerator_form_id')->references('interviewee_id')->on('ems_questions_answers')->onDelete('set null');
+			//$table->foreign('enumerator_form_id')->references('interviewee_id')->on('ems_questions_answers')->onDelete('set null');
 			$table->foreign('spotchecker_id')->references('participant_id')->on('participants')->onDelete('set null');
 			$table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
 		});
@@ -42,6 +42,10 @@ class CreateSpotCheckerAnswersTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::table('spot_checker_answers', function($table)
+		{
+			$table->dropForeign('spot_checker_answers_spotchecker_id_foreign');
+		});
 		Schema::drop('spot_checker_answers');
 	}
 

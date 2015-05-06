@@ -111,7 +111,7 @@ class EmsQuestionsAnswersRequest extends Request {
 			$form_id = $form->first()['id'];
 			$form_type = $form->first()['type'];
 
-			$enu_form_id = $this->input('enu_form_id');
+
 
 
 
@@ -123,13 +123,13 @@ class EmsQuestionsAnswersRequest extends Request {
 				} else {
 					$enu_form_id = $this->input('enu_form_id');
 					//dd($enu_form_id);
-					try{
-						$enu_form = EmsQuestionsAnswers::where('interviewee_id', '=', $enu_form_id)->get();
+					//try{
+					//	$enu_form = EmsQuestionsAnswers::where('interviewee_id', '=', $enu_form_id)->get();
 
-					}catch (\Exception $e){
-						$validator->errors()->add('enu_form_id', 'Enumerator Form not found!');
-					}
-					preg_match('/([0-9]{6})[0-9]/', $enu_form_id, $matches);
+					//}catch (\Exception $e){
+					//	$validator->errors()->add('enu_form_id', 'Enumerator Form not found!');
+					//}
+					preg_match('/([0-9]{6})[1-9]/', $enu_form_id, $matches);
 					$enu_id = $matches[1];
 					$participant_id = Participant::where('participant_id', '=', $enu_id)->pluck('id');
 					$participant = Participant::find($participant_id);
@@ -145,7 +145,7 @@ class EmsQuestionsAnswersRequest extends Request {
 						$validator->errors()->add('enu_form_id', 'Spot Checker not found!');
 					}
 
-					if(empty($enu_form->toArray()) || null == $enu_form->toArray()){
+					if(isset($enu_form) && (empty($enu_form->toArray()) || null == $enu_form->toArray())){
 						//dd($enu_form->toArray());
 						$validator->errors()->add('enu_form_id', 'Enumerator Form not found!');
 					}
@@ -195,20 +195,81 @@ class EmsQuestionsAnswersRequest extends Request {
 
 
 			}
-			//}
-			//foreach ($this->input('answers') as $answer ){
 
-			//	break;
-			//}
-			$answers_count = count($this->input('answers'));
-			//print($answers_count);
-			//print(count(EmsFormQuestions::OfNotMain($this->input('form_id'))->get()));
-			//die($answers_count);
-			if ($answers_count != count(EmsFormQuestions::OfNotMain($this->input('form_id'))->get())) {
-				$validator->errors()->add('answers', 'You need to complete all answers!');
-			}
 
 		}
+            //}
+            //foreach ($this->input('answers') as $answer ){
+
+            //	break;
+            //}
+            $questions = EmsFormQuestions::where('form_id', $form_id)->lists('id');
+            $answers = $this->input('answers');
+            foreach($questions as $qid){
+                $question = EmsFormQuestions::find($qid);
+                if($question->optional != 1){
+                    if(is_array($answers)){
+                        if(array_key_exists($qid, $answers)){
+                            if(is_array($answers[$qid])){
+                                foreach($answers[$qid] as $qk => $qa) {
+                                    if (strpos($qk, 'text') !== false && count($answers[$qid]) <= 1) {
+                                        if( empty($qa) || '' == $qa ) {
+                                            if( $question->q_type == 'single' ) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                            }
+                                            if( in_array($question->q_type, array('sub','same','spotchecker'))) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                            }
+                                        }
+                                    }elseif (strpos($qk, 'text') !== false && count($answers[$qid]) > 1) {
+
+                                    }elseif(strpos($qk, 'text') === false) {
+                                        if( '' == $qa  ) {
+                                            $validator->errors()->add('answers',$qk.'=>'.$qa);
+                                            if( $question->q_type == 'single' ) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                            }
+                                            if( in_array($question->q_type, array('sub','same','spotchecker'))) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                            }
+                                        }
+                                    }else{
+                                        if( empty($qa) || '' == $qa  ) {
+
+                                            if( $question->q_type == 'single' ) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                            }
+                                            if( in_array($question->q_type, array('sub','same','spotchecker'))) {
+                                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+                                if(empty($answers[$qid]) || '' == $answers[$qid]) {
+                                    if($question->q_type == 'single'){
+                                        $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                                    }
+                                    if(in_array($question->q_type, array('sub','same','spotchecker'))){
+                                        $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                    }
+                                }
+                            }
+
+                        }else{
+                            if($question->q_type == 'single'){
+                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->question_number. '!');
+                            }
+                            if(in_array($question->q_type, array('sub','same','spotchecker'))){
+                                $validator->errors()->add('answers', 'You need to complete all answers! Please check '.$question->get_parent->question_number.'. '.$question->question_number. '!');
+                            }
+                        }
+                    }else{
+                        $validator->errors()->add('answers','No answers');
+                    }
+                }
+            }
+
 
 		});
 	}

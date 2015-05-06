@@ -794,7 +794,6 @@ CREATE TABLE `ems_spot_checker_answers` (
   KEY `spot_checker_answers_enumerator_form_id_foreign` (`enumerator_form_id`),
   KEY `spot_checker_answers_spotchecker_id_foreign` (`spotchecker_id`),
   KEY `spot_checker_answers_user_id_foreign` (`user_id`),
-  CONSTRAINT `spot_checker_answers_enumerator_form_id_foreign` FOREIGN KEY (`enumerator_form_id`) REFERENCES `ems_ems_questions_answers` (`interviewee_id`) ON DELETE SET NULL,
   CONSTRAINT `spot_checker_answers_form_id_foreign` FOREIGN KEY (`form_id`) REFERENCES `ems_ems_forms` (`id`) ON DELETE CASCADE,
   CONSTRAINT `spot_checker_answers_spotchecker_id_foreign` FOREIGN KEY (`spotchecker_id`) REFERENCES `ems_participants` (`participant_id`) ON DELETE SET NULL,
   CONSTRAINT `spot_checker_answers_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `ems_users` (`id`) ON DELETE SET NULL
