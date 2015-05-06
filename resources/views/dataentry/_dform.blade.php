@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" >
     @if($form->type == 'spotchecker')
         <tr lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
             <td>
@@ -7,27 +7,27 @@
             <td class="">
 
                 {!! Form::text('enu_form_id', null, ['class' => 'form-control']) !!}
-                <p id="spotcheck" class="btn btn-info btn-xs">Click to check</p>
+                <p id="spotcheck" class="btn btn-info btn-xs" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Click to check') }}</p>
 
             </td>
             <td class="col-xs-5" colspan="4" rowspan="2">
                 <div class="flash" id="flash">
                     <p></p>
-                    <table class='table table-bordered'>
+                    <table class='table table-bordered' lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                         <tr>
-                            <td>{{ _t('Spot Checker Name:') }}</td>
+                            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Spot Checker Name:') }}</td>
                             <td id="spotchecker_name">__Spot Checker__</td>
                         </tr>
                         <tr>
-                            <td>{{ _t('Spot Checker ID:') }}</td>
+                            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Spot Checker ID:') }}</td>
                             <td id="spotchecker_id">__Spot Checker ID__</td>
                         </tr>
                         <tr>
-                            <td>{{ _t('Enumerator Name:') }}</td>
+                            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Enumerator Name:') }}</td>
                             <td id="enu_name">__NAME__</td>
                         </tr>
                         <tr>
-                            <td>{{ _t('Village:') }}</td>
+                            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t('Village:') }}</td>
                             <td id="village">__Village__</td>
                         </tr>
                     </table>
@@ -62,7 +62,7 @@
             <td colspan="2" rowspan="2">
                 <div class="flash" id="flash">
                     <p></p>
-                    <table class='table table-bordered'>
+                    <table class='table table-bordered' lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                         <tr>
                             <td>{{ _t('Enumerator Name:') }}</td>
                             <td id="enumerator">__NAME__</td>
@@ -158,7 +158,7 @@
             @if($question->q_type == 'main')
 
                 <td><h4>{{ $question->question_number }}</h4></td>
-                <td colspan="3">
+                <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                     <h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
 
                     <!-- check form field view -->
@@ -462,7 +462,7 @@
                     @elseif($question->a_view == 'validated-list')
                         Main Validated List
                     @elseif($question->a_view == 'table')
-                        <table class="table">
+                        <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             <tr>
                                 <th>{{ _t('Question') }}</th>
                                 @foreach($answers as $ans_k => $ans_v)
@@ -547,7 +547,7 @@
 
                         </table>
                     @elseif($question->a_view == 'table-column')
-                        <table class="table table-bordered">
+                        <table class="table table-bordered" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             <tr>
                                 <th>{{ _t('Question') }}</th>
                                 @foreach($question->get_children as $child)
@@ -606,7 +606,7 @@
                                 @endif
                             @endif
                         @endforeach
-                        <table id="validated-table" class="table">
+                        <table id="validated-table" class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             <th></th>
                             @if(is_array($answers))
                                 @foreach($question->get_children as $children)
@@ -669,8 +669,8 @@
                     <td><h4>{{ $question->question_number }}</h4></td>
 
                         @if(in_array($question->input_type, array('date','month','year','time')))
-                            <td><h4>{{ _t($question->question) }}</h4> <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p>
-                            </td><td colspan="2">
+                            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }}</h4> <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p>
+                            </td><td colspan="2" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
                                 {!! Form::text("answers[$question->id]", null, ['class' => 'form-control '.$question->input_type.'-picker', 'placeholder' => $ans_v["value"]]) !!}
 
@@ -789,8 +789,8 @@
                 @elseif($question->a_view == 'table')
 
                     <td><h4>{{ $question->question_number }}</h4></td>
-                    <td colspan="3"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
-                    <table class="table">
+                    <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
+                    <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
                         <tr>
 
@@ -865,11 +865,11 @@
                 @endif
             @elseif($question->q_type == 'spotchecker')
                 <td><h4>{{$question->question_number}}</h4></td>
-                <td colspan="2">
+                <td colspan="2" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                     @if(!empty($question->get_parent->answers))
                     <h4>{{ $question->get_parent->question_number.'. '._t($question->get_parent->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                     <div class="col-xs-offset-1">
-                        <table class="table">
+                        <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
                     @foreach(csort($question->get_parent->answers) as $ans_k => $ans_v)
                         <tr>
@@ -904,7 +904,7 @@
 
                             <h4>{{ \App\EmsFormQuestions::enu_parent($question->get_parent->id)->question_number.' '.$question->get_parent->question_number.'. '._t($question->get_parent->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
                             <div class="col-xs-offset-1">
-                                <table class="table">
+                                <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
                                     @foreach(csort(\App\EmsFormQuestions::enu_parent($question->get_parent->id)->answers) as $ans_k => $ans_v)
                                         <tr>
