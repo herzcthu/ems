@@ -323,6 +323,7 @@ desired effect
     $(".year-picker").datetimepicker({startView:'decade', format: 'yyyy', autoclose: true, forceParse: true, minView:'decade', maxView:'decade'});
     $(".time-picker").datetimepicker({initialDate: startDate, startDate: startDate, startView:'hour', format: 'hh:ii', autoclose: true,forceParse: true, minuteStep:1, minView:'hour', maxView:'hour'});
     $(".dobdatepicker").datetimepicker({format: 'dd-mm-yyyy'});
+
 </script>
 <!--script type="text/javascript">
 
@@ -466,6 +467,11 @@ desired effect
     dom.query(document).ready(function($){
         $("[data-mask]").inputmask();
         $("#email").inputmask({ alias: "email"});
+        $( ".year-picker" ).inputmask("y");
+        $( ".time-picker" ).inputmask("h:s");
+        $( ".date-picker" ).inputmask("d-m-y");
+        $( "#enu_form_id" ).inputmask({ "mask": "9", "repeat": 7 });
+        $( "#interviewer_id" ).inputmask({ "mask": "9", "repeat": 6 });
     });
 </script>
 

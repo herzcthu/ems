@@ -71,8 +71,6 @@ class ParticipantsController extends Controller {
 		$villages = Villages::lists('village', 'village');
 		$coordinators = Participant::where('participant_type', '=', 'coordinator')->lists('name', 'nrc_id');
 
-
-
 		return view('participants.create', compact('states', 'districts','townships','villages', 'coordinators'));
 	}
 
@@ -87,7 +85,9 @@ class ParticipantsController extends Controller {
 		//
 		$input = $request->all();
 		//die(print_r($input));
-		$this->CreatAndStore($input);
+		if ($this->auth_user->level() > 6) {
+			$this->CreatAndStore($input);
+		}
 
 		return redirect('participants');
 	}

@@ -127,10 +127,10 @@
 
                                     <tr>
                                         @if($form->type == 'spotchecker')
-                                        <td>{!! $data->enumerator_form_id !!}</td>
+                                        <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->enumerator_form_id !!}</a></td>
                                         @endif
                                         @if($form->type == 'enumerator')
-                                        <td>{!! $data->interviewee_id !!}</td>
+                                        <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->interviewee_id !!}</a></td>
                                         @endif
                                         @permission('edit.data')
                                         <!--td>Edit</td-->

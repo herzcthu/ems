@@ -131,23 +131,27 @@ class EmsQuestionsAnswersRequest extends Request {
 					//}
 					preg_match('/([0-9]{6})[1-9]/', $enu_form_id, $matches);
 					$enu_id = $matches[1];
-					$participant_id = Participant::where('participant_id', '=', $enu_id)->pluck('id');
-					$participant = Participant::find($participant_id);
-					foreach($participant->parents as $parent){
-						if($parent->participant_type == 'coordinator'){
-							$coordinator = $parent;
-						}
-						if($parent->participant_type == 'spotchecker'){
-							$spotchecker = $parent;
-						}
-					}
+                    try {
+                        $participant_id = Participant::where('participant_id', '=', $enu_id)->pluck('id');
+                        $participant = Participant::find($participant_id);
+                    }catch(\ErrorException $e){}
+                    if(isset($participant)) {
+                        foreach ($participant->parents as $parent) {
+                            if ($parent->participant_type == 'coordinator') {
+                                $coordinator = $parent;
+                            }
+                            if ($parent->participant_type == 'spotchecker') {
+                                $spotchecker = $parent;
+                            }
+                        }
+                    }
 					if(!isset($spotchecker)){
 						$validator->errors()->add('enu_form_id', _t('Spot Checker not found!'));
 					}
 
 					if(isset($enu_form) && (empty($enu_form->toArray()) || null == $enu_form->toArray())){
 						//dd($enu_form->toArray());
-						$validator->errors()->add('enu_form_id', _t('Enumerator Form not found!'));
+					//	$validator->errors()->add('enu_form_id', _t('Enumerator Form not found!'));
 					}
 
 				}
@@ -205,10 +209,13 @@ class EmsQuestionsAnswersRequest extends Request {
             //}
             $questions = EmsFormQuestions::where('form_id', $form_id)->lists('id');
             $answers = $this->input('answers');
+
+
             foreach($questions as $qid){
                 $question = EmsFormQuestions::find($qid);
                 if($question->optional != 1){
                     if(is_array($answers)){
+
                         if(array_key_exists($qid, $answers)){
                             if(is_array($answers[$qid])){
                                 foreach($answers[$qid] as $qk => $qa) {
@@ -224,7 +231,7 @@ class EmsQuestionsAnswersRequest extends Request {
                                     }elseif (strpos($qk, 'text') !== false && count($answers[$qid]) > 1) {
 
                                     }elseif(strpos($qk, 'text') === false) {
-                                        if( '' == $qa  ) {
+                                        if( '' == $qa  || null == $answers[$qid]) {
                                             $validator->errors()->add('answers',$qk.'=>'.$qa);
                                             if( $question->q_type == 'single' ) {
                                                 $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
@@ -234,7 +241,7 @@ class EmsQuestionsAnswersRequest extends Request {
                                             }
                                         }
                                     }else{
-                                        if( empty($qa) || '' == $qa  ) {
+                                        if( null == $answers[$qid] || '' == $qa  ) {
 
                                             if( $question->q_type == 'single' ) {
                                                 $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
@@ -246,7 +253,8 @@ class EmsQuestionsAnswersRequest extends Request {
                                     }
                                 }
                             }else{
-                                if(empty($answers[$qid]) || '' == $answers[$qid]) {
+
+                                if('' == $answers[$qid] || null == $answers[$qid]) {
                                     if($question->q_type == 'single'){
                                         $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
                                     }
@@ -255,6 +263,7 @@ class EmsQuestionsAnswersRequest extends Request {
                                     }
                                 }
                             }
+
 
                         }else{
                             if($question->q_type == 'single'){
@@ -269,7 +278,7 @@ class EmsQuestionsAnswersRequest extends Request {
                     }
                 }
             }
-
+            //dd($answers);
 
 		});
 	}

@@ -86,28 +86,44 @@
 									<td>{{ $participants->ethnicity }}</td>
 								</tr>
 								<tr>
-									<td>User Biography</td>
+									<td>Biography</td>
 									<td>{{ $participants->user_biography }}</td>
 								</tr>
 								@if($participants->participant_type == 'coordinator')
 								<tr>
 									<td>Enumerators under management:</td>
 									<td>
-										<ul>
-										@foreach( $participants->get_children as $enumerator )
-											<li>
-												{{ $enumerator->name }}
-											</li>
+										<ol>
+										@foreach( $participants->children as $child )
+											@if($child->participant_type == 'enumerator')
+												<li><a href="/participants/{{$child->id}}">{{ $child->name }}</a></li>
+											@endif
 										@endforeach
-										</ul>
+										</ol>
+									</td>
+								</tr>
+								<tr>
+									<td>Spot Checkers:</td>
+									<td>
+										<ol>
+											@foreach( $participants->children as $child )
+												@if($child->participant_type == 'spotchecker')
+													<li><a href="/participants/{{$child->id}}">{{ $child->name }}</a></li>
+												@endif
+											@endforeach
+										</ol>
 									</td>
 								</tr>
 								@else
 									<tr>
-										<td>Coordinator:</td>
+										@foreach( $participants->parents as $parent)
+										<td>{{ ucwords($parent->participant_type) }}</td>
 										<td>
-											{{ $participants->get_parent->name }}
+
+											<a href="/participants/{{$parent->id}}">{{ $parent->name }}</a>
+
 										</td>
+										@endforeach
 									</tr>
 
 								@endif

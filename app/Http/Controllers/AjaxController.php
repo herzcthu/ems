@@ -31,8 +31,12 @@ class AjaxController extends Controller {
 
 		$form_url = $request->route('form');
 
+		//dd($request->method());
+
 		//$form_name = urldecode($form_url);
 		if ($this->auth_user->can("add.data")) {
+
+			$method = Input::get('method');
 
 			$form_name = urldecode($form_url);
 
@@ -42,12 +46,14 @@ class AjaxController extends Controller {
 			$form_type = $form->first()['type'];
 			if ($form_type == 'spotchecker') {
 				$enu_form_id = Input::get('enu_form_id');
+				preg_match('/([1-9][0-9]{5})[1-9]/', $enu_form_id, $matches);
 				if (strlen($enu_form_id) != 7) {
 
 					$ajax_response['status'] = false;
 					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator Form ID need to be exactly 7 digits').'</p>';                //	break;
 
 				}else{
+
 				try {
 					$answer_id = EmsQuestionsAnswers::where('interviewee_id', '=', $enu_form_id)->pluck('id');
 					$answer = EmsQuestionsAnswers::find($answer_id);
@@ -97,6 +103,24 @@ class AjaxController extends Controller {
 							$spotchecker = $parent;
 						}
 					}
+				}else{
+					$enumerator_id = $matches[1];
+					try {
+						$enumerator = Participant::where('participant_id', $enumerator_id)->first();
+					}catch(\ErrorException $e){
+
+					}
+					if(isset($enumerator)) {
+						foreach ($enumerator->parents as $parent) {
+							if ($parent->participant_type == 'coordinator') {
+								$coordinator = $parent;
+							}
+							if ($parent->participant_type == 'spotchecker') {
+								$spotchecker = $parent;
+							}
+						}
+					}
+					//dd($enumerator);
 				}
 				if (!isset($spotchecker)){
 					$ajax_response['status'] = false;
@@ -104,6 +128,10 @@ class AjaxController extends Controller {
 					echo json_encode($ajax_response);
 					return;
 				}else{
+
+					$village = $enumerator->villages->first()->village;
+					$q_a['enu_name'] = $enumerator->name;
+					$q_a['village'] = $village;
 					$q_a['spotchecker_id'] = $spotchecker->participant_id;
 					$q_a['spotchecker_name'] = $spotchecker->name;
 				}
@@ -118,8 +146,14 @@ class AjaxController extends Controller {
 					//$ajax_response['enu_name'] = $participant_name;
 					//$ajax_response['village'] = $village;
 				} else {
-					$ajax_response['status'] = false;
-					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator Form not found!').'</p>';
+
+					if(isset($spotchecker)) {
+						$ajax_response['status'] = true;
+						$ajax_response['message'] = $q_a;
+					}else {
+						$ajax_response['status'] = false;
+						$ajax_response['message'] = '<p class="text-red">'._t('Enumerator Form not found!').'</p>';
+					}
 				}
 
 			}
@@ -173,7 +207,7 @@ class AjaxController extends Controller {
 						$answers_id = $interviewer_id . $interviewee_id;
 						$answer = EmsQuestionsAnswers::where('interviewee_id', '=', $answers_id)->pluck('interviewee_id');
 
-						if (!empty($answer)) {
+						if (!empty($answer) && $method != 'edit') {
 							$ajax_response['status'] = false;
 							$ajax_response['message'] = '<p class="text-red">'._t('Data already exists.').'</p>';
 							echo json_encode($ajax_response);
