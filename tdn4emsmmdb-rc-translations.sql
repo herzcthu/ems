@@ -198,7 +198,7 @@ CREATE TABLE `ems_ems_questions_answers` (
   `interviewer_id` int(10) unsigned DEFAULT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `interviewee_id` int(10) unsigned DEFAULT NULL,
-  `interviewee_gender` enum('M','F','U') COLLATE utf8_unicode_ci NOT NULL,
+  `interviewee_gender` enum('0','M','F','U') COLLATE utf8_unicode_ci NOT NULL,
   `interviewee_age` int(11) NOT NULL,
   `form_complete` tinyint(1) NOT NULL,
   `notes` text COLLATE utf8_unicode_ci NOT NULL,
