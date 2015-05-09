@@ -202,15 +202,19 @@
 
                                                 }).change();
                                             });
-                                            $(".delCat").on('click', function (e) {
-                                                e.preventDefault();
-                                                $(this).parent('div').remove();
-                                            });
                                         });
                                     </script>
 
                                     <div class="col-xs-offset-1 categories"
-                                         data-prototype='<div class="addinput">{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "__NAME__", ["class" => "","id"=>"cat-__NAME__"]) !!}
+                                         data-prototype='<div class="addinput" id="cat-__NAME__">
+                                         <script>
+                                                        $( "#cat-__NAME__ a.delCat" ).click(function(e) {
+                                                            e.preventDefault();
+                                                            $( "#cat-__NAME__" ).remove();
+                                                        });
+                                                    </script>
+                                                    <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
+                                         {!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "__NAME__", ["class" => "","id"=>"cat-__NAME__"]) !!}
 
                                         <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                             @foreach($question->answers as $answer_k => $answer_v)
@@ -218,15 +222,42 @@
                                                     @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
                                                         <li>
-                                                            {!! Form::radio("answers[ $child->id ][__NAME__]",$answer_v["value"],null, ["class" => "garlic-auto-save ans-radio-cat-__NAME__"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
-                                    </li>
-                                    @endif
-                                    @endif
-                                    @endforeach
-                                    </ul>
-                                    </div>'>
+                                                            {!! Form::radio("answers[$child->id][__NAME__]",$answer_v["value"],null, ["class" => "garlic-auto-save ans-radio-cat-__NAME__"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                        </li>
+                                                    @endif
+                                         @endif
+                                         @endforeach
+                                                 </ul>
+                                                 </div>'>
+                                        @if(isset($dataentry->notes) && is_array($dataentry->notes))
+                                            @foreach($dataentry->notes as $nk => $note)
+                                                <?php $cat_num = str_replace('cat-','',$nk); ?>
+                                                <div class="addinput" id="{{ $nk }}">
+                                                    <script>
+                                                        $( "{{'#'.$nk}} a.delCat" ).click(function() {
+                                                            $( "{{ '#'.$nk }}" ).remove();
+                                                        });
+                                                    </script>
+                                                    <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
+                                                    {!! Form::select("notes[cat-$cat_num]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"cat-$cat_num"]) !!}
+                                                    <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
+                                                        @foreach($question->answers as $answer_k => $answer_v)
+                                                            @if(!empty($answer_v))
+                                                                @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
+                                                                    <li>
+                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$cat_num])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$cat_num])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+
+                                                                    </li>
+                                                                @endif
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endforeach
+                                        @endif
                                     </div>
+
                                 @elseif($child->a_view == 'list')
 
                                 @elseif($child->a_view == 'validated-list')
@@ -385,15 +416,19 @@
 
                                                 }).change();
                                             });
-                                            $(".delCat").on('click', function (e) {
-                                                e.preventDefault();
-                                                $(this).parent('div').remove();
-                                            });
                                         });
                                     </script>
 
                                     <div class="col-xs-offset-1 categories"
-                                         data-prototype='<div class="addinput">{!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "__NAME__", ["class" => "","id"=>"cat-__NAME__"]) !!}
+                                         data-prototype='<div class="addinput" id="cat-__NAME__">
+                                         <script>
+                                                        $( "#cat-__NAME__ a.delCat" ).click(function(e) {
+                                                            e.preventDefault();
+                                                            $( "#cat-__NAME__" ).remove();
+                                                        });
+                                                    </script>
+                                                    <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
+                                         {!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "__NAME__", ["class" => "","id"=>"cat-__NAME__"]) !!}
 
                                         <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                             @foreach($question->answers as $answer_k => $answer_v)
@@ -401,14 +436,40 @@
                                                     @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
                                                         <li>
-                                                            {!! Form::radio("answers[ $child->id ][__NAME__]",$answer_v["value"],null, ["class" => "garlic-auto-save ans-radio-cat-__NAME__"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                            {!! Form::radio("answers[$child->id][__NAME__]",$answer_v["value"],null, ["class" => "garlic-auto-save ans-radio-cat-__NAME__"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
                                                         </li>
                                                     @endif
-                                         @endif
-                                         @endforeach
+                                                @endif
+                                            @endforeach
                                                  </ul>
                                                  </div>'>
+                                        @if(isset($dataentry->notes) && is_array($dataentry->notes))
+                                            @foreach($dataentry->notes as $nk => $note)
+                                                <?php $cat_num = str_replace('cat-','',$nk); ?>
+                                                <div class="addinput" id="{{ $nk }}">
+                                                    <script>
+                                                        $( "{{'#'.$nk}} a.delCat" ).click(function() {
+                                                            $( "{{ '#'.$nk }}" ).remove();
+                                                        });
+                                                    </script>
+                                                    <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
+                                                    {!! Form::select("notes[cat-$cat_num]",array_combine(range(1,15), array_map(function($n) { return sprintf("Category_%03d", $n); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"cat-$cat_num"]) !!}
+                                                    <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
+                                                        @foreach($question->answers as $answer_k => $answer_v)
+                                                            @if(!empty($answer_v))
+                                                                @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
+                                                                    <li>
+                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$cat_num])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$cat_num])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+
+                                                                    </li>
+                                                                @endif
+                                                            @endif
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            @endforeach
+                                        @endif
                                     </div>
                                 @else
                                     <h4>{{ $child->question_number }} {{ _t($child->question) }}</h4>
