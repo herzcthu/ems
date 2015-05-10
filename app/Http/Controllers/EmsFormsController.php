@@ -967,6 +967,7 @@ class EmsFormsController extends Controller
     {
         //
         $question = EmsFormQuestions::find($id);
+        $form = EmsForm::find($question->form_id);
 
         $question->delete();
         $message = 'Question ' . $question->question . ' deleted!';
@@ -974,7 +975,7 @@ class EmsFormsController extends Controller
 
         \Session::flash('flash_message', $message);
 
-        return redirect('forms/' . $id);
+        return redirect('forms/' . urlencode($form->name));
     }
 
     private function SaveOrUpdate($request, $qid = null)
