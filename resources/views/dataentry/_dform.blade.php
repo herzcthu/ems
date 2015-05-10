@@ -568,13 +568,13 @@
                                 </tr>
                                 @elseif($child->q_type == 'sub')
                                     <tr>
-                                        <td>{{ $child->question_number.' '.$child->question }}</td>
+                                        <td>{{ $child->question_number.' '._t($child->question) }}</td>
                                         @foreach(csort($child->answers) as $ans_k => $ans_v)
                                             <td style="text-align: center" class="col-xs-1">
                                                 @if(array_key_exists('type', $ans_v))
                                                     @if($ans_v['type'] == 'text')
                                                         <div class="">
-                                                            {!! Form::text("answers[$child->id][text-$ans_k]", isset($dataentry->answers[$child->id]['text-'.$ans_k])? $dataentry->answers[$child->id]['text-'.$ans_k]:null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
+                                                            {!! Form::text("answers[$child->id][text-$ans_k]", isset($dataentry->answers[$child->id]['text-'.$ans_k])? $dataentry->answers[$child->id]['text-'.$ans_k]:null, ['class' => 'form-control', 'placeholder' => _t($ans_v["value"])]) !!}
                                                             {!! Form::label("answers[$child->id][text-$ans_k]", _t($ans_v['text']), ['class' => 'control-label']) !!}
                                                         </div>
                                                     @elseif($ans_v['type'] == 'radio')
@@ -732,7 +732,7 @@
                             <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }}</h4> <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p>
                             </td><td colspan="2" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 
-                                {!! Form::text("answers[$question->id]", isset($dataentry->answers[$question->id])? $dataentry->answers[$question->id]:null, ['class' => 'form-control '.$question->input_type.'-picker', 'placeholder' => $ans_v["value"]]) !!}
+                                {!! Form::text("answers[$question->id]", isset($dataentry->answers[$question->id])? $dataentry->answers[$question->id]:null, ['class' => 'form-control '.$question->input_type.'-picker']) !!}
 
                         @elseif($question->input_type == 'radio')
                             <td colspan="3" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}"><h4>{{ _t($question->question) }} <p class="btn btn-info btn-xs reset pull-right">{{ _t('reset') }}</p></h4>
@@ -757,7 +757,7 @@
                                         @else
                                             <div class="col-xs-4">
                                             {!! Form::label("answers[$question->id][$answer_k]", _t($answer_v['text']), ['class' => 'control-label']) !!}
-                                            {!! Form::text("answers[$question->id][$answer_k]", null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
+                                            {!! Form::text("answers[$question->id][$answer_k]", null, ['class' => 'form-control', 'placeholder' => _t($ans_v["value"])]) !!}
                                             </div>
                                         @endif
                                     @endif
@@ -866,7 +866,7 @@
 
                                             @elseif($ans_v['type'] == 'text')
                                                 <div class="">
-                                                    {!! Form::text("answers[$question->id][text-$ans_k]", isset($dataentry)? $dataentry->answers[$question->id]['text-'.$ans_k]:null, ['class' => 'form-control', 'placeholder' => $ans_v["value"]]) !!}
+                                                    {!! Form::text("answers[$question->id][text-$ans_k]", isset($dataentry)? $dataentry->answers[$question->id]['text-'.$ans_k]:null, ['class' => 'form-control', 'placeholder' => _t($ans_v["value"])]) !!}
                                                     {!! Form::label("answers[$question->id][text-$ans_k]", _t($ans_v['text']), ['class' => 'control-label']) !!}
                                                 </div>
                                             @elseif($ans_v['type'] == 'radio')

@@ -27,9 +27,9 @@
 						<!-- /.box-header -->
 						<div class="box-body">
 					@if (count($errors) > 0)
-						<div class="alert alert-danger">
-							<strong>Whoops!</strong> There were some problems with your input.<br><br>
-							<ul>
+						<div class="alert alert-danger" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
+							<strong>Whoops!</strong> {{ _t('There were some problems with your input.') }}<br><br>
+							<ul lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
 								@foreach ($errors->all() as $error)
 									<li>{{ $error }}</li>
 								@endforeach

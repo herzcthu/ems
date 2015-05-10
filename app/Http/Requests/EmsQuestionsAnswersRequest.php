@@ -222,10 +222,10 @@ class EmsQuestionsAnswersRequest extends Request {
                                     if (strpos($qk, 'text') !== false && count($answers[$qid]) <= 1) {
                                         if( empty($qa) || '' == $qa ) {
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->question_number )));
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->get_parent->question_number.'. '.$question->question_number)));
                                             }
                                         }
                                     }elseif (strpos($qk, 'text') !== false && count($answers[$qid]) > 1) {
@@ -234,20 +234,20 @@ class EmsQuestionsAnswersRequest extends Request {
                                         if( '' == $qa  || null == $answers[$qid]) {
                                             $validator->errors()->add('answers',$qk.'=>'.$qa);
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->question_number )));
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->get_parent->question_number.'. '.$question->question_number)));
                                             }
                                         }
                                     }else{
                                         if( null == $answers[$qid] || '' == $qa  ) {
 
                                             if( $question->q_type == 'single' ) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->question_number )));
                                             }
                                             if( in_array($question->q_type, array('sub','same','spotchecker'))) {
-                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->get_parent->question_number.'. '.$question->question_number)));
                                             }
                                         }
                                     }
@@ -256,10 +256,10 @@ class EmsQuestionsAnswersRequest extends Request {
 
                                 if('' == $answers[$qid] || null == $answers[$qid]) {
                                     if($question->q_type == 'single'){
-                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
+                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->question_number )));
                                     }
                                     if(in_array($question->q_type, array('sub','same','spotchecker'))){
-                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                        $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->get_parent->question_number.'. '.$question->question_number)));
                                     }
                                 }
                             }
@@ -267,10 +267,10 @@ class EmsQuestionsAnswersRequest extends Request {
 
                         }else{
                             if($question->q_type == 'single'){
-                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->question_number. '!');
+                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->question_number )));
                             }
                             if(in_array($question->q_type, array('sub','same','spotchecker'))){
-                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check ').$question->get_parent->question_number.'. '.$question->question_number. '!');
+                                $validator->errors()->add('answers', _t('You need to complete all answers! Please check :QNUM !', array('QNUM' => $question->get_parent->question_number.'. '.$question->question_number)));
                             }
                         }
                     }else{

@@ -1060,7 +1060,7 @@ class EmsFormsController extends Controller
                 if (array_key_exists('no-answer', $pre_answers)) {
                     $q['answers'][-99]['text'] = "No Answer";
                     $q['answers'][-99]['type'] = 'radio';
-                    $q['answers'][-99]['value'] = 0;
+                    $q['answers'][-99]['value'] = -99;
                 }
             }
 

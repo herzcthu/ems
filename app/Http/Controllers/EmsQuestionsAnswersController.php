@@ -323,15 +323,15 @@ class EmsQuestionsAnswersController extends Controller
             if(in_array($question->input_type, array('text','year','time','date','month'))) {
                 if (is_array($value) && !empty($value)) {
                     array_walk($value, function(&$val, $k){
-                        if (empty($val) || in_array(strtolower($val), array('00:00', 'no', 'no answers', 'no answer', '0'))) {
-                            $val = '0';
+                        if (empty($val) || in_array(strtolower($val), array('00:00', 'no', 'no answers', 'no answer', '-99'))) {
+                            $val = '-99';
                         }
                     });
 
                 } else {
 
-                    if (empty($value) || in_array(strtolower($value), array('00:00', 'no', 'no answers', 'no answer', '0'))) {
-                        $value = '0';
+                    if (empty($value) || in_array(strtolower($value), array('00:00', 'no', 'no answers', 'no answer', '-99'))) {
+                        $value = '-99';
                     }
                 }
             }
@@ -348,7 +348,7 @@ class EmsQuestionsAnswersController extends Controller
 
 
             if(is_array($a)) {
-                if (in_array('0', array_values($a))) {
+                if (in_array('-99', array_values($a))) {
                     if ($question->a_view != 'categories' && $question->optional == false) {
                         $answers['form_complete'] = (bool)false;
 
@@ -356,7 +356,7 @@ class EmsQuestionsAnswersController extends Controller
                 }
 
             }else{
-                if (in_array($a, array('-99','0'))) {
+                if ($a == '-99') {
                     if ($question->a_view != 'categories' && $question->optional == false) {
                         $answers['form_complete'] = (bool)false;
                     }
