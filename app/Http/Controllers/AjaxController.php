@@ -45,7 +45,7 @@ class AjaxController extends Controller {
 			$form_id = $form->first()['id'];
 			$form_type = $form->first()['type'];
 			if ($form_type == 'spotchecker') {
-				$enu_form_id = Input::get('enu_form_id');
+				$enu_form_id = preg_replace('/[^0-9]/','',Input::get('enu_form_id'));
 				preg_match('/([1-9][0-9]{5})[1-9]/', $enu_form_id, $matches);
 				if (strlen($enu_form_id) != 7) {
 
@@ -160,7 +160,7 @@ class AjaxController extends Controller {
 
 			}else{
 
-			$interviewer_id = Input::get('interviewer_id');
+			$interviewer_id = preg_replace('/[^0-9]/','',Input::get('interviewer_id'));
 			$interviewee_id = Input::get('interviewee_id');
 
 				if (strlen($interviewer_id) != 6) {
@@ -169,7 +169,6 @@ class AjaxController extends Controller {
 					$ajax_response['message'] = '<p class="text-red">'._t('Enumerator ID need to be exactly 6 digits').'</p>';                //	break;
 
 				} else {
-
 					preg_match('/([0-9]{3})([0-9]{3})/', $interviewer_id, $matches);
 
 					if (empty($matches)) {
