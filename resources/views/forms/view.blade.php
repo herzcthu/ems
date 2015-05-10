@@ -55,7 +55,7 @@
 							@foreach ($questions as $k => $question )
 								@if( $question->q_type == 'single' )
 									<tr id="listid-{{ $question->id }}">
-										<td>{{ ( ( $questions->currentPage() * $questions->perPage()) - $questions->perPage() ) + $k + 1 }}</td>
+										<td>{{ $question->question_number }}</td>
 											<td>{{ $question->question }}
 											<div class="col-xs-offset-1">
 													@if($question->input_type == 'radio')
@@ -98,7 +98,7 @@
 
 								@elseif( $question->q_type == 'main' || $question->q_type == 'spotchecker')
 									<tr id="listid-{{ $question->id }}">
-										<td>{{ ( ( $questions->currentPage() * $questions->perPage()) - $questions->perPage() ) + $k + 1 }}</td>
+										<td>{{ $question->question_number }}</td>
 										<td>{{ $question->question }}
 											<div class="col-md-offset-1">
 												@foreach($question->get_children as $children)
@@ -162,6 +162,7 @@
 							@endrole
 							</tbody>
 						</table>
+
 				</div>
 				<!-- /.box-body -->
 			</div>

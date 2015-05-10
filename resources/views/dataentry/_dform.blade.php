@@ -1016,7 +1016,7 @@
         </tr>
     @endforeach
         <tr>
-            <td>
+            <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                 {!! Form::hidden('form_id', $form_id, ['class' => 'form-control']) !!}
                 {!! Form::submit( _t($submitButton), ['class' => 'btn btn-primary form-control']) !!}
             </td>

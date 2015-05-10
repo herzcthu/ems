@@ -832,7 +832,7 @@ class EmsFormsController extends Controller
             $form_answers_count = GeneralSettings::options('options', 'answers_per_question');
         }
 
-        $questions = EmsFormQuestions::OfSingleMain($id)->idAscending()->paginate(30);
+        $questions = EmsFormQuestions::OfNotSub($id)->ListIdAscending()->get();
 
         return view('forms/view', compact('questions', 'id', 'form_answers_count','form_name_url'));
     }
