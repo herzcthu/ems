@@ -30,6 +30,7 @@ class EmsQuestionsAnswersController extends Controller {
 	public function index($form_name_url) {
 		//
 		$current_user_role = User::find($this->current_user_id)->roles->first()->slug;
+		$form_name = urldecode($form_name_url);
 		try {
 			$getform = EmsForm::where('name', '=', $form_name)->get();
 			$form_array = $getform->toArray();
