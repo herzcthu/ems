@@ -1,19 +1,13 @@
 
 @import url(http://fonts.googleapis.com/earlyaccess/tharlon.css);
-@import url(http://webfonts.myanmarpress.com/css/webfont-css.php?font=tharlon,zawgyi);
+@import url('http://mmwebfonts.comquas.com/fonts/?font=zawgyi-one');
 @font-face {
     font-family: 'Tharlon';
     src: local('Tharlon');
     unicode-range: U+1000-1FFF;
 }
 :lang(my){
-    font-family: 'Tharlon','Padauk', 'Myanmar3' "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size-adjust: 0.55;
-    line-height: 130%;
-}
-
-:lang(my) input[type=text]{
-    font-family: 'Zawgyi-One' "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: Tharlon,Padauk,Myanmar3, "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size-adjust: 0.55;
     line-height: 130%;
 }
