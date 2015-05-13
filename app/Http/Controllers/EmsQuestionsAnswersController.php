@@ -104,9 +104,10 @@ class EmsQuestionsAnswersController extends Controller {
 			}
 		}
 
+		$current_user = $this->auth_user;
 		//return;
 
-		return view('dataentry/index', compact('form_name_url', 'dataentry', 'form', 'questions', 'alldata'));
+		return view('dataentry/index', compact('form_name_url', 'dataentry', 'form', 'questions', 'alldata', 'current_user'));
 	}
 
 	/**

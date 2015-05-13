@@ -126,11 +126,20 @@
                                 @foreach($dataentry as $data)
 
                                     <tr>
-                                        @if($form->type == 'spotchecker')
-                                        <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->enumerator_form_id !!}</a></td>
-                                        @endif
-                                        @if($form->type == 'enumerator')
-                                        <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->interviewee_id !!}</a></td>
+                                        @if($current_user->id == $data->user_id || ($current_user->is('admin|officestaff')) )
+                                            @if($form->type == 'spotchecker')
+                                            <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->enumerator_form_id !!}</a></td>
+                                            @endif
+                                            @if($form->type == 'enumerator')
+                                            <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->interviewee_id !!}</a></td>
+                                            @endif
+                                        @else
+                                            @if($form->type == 'spotchecker')
+                                            <td>{!! $data->enumerator_form_id !!}</td>
+                                            @endif
+                                            @if($form->type == 'enumerator')
+                                            <td>{!! $data->interviewee_id !!}</td>
+                                            @endif
                                         @endif
                                         @permission('edit.data')
                                         <!--td>Edit</td-->
@@ -174,14 +183,14 @@
                                                                     @endif
                                                                 @endfor
                                                             @endif
-                                                            <?php $i =1; ?>
+                                                            <?php $i = 1;?>
                                                             @foreach(array_filter($data->answers[$q->id]) as $aq => $av)
                                                                 @if(is_array($av))
 
                                                                 @else
                                                                <p>{{ '('.$i.') '.$av }}</p>
                                                                 @endif
-                                                                <?php $i++; ?>
+                                                                <?php $i++;?>
                                                             @endforeach
                                                                 </td>
                                                         @else
@@ -224,14 +233,14 @@
                                                                             @endif
                                                                         @endfor
                                                                     @endif
-                                                                    <?php $i =1; ?>
+                                                                    <?php $i = 1;?>
                                                                     @foreach(array_filter($data->answers[$q->id]) as $aq => $av)
                                                                         @if(is_array($av))
 
                                                                         @else
                                                                             <p>{{ '('.$i.') '.$av }}</p>
                                                                         @endif
-                                                                        <?php $i++; ?>
+                                                                        <?php $i++;?>
                                                                     @endforeach
                                                                 </td>
                                                             @else
