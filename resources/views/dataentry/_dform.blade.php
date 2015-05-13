@@ -113,45 +113,44 @@
             </td>
         </tr>
     @endif
-    <?php function anscmp($a, $b)
-        {
-            $aa = str_replace('-','199', $a);
-            $bb = str_replace('-','199', $b);
-            $a = preg_replace('@^0@','1999', $aa);
-            $b = preg_replace('@^0@','1999', $bb);
-            return strcmp($a, $b);
-        }
-        function csort($array){
-            $answers = $array;
-            ksort($answers,SORT_NATURAL);
-            //dd($answers);
-            if(null != $answers || !empty($answers)){
-                foreach($answers as $ak => $av){
-                    if($ak > 0 ){
-                        $positive[$ak] = $av;
-                    }
-                    if($ak <= 0){
-                        $negative[$ak] = $av;
-                    }
-                }
-                if(!isset($positive)){
+    <?php function anscmp($a, $b) {
+	$aa = str_replace('-', '199', $a);
+	$bb = str_replace('-', '199', $b);
+	$a = preg_replace('@^0@', '1999', $aa);
+	$b = preg_replace('@^0@', '1999', $bb);
+	return strcmp($a, $b);
+}
+function csort($array) {
+	$answers = $array;
+	ksort($answers, SORT_NATURAL);
+	//dd($answers);
+	if (null != $answers || !empty($answers)) {
+		foreach ($answers as $ak => $av) {
+			if ($ak > 0) {
+				$positive[$ak] = $av;
+			}
+			if ($ak <= 0) {
+				$negative[$ak] = $av;
+			}
+		}
+		if (!isset($positive)) {
 
-                    $positive = array();
-                }
-                if(!isset($negative)){
+			$positive = array();
+		}
+		if (!isset($negative)) {
 
-                    $negative = array();
-                }
-                $sorted = (array)$positive + (array)$negative;
-                return $sorted;
-            }
+			$negative = array();
+		}
+		$sorted = (array) $positive + (array) $negative;
+		return $sorted;
+	}
 
-        }
-        ?>
+}
+?>
     @foreach($questions as $question)
             <?php
-            $answers = csort($question->answers);
-            ?>
+$answers = csort($question->answers);
+?>
 
         <tr>
 
@@ -231,7 +230,7 @@
                                                  </div>'>
                                         @if(isset($dataentry->notes) && is_array($dataentry->notes))
                                             @foreach($dataentry->notes as $nk => $note)
-                                                <?php $cat_num = str_replace('cat-','',$nk); ?>
+                                                <?php $cat_num = str_replace('cat-', '', $nk);?>
                                                 <div class="addinput" id="{{ $nk }}">
                                                     <script>
                                                         $( "{{'#'.$nk}} a.delCat" ).click(function() {
@@ -346,7 +345,7 @@
                                     <div class="col-xs-offset-1">
                                         @if(!empty($child->answers))
                                             @foreach(csort($child->answers) as $ans_k => $ans_v)
-                                                <?php $as_no = $ans_k + 1; ?>
+                                                <?php $as_no = $ans_k + 1;?>
 
                                                 @if(array_key_exists('type', $ans_v))
                                                     @if($ans_v['type'] == 'text')
@@ -445,7 +444,7 @@
                                                  </div>'>
                                         @if(isset($dataentry->notes) && is_array($dataentry->notes))
                                             @foreach($dataentry->notes as $nk => $note)
-                                                <?php $cat_num = str_replace('cat-','',$nk); ?>
+                                                <?php $cat_num = str_replace('cat-', '', $nk);?>
                                                 <div class="addinput" id="{{ $nk }}">
                                                     <script>
                                                         $( "{{'#'.$nk}} a.delCat" ).click(function() {
@@ -476,7 +475,7 @@
                                     <div class="col-xs-offset-1">
                                         @if(!empty($answers))
                                             @foreach($answers as $ans_k => $ans_v)
-                                                <?php $as_no = $ans_k + 1; ?>
+                                                <?php $as_no = $ans_k + 1;?>
 
                                                 @if(array_key_exists('type', $ans_v))
                                                     @if($ans_v['type'] == 'text')
@@ -619,7 +618,7 @@
                             @endfor
 
                             @foreach($answers as $ans_k => $ans_v)
-                                <?php $as_no = $ans_k + 1; ?>
+                                <?php $as_no = $ans_k + 1;?>
                                 <tr>
                                     <td>{{ _t($ans_v['text']) }}</td>
                                     @foreach($question->get_children as $child)
@@ -778,7 +777,7 @@
                             <table class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             @foreach($answers as $ans_k => $ans_v)
                                 <tr>
-                                <?php $as_no = $ans_k + 1; ?>
+                                <?php $as_no = $ans_k + 1;?>
                                 @if(array_key_exists('type', $ans_v))
 
                                     @if( in_array($ans_k, array('0', '-97', '-98', '-99')) )
@@ -855,7 +854,7 @@
                         <tr>
 
                             @foreach($answers as $ans_k => $ans_v)
-                                <?php $as_no = $ans_k + 1; ?>
+                                <?php $as_no = $ans_k + 1;?>
 
                                 <td style="text-align: center" class="col-xs-1">
                                     @if($question->input_type == 'different')
@@ -1319,4 +1318,7 @@
 
     });
 </script>
+<style type="text/css">
+    input[type=text] { font-family: zawgyi-one !important;}
+</style>
 

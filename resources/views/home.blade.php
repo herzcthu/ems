@@ -7,7 +7,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
+            <h1 lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                 {{ _t('Dashboard') }}
                 <small>Dashboard</small>
             </h1>
