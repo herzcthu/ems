@@ -12,6 +12,12 @@
     line-height: 130%;
 }
 
+:lang(my) input[type=text]{
+    font-family: 'Zawgyi-One' "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size-adjust: 0.55;
+    line-height: 130%;
+}
+
 :lang(my) .fa {
     display: inline-block;
     font: normal normal normal 14px/1 FontAwesome;
