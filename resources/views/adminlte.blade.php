@@ -108,7 +108,7 @@ desired effect
                         <li><a href="{{ url('/auth/login') }}">Login</a></li>
                         <li><a href="{{ url('/auth/register') }}">Register</a></li>
                     @else
-                        @if(\App\User::find(Auth::user()->id)->roles->first()->slug == 'admin')
+                        @if(\App\User::find(Auth::user()->id)->roles->first()->slug == 'dataentry')
                             <li class="dropdown messages-menu pull-left">
                                 <a style="padding: 5px; margin:0px;"><span class="hidden-xs"><h4>Dataentry ID: <b>{{ sprintf('%02d', Auth::user()->id )}}</b></h4></span></a>
                             </li>
