@@ -102,12 +102,14 @@ class EmsQuestionsAnswersRequest extends Request {
 			$form_type = $form->first()['type'];
 
 			if ($form_type == 'spotchecker') {
+				$enu_form_id = $this->input('enu_form_id');
+				$enu_form_id = preg_replace('/[^0-9]/', '', $enu_form_id);
 				//dd($form_type);
-				if (strlen($this->input('enu_form_id')) != 7) {
+				if (strlen($enu_form_id != 7) {
 					$validator->errors()->add('enu_form_id', _t('Enumerator Form ID need to be exactly 7 digits')); //	break;
 
 				} else {
-					$enu_form_id = $this->input('enu_form_id');
+					
 					//dd($enu_form_id);
 					//try{
 					//	$enu_form = EmsQuestionsAnswers::where('interviewee_id', '=', $enu_form_id)->get();
@@ -115,6 +117,7 @@ class EmsQuestionsAnswersRequest extends Request {
 					//}catch (\Exception $e){
 					//	$validator->errors()->add('enu_form_id', 'Enumerator Form not found!');
 					//}
+					
 					preg_match('/([0-9]{6})[1-9]/', $enu_form_id, $matches);
 					$enu_id = $matches[1];
 					try {
@@ -144,6 +147,7 @@ class EmsQuestionsAnswersRequest extends Request {
 			} else {
 
 				$interviewer_id = $this->input('interviewer_id');
+				$interviewer_id = preg_replace('/[^0-9]/', '', $interviewer_id);
 
 				// Check to see if valid numeric array
 				//foreach ($this->input('enu_id') as $item) {

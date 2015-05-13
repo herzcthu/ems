@@ -29,7 +29,7 @@ class EmsQuestionsAnswersController extends Controller {
 	 */
 	public function index($form_name_url) {
 		//
-		$form_name = urldecode($form_name_url);
+		$current_user_role = User::find($this->current_user_id)->roles->first()->slug;
 		try {
 			$getform = EmsForm::where('name', '=', $form_name)->get();
 			$form_array = $getform->toArray();
@@ -54,17 +54,32 @@ class EmsQuestionsAnswersController extends Controller {
 		$questions = EmsFormQuestions::OfNotMain($id)->get();
 		//dd($form->type);
 
-		if ($form->type == 'spotchecker') {
+		if ($current_user_role == 'dataentry') {
+			if ($form->type == 'spotchecker') {
 
-			$dataentry = SpotCheckerAnswers::where('form_id', '=', $id)->paginate(50);
+				$dataentry = SpotCheckerAnswers::where('form_id', '=', $id)->where('user_id', $this->current_user_id)->paginate(50);
 
-			$alldata = SpotCheckerAnswers::where('form_id', '=', $id)->get();
+				$alldata = SpotCheckerAnswers::where('form_id', '=', $id)->where('user_id', $this->current_user_id)->get();
 
+			} else {
+
+				$dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->where('user_id', $this->current_user_id)->paginate(50);
+				$alldata = EmsQuestionsAnswers::where('form_id', '=', $id)->where('user_id', $this->current_user_id)->get();
+			}
 		} else {
+			if ($form->type == 'spotchecker') {
 
-			$dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->paginate(50);
-			$alldata = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
+				$dataentry = SpotCheckerAnswers::where('form_id', '=', $id)->paginate(50);
+
+				$alldata = SpotCheckerAnswers::where('form_id', '=', $id)->get();
+
+			} else {
+
+				$dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->paginate(50);
+				$alldata = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
+			}
 		}
+
 		//dd($dataentry);
 		//dd($alldata);
 
