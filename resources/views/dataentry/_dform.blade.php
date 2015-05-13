@@ -657,14 +657,7 @@ $answers = csort($question->answers);
                             @endforeach
                         </table>
                     @elseif($question->a_view == 'validated-table')
-                        @foreach($answers as $answer_k => $answer_v)
-                            @if(!empty($answer_v))
-                                @if( in_array($answer_k, array('0', '-98', '-99')) )
-                                    {!! Form::radio("answers[$question->id]",$answer_v['value'],isset($dataentry->answers[$question->id])? (($ans_v['value'] == $dataentry->answers[$question->id])?true:false):null )
-                                    !!} {{ $answer_v['value'].' ('._t($answer_v['text']).')' }}
-                                @endif
-                            @endif
-                        @endforeach
+
                         <table id="validated-table" class="table" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                             <th></th>
                             @if(is_array($answers))
@@ -677,7 +670,7 @@ $answers = csort($question->answers);
 
                                 @endforeach
                                 @foreach($answers as $ans_k => $ans_v)
-                                    @if( !in_array($ans_k, array('-99', '-98')) )
+
 
                                         <tr>
                                             <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">{{ _t($ans_v['text']) }}</td>
@@ -713,7 +706,7 @@ $answers = csort($question->answers);
                                                 </td>
                                             @endforeach
                                         </tr>
-                                    @endif
+
                                 @endforeach
                             @endif
                         </table>
