@@ -1040,7 +1040,7 @@ $answers = csort($question->answers);
     var radioButton = $("#validated-table tr");
     radioButton.mousedown(function () {
         if ($(this).hasClass('validate')) {
-            if ($("tr.validate").find("tr.validate input:radio").val() == 0 || $("tr.validate").find("tr.validate input:radio").val() == '-8' || $("tr.validate").find("tr.validate input:radio").val() == '-9') {
+            if ($("tr.validate").find("tr.validate input:radio").val() == -99 || $("tr.validate").find("tr.validate input:radio").val() == '-8' || $("tr.validate").find("tr.validate input:radio").val() == '-9') {
             } else {
                 $("tr.validate").find("tr.validate input:radio:checked").prop('checked', false);
                 //alert($("tr.validate").find("tr.validate input:radio").val());
@@ -1312,6 +1312,6 @@ $answers = csort($question->answers);
     });
 </script>
 <style type="text/css">
-    input[type=text] { font-family: zawgyi-one !important;}
+    input[type='text'] { font-family: zawgyi-one !important;}
 </style>
 
