@@ -151,7 +151,9 @@ class EmsQuestionsAnswersRequest extends Request {
 
 				// Check to see if valid numeric array
 				//foreach ($this->input('enu_id') as $item) {
-				if (strlen($this->input('interviewer_id')) != 6) {
+
+				//dd($interviewer_id);
+				if (strlen($interviewer_id) != 6) {
 					$validator->errors()->add('interviewer_id', _t('Enumerator ID need to be exactly 6 digits')); //	break;
 
 				} else {
