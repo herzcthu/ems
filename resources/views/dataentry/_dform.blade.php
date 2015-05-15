@@ -1313,5 +1313,8 @@ $answers = csort($question->answers);
 </script>
 <style type="text/css">
     input[type='text'] { font-family: zawgyi-one !important;}
+    input.year-picker { font-family: Tharlon, Myanmar3, Padauk !important;}
+    input.date-picker { font-family: Tharlon, Myanmar3, Padauk !important;}
+    input.time-picker { font-family: Tharlon, Myanmar3, Padauk !important;}
 </style>
 
