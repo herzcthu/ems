@@ -1,13 +1,10 @@
 <?php namespace App\Http\Controllers;
 
-
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use App\User;
-use App\States;
 use App\Districts;
+use App\Http\Controllers\Controller;
+use App\States;
 use App\Townships;
+use App\User;
 use App\Villages;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -17,8 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class GeolocationsController extends Controller {
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->middleware('auth');
 		$this->current_user_id = Auth::id();
 		$this->auth_user = User::find($this->current_user_id);
@@ -28,10 +24,8 @@ class GeolocationsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
-		if ($this->auth_user->is('admin'))
-		{
+	public function index() {
+		if ($this->auth_user->is('admin')) {
 			//$locations = Villages::paginate(30);
 			$locations = Villages::all();
 
@@ -51,15 +45,14 @@ class GeolocationsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create()
-	{
+	public function create() {
 		$states = States::lists('state', 'id');
 		$districts = Districts::lists('district');
 		$townships = Townships::lists('township');
 		$villagetracks = Villages::lists('villagetrack');
 		$villages = Villages::lists('village');
 
-		return view('locations.create', compact('states','districts','townships','villagetracks','villages'));
+		return view('locations.create', compact('states', 'districts', 'townships', 'villagetracks', 'villages'));
 	}
 
 	/**
@@ -67,8 +60,7 @@ class GeolocationsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store(Request $request)
-	{
+	public function store(Request $request) {
 		//
 		$input = $request->all();
 
@@ -90,7 +82,7 @@ class GeolocationsController extends Controller {
 		$district_array[0]['district'] = $input['district'];
 		$new_district = Districts::updateOrCreate(array('district' => $input['district']), $district_array[0]);
 
-		$townships = Townships::where('township', '=', $input['township'])->get();		
+		$townships = Townships::where('township', '=', $input['township'])->get();
 		$township_array = $townships->toArray();
 		$township_array[0]['district_id'] = $new_district['id'];
 		$township_array[0]['township'] = $input['township'];
@@ -108,9 +100,9 @@ class GeolocationsController extends Controller {
 		$villagetrack_array[0]['villagetrack'] = $villagetrack_input;
 		$villagetrack_array[0]['village'] = $village_input;
 
-		$new_villagetrack = Villages::updateOrCreate(array('villagetrack' => $input['villagetrack'],'village' => $input['village']), $villagetrack_array[0]);
+		$new_villagetrack = Villages::updateOrCreate(array('villagetrack' => $input['villagetrack'], 'village' => $input['village']), $villagetrack_array[0]);
 
-	/**	$villages = Villages::where('village', '=', $input['village'])->get();
+		/**	$villages = Villages::where('village', '=', $input['village'])->get();
 		$village_array = $villages->toArray();
 		$village_array[0]['townships_id'] = $new_township['id'];
 		$village_array[0]['village'] = $input['village'];
@@ -130,8 +122,7 @@ class GeolocationsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
-	{
+	public function show($id) {
 		//
 	}
 
@@ -141,8 +132,7 @@ class GeolocationsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
-	{
+	public function edit($id) {
 		//
 	}
 
@@ -152,8 +142,7 @@ class GeolocationsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
+	public function update($id) {
 		//
 	}
 
@@ -163,16 +152,15 @@ class GeolocationsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
-	{
+	public function destroy($id) {
 		//
 	}
 
-	public function import(){
+	public function import() {
 
 		$file = Input::file('file');
 
-		if(!empty($file)) {
+		if (!empty($file)) {
 			$file = $file->getRealPath();
 			$excel = Excel::load($file, 'UTF-8');
 			$csv_array = $excel->get()->toArray();
@@ -180,18 +168,21 @@ class GeolocationsController extends Controller {
 			foreach ($csv_array as $line) {
 				if (isset($line['location_id'])) {
 					//dd(current($line));
-					$location_id = (int)$line['location_id'];
+					$location_id = (int) $line['location_id'];
 					preg_match('/([1-9][0-9]{2})([0-9]{3})/', $location_id, $matches);
 
 					$state_id = $matches[1];
 					$village_id = $matches[2];
 
 				} else {
-					if (isset($line['state_id']))
+					if (isset($line['state_id'])) {
 						$state_id = $line['state_id'];
+					}
 
-					if (isset($line['village_id']))
+					if (isset($line['village_id'])) {
 						$village_id = $line['village_id'];
+					}
+
 				}
 
 				$state['state_id'] = $state_id;
@@ -219,28 +210,28 @@ class GeolocationsController extends Controller {
 				}
 				$village['villagetrack'] = $line['villagetrack'];
 				$village['village'] = $line['village'];
-				if (isset($line['village_my'])){
-					if(!empty($line['village_my'])) {
+				if (isset($line['village_my'])) {
+					if (!empty($line['village_my'])) {
 						$village['village_my'] = $line['village_my'];
-					}else {
+					} else {
 						$village['village_my'] = '';
 					}
+				} else {
+					$village['village_my'] = '';
 				}
 				$village['village_id'] = $village_id;
 				try {
 					$new_village = Villages::updateOrCreate(array('townships_id' => $village['townships_id'], 'village_id' => $village_id, 'villagetrack' => $line['villagetrack'], 'village' => $line['village']), $village);
-				}catch(QueryException $e){
+				} catch (QueryException $e) {
 					//var_dump(current($csv_array));
 				}
 			}
 			$message = 'Location data imported!';
 			\Session::flash('location_import_success', $message);
-		}else{
+		} else {
 			$error_message = 'No file to import!';
 			\Session::flash('location_import_error', $error_message);
 		}
-
-
 
 		return redirect('locations');
 	}

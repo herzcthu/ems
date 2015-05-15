@@ -88,26 +88,30 @@
                             <table id="datatable-allfeatures" class="table table-bordered table-striped">
                                 <thead>
                                 <th style="background:none !important">{!! Form::input('checkbox', 'p_group', null, ['id' => 'cb']) !!}</th>
-                                <th>No.</th>
+                                <th>PACE ID</th>
                                 <th>Name</th>
-                                <th>Email</th>
+                                <th>Address</th>
                                 <th>NRC No.</th>
                                 <th>Date of Birth</th>
                                 <th>Participant Role</th>
                                 <th>Location</th>
-                                <th>View</th>
+                                <th>Bank</th>
                                 <th>Action</th>
                                 </thead>
                                 <tbody>
-                                @role('admin')
+                                @permission('edit.form')
                                 @foreach ($participants as $k => $participant)
                                     <tr>
                                         <td>{!! Form::input('checkbox', 'participant_id['.$participant->id.']' , $participant->id, ['class' => 'cb']) !!} </td>
-                                        <td>{{ $k + 1 }}</td>
-                                        <td>{{ $participant->name }}</td>
-                                        <td>{{ $participant->email }}</td>
+                                        <td>{{ $participant->participant_id }}</td>
+                                        <td><a href={{ url("/participants/".$participant->id ) }}>{{ $participant->name }}</a></td>
+                                        <td>{{ $participant->user_mailing_address }}</td>
                                         <td>{{ $participant->nrc_id }}</td>
-                                        <td>{{ $participant->dob }}</td>
+                                        <td>
+                                        @if('01-01-1970' != $participant->dob)
+                                        {{ $participant->dob }}
+                                        @endif
+                                        </td>
                                         <td>{!! ucwords($participant->participant_type) !!}</td>
                                         @if($participant->participant_type == 'coordinator')
                                             <td>{{ implode(', ', $participants->find($participant->id)->states->lists('state') ) }}</td>
@@ -117,12 +121,12 @@
                                         @elseif($participant->participant_type == 'spotchecker')
                                             <td>{{ implode(', ', $participants->find($participant->id)->townships->lists('township')) }}</td>
                                         @endif
-                                        <td><a href={{ url("/participants/".$participant->id ) }}>Edit</a></td>
+                                        <td>{{ $participant->bank }}</td>
                                         <td><a href={{ url("/participants/".$participant->id."/delete")}}>Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach
-                                @endrole
+                                @endpermission
                                 </tbody>
                             </table>
                             {!! Form::close() !!}

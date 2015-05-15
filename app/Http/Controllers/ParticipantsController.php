@@ -1,39 +1,27 @@
 <?php namespace App\Http\Controllers;
 
 use App\Districts;
-
-use App\Http\Requests;
-use App\Http\Requests\ParticipantsFormRequest;
-use App\PGroups;
-use App\User;
-
-use App\States;
-use App\Villages;
-use App\Townships;
-use App\Participant;
 use App\Http\Controllers\Controller;
-
-
-use Bican\Roles\Models\Permission;
-use Bican\Roles\Models\Role;
-
-
+use App\Http\Requests\ParticipantsFormRequest;
+use App\Participant;
+use App\PGroups;
+use App\States;
+use App\Townships;
+use App\User;
+use App\Villages;
 use Illuminate\Database\QueryException;
-use Illuminate\Http\Request;
 //use Illuminate\HttpResponse;
 //use Illuminate\Routing\Controller;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Input;
 use Maatwebsite\Excel\Facades\Excel;
 use Psy\Exception\ErrorException;
 
 class ParticipantsController extends Controller {
 
-	public function __construct()
-	{
+	public function __construct() {
 		$this->middleware('auth');
 		$this->current_user_id = Auth::id();
 		$this->auth_user = User::find($this->current_user_id);
@@ -43,11 +31,9 @@ class ParticipantsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
-	{
+	public function index() {
 
-		if ($this->auth_user->level() > 6)
-		{
+		if ($this->auth_user->level() > 6) {
 			//$participants = Participant::paginate(30);
 			$participants = Participant::all();
 			$p_group = PGroups::lists('name', 'id');
@@ -62,8 +48,7 @@ class ParticipantsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function create()
-	{
+	public function create() {
 		//
 		$states = States::lists('state', 'state');
 		$districts = Districts::lists('district', 'district');
@@ -71,7 +56,7 @@ class ParticipantsController extends Controller {
 		$villages = Villages::lists('village', 'village');
 		$coordinators = Participant::where('participant_type', '=', 'coordinator')->lists('name', 'nrc_id');
 
-		return view('participants.create', compact('states', 'districts','townships','villages', 'coordinators'));
+		return view('participants.create', compact('states', 'districts', 'townships', 'villages', 'coordinators'));
 	}
 
 	/**
@@ -80,8 +65,7 @@ class ParticipantsController extends Controller {
 	 * @param ParticipantsFormRequest $request
 	 * @return Response
 	 */
-	public function store(ParticipantsFormRequest $request)
-	{
+	public function store(ParticipantsFormRequest $request) {
 		//
 		$input = $request->all();
 		//die(print_r($input));
@@ -98,13 +82,11 @@ class ParticipantsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
-	{
-		if ($this->auth_user->level() > 6)
-		{		//
+	public function show($id) {
+		if ($this->auth_user->level() > 6) {
+			//
 			$p_group = PGroups::lists('name', 'id');
-			if($id == 'coordinator'){
-
+			if ($id == 'coordinator') {
 
 				$participants = Participant::where('participant_type', '=', 'coordinator')->paginate(30);
 
@@ -113,29 +95,26 @@ class ParticipantsController extends Controller {
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}elseif($id == 'enumerator'){
-
+			} elseif ($id == 'enumerator') {
 
 				$participants = Participant::where('participant_type', '=', 'enumerator')->paginate(30);
 				$viewport = 'participants.index';
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}elseif($id == 'spotchecker'){
-
+			} elseif ($id == 'spotchecker') {
 
 				$participants = Participant::where('participant_type', '=', 'spotchecker')->paginate(30);
 				$viewport = 'participants.index';
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}else{
+			} else {
 				$participants = Participant::find($id);
-				if($participants->participant_type == 'coordinator')
-				{
-					$location = isset($participants->states->first()['state']) ? $participants->states->first()['state']: $participants->districts->first()['district'];
+				if ($participants->participant_type == 'coordinator') {
+					$location = isset($participants->states->first()['state']) ? $participants->states->first()['state'] : $participants->districts->first()['district'];
 					//$locations = array('Dtates' => $states, 'Districts' => $districts);
-				}else{
+				} else {
 
 					$location = $participants->villages->first()['village'];
 					//$locations = array('Villages' => $villages);
@@ -153,10 +132,9 @@ class ParticipantsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
-	{
-		if ($this->auth_user->level() > 6)
-		{		//
+	public function edit($id) {
+		if ($this->auth_user->level() > 6) {
+			//
 			$p_group = PGroups::lists('name', 'id');
 
 			$states = States::lists('state', 'state');
@@ -165,8 +143,7 @@ class ParticipantsController extends Controller {
 			$villages = Villages::lists('village', 'village');
 			$coordinators = Participant::where('participant_type', '=', 'coordinator')->lists('name', 'nrc_id');
 
-			if($id == 'coordinator'){
-
+			if ($id == 'coordinator') {
 
 				$participants = Participant::where('participant_type', '=', 'coordinator')->paginate(30);
 
@@ -175,29 +152,26 @@ class ParticipantsController extends Controller {
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}elseif($id == 'enumerator'){
-
+			} elseif ($id == 'enumerator') {
 
 				$participants = Participant::where('participant_type', '=', 'enumerator')->paginate(30);
 				$viewport = 'participants.index';
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}elseif($id == 'spotchecker'){
-
+			} elseif ($id == 'spotchecker') {
 
 				$participants = Participant::where('participant_type', '=', 'spotchecker')->paginate(30);
 				$viewport = 'participants.index';
 				//return $participants;
 				//return 'This is Geolocaiton';
 
-			}else{
+			} else {
 				$participant = Participant::find($id);
-				if($participant->participant_type == 'coordinator')
-				{
-					$location = isset($participant->states->first()['state']) ? $participant->states->first()['state']: $participant->districts->first()['district'];
+				if ($participant->participant_type == 'coordinator') {
+					$location = isset($participant->states->first()['state']) ? $participant->states->first()['state'] : $participant->districts->first()['district'];
 					$locations = array('Dtates' => $states, 'Districts' => $districts);
-				}else{
+				} else {
 
 					$location = $participant->villages->first()['village'];
 					$locations = array('Villages' => $villages);
@@ -205,10 +179,7 @@ class ParticipantsController extends Controller {
 				$viewport = 'participants.edit';
 			}
 
-
-
-
-			return view($viewport, compact('participant','p_group','locations', 'location', 'states', 'districts','townships','villages', 'coordinators'));
+			return view($viewport, compact('participant', 'p_group', 'locations', 'location', 'states', 'districts', 'townships', 'villages', 'coordinators'));
 		}
 	}
 
@@ -218,14 +189,13 @@ class ParticipantsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id, ParticipantsFormRequest $request)
-	{
-					//
-					$participant = Participant::findOrFail($id);
-					$input = $request->all();
-					$this->CreatAndStore($input);
+	public function update($id, ParticipantsFormRequest $request) {
+		//
+		$participant = Participant::findOrFail($id);
+		$input = $request->all();
+		$this->CreatAndStore($input);
 
-			return redirect('participants');
+		return redirect('participants');
 	}
 
 	/**
@@ -234,28 +204,25 @@ class ParticipantsController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
-	{
+	public function destroy($id) {
 		$participant = Participant::find($id);
 
 		$participant->delete();
-		$message = 'Participant '.$participant->name.' deleted!';
-
+		$message = 'Participant ' . $participant->name . ' deleted!';
 
 		\Session::flash('participant_deleted', $message);
 
 		return redirect('participants');
 	}
 
-
 	/**
 	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     */
-	public function import(){
+	 */
+	public function import() {
 
 		$file = Input::file('file');
 
-		if(!empty($file)) {
+		if (!empty($file)) {
 			$file = $file->getRealPath();
 			$excel = Excel::load($file, 'UTF-8');
 			$csv_array = $excel->get()->toArray();
@@ -263,7 +230,7 @@ class ParticipantsController extends Controller {
 				$this->CreatAndStore($line);
 			}
 			$message = 'Participant List imported!';
-		}else{
+		} else {
 			$message = 'No file to import!';
 		}
 
@@ -271,43 +238,34 @@ class ParticipantsController extends Controller {
 		return redirect('participants');
 	}
 
-	public function setgroup(Request $request)
-	{
+	public function setgroup(Request $request) {
 		$input = $request->all();
 		//return $input;
 
 		$participant_id = $input['participant_id'];
 		$p_group = $input['p_groups'];
-		foreach($participant_id as $id)
-		{
+		foreach ($participant_id as $id) {
 			$participant = Participant::find($id);
-			if(isset($input['change_group']))
-			{
+			if (isset($input['change_group'])) {
 				$participant->pgroups()->attach($p_group);
-				$message = 'Participants added to '.PGroups::find($p_group)->name.' group!';
+				$message = 'Participants added to ' . PGroups::find($p_group)->name . ' group!';
 			}
-			if(isset($input['delete']))
-			{
+			if (isset($input['delete'])) {
 				$participant->delete();
 				$message = 'Participants deleted!';
 			}
 
 		}
 
-
-
-
 		\Session::flash('participant_success', $message);
 
 		return redirect('participants');
 	}
 
-	private function CreatAndStore($input)
-	{
+	private function CreatAndStore($input) {
 		//dd($input);
 
 		$participant['name'] = $input['name'];
-
 
 		if (isset($input['email'])) {
 			$participant['email'] = $input['email'];
@@ -387,10 +345,7 @@ class ParticipantsController extends Controller {
 			$state_id = $matches[1];
 			$village_id = $matches[2];
 
-
-
 		} else {
-
 
 			if (isset($input['location'])) {
 				try {
@@ -469,38 +424,36 @@ class ParticipantsController extends Controller {
 		$last = Participant::firstOrNew(['name' => $participant['name'], 'nrc_id' => $nrc_id_format, 'participant_type' => 'coordinator']);
 		//dd($last);
 		if ($participant['participant_type'] == 'coordinator') {
-			if($last->id){
+			if ($last->id) {
 				$current_inserting_participant_id = $last->participant_id;
-			}else{
+			} else {
 				$current_inserting_participant_id = count(Participant::where('participant_type', '=', 'coordinator')->get()) + 1;
 			}
 			//dd($current_inserting_participant_id);
 
 			$new_pid = sprintf('%04d', $current_inserting_participant_id);
 
-
-				$participant['participant_id'] = $new_pid;
-
+			$participant['participant_id'] = $new_pid;
 
 		} elseif ($participant['participant_type'] == 'spotchecker') {
-			if(isset($input['state_id'])){
+			if (isset($input['state_id'])) {
 
 				$state_id_for_spotchecker = $input['state_id'];
 				$state_id = States::where('state_id', '=', $input['state_id'])->pluck('id');
-			}elseif( isset($township_id) && (!empty($township_id) || null != $township_id)){
+			} elseif (isset($township_id) && (!empty($township_id) || null != $township_id)) {
 
 				$get_locations = Townships::getLocations($township_id);
 				$state_id = $get_locations['state']['id'];
 
 				$state_id_for_spotchecker = $get_locations['state']['state_id'];
 
-			}else{
+			} else {
 				$state_id_for_spotchecker = rand(500, 999);
 			}
-			if(isset($input['spotchecker_id'])) {
+			if (isset($input['spotchecker_id'])) {
 				$participant['participant_id'] = $input['spotchecker_id'];
-			}else{
-				$participant['participant_id'] = $township_id.$state_id_for_spotchecker;
+			} else {
+				$participant['participant_id'] = $township_id . $state_id_for_spotchecker;
 			}
 
 			$coordinator = States::find($state_id);
@@ -521,17 +474,17 @@ class ParticipantsController extends Controller {
 			//$participant['parent_id'] = $line['parent_id'];
 
 			//var_dump($village_id);
-			if(isset($village_id) && (!empty($village_id) || null != $village_id) ){
+			if (isset($village_id) && (!empty($village_id) || null != $village_id)) {
 
-			$get_locations = Villages::getLocations($village_id);
+				$get_locations = Villages::getLocations($village_id);
 
-			$state_id = $get_locations['state']['id'];
+				$state_id = $get_locations['state']['id'];
 
-			$township_id = $get_locations['township']['id'];
+				$township_id = $get_locations['township']['id'];
 
-			$state_id_for_enu = $get_locations['state']['state_id'];
+				$state_id_for_enu = $get_locations['state']['state_id'];
 
-			$spotchecker_tsp = Townships::find($township_id);
+				$spotchecker_tsp = Townships::find($township_id);
 
 				$coordinator = States::find($state_id);
 
@@ -553,12 +506,10 @@ class ParticipantsController extends Controller {
 					}
 				}
 
-
-			$participant['participant_id'] = (int) $state_id_for_enu . sprintf('%03d', $village_id);
-			}else{
+				$participant['participant_id'] = (int) $state_id_for_enu . sprintf('%03d', $village_id);
+			} else {
 				return;
 			}
-
 
 		}
 		//dd($participant);
@@ -566,16 +517,16 @@ class ParticipantsController extends Controller {
 			$participant['name'] = (string) $participant['participant_id'];
 		}
 
-		if ((!empty($participant['name']) || $participant['name'] != '' ) && (null == $participant['email'] || empty($participant['email']) || $participant['email'] == '')) {
-			$participant['email'] = snake_case($participant['name'].$participant['participant_id']) . '@' . substr(strstr(url(), '.'), 1);
+		if ((!empty($participant['name']) || $participant['name'] != '') && (null == $participant['email'] || empty($participant['email']) || $participant['email'] == '')) {
+			$participant['email'] = snake_case($participant['name'] . $participant['participant_id']) . '@' . substr(strstr(url(), '.'), 1);
 		}
 
 		$participant['participant_id'] = (int) $participant['participant_id'];
 
-			//dd($participant);
+		//dd($participant);
 		try {
-			$new_participant = Participant::updateOrCreate(['name' => $participant['name'], 'email' => $participant['email'], 'participant_id' => $participant['participant_id']], $participant);
-		}catch(QueryException $e){
+			$new_participant = Participant::updateOrCreate(['participant_id' => $participant['participant_id']], $participant);
+		} catch (QueryException $e) {
 			//dd($participant);
 		}
 		//try {
@@ -585,107 +536,102 @@ class ParticipantsController extends Controller {
 		//	$update_error = true;
 		//}
 
-		if(isset($new_participant) && (!empty($new_participant) || null != $new_participant || $new_participant != '')){
+		if (isset($new_participant) && (!empty($new_participant) || null != $new_participant || $new_participant != '')) {
 
 			$new_participant->parents()->sync($parent_id, false);
 
-		if ($participant['participant_type'] == 'coordinator') {
-			//return var_dump($new_participant->states());
-			if (isset($state_id)) {
-				//return var_dump($state_id);
-				try {
-					$p_id = Participant::find($new_participant->id);
+			if ($participant['participant_type'] == 'coordinator') {
+				//return var_dump($new_participant->states());
+				if (isset($state_id)) {
+					//return var_dump($state_id);
+					try {
+						$p_id = Participant::find($new_participant->id);
 
-				}catch(QueryException $e){
+					} catch (QueryException $e) {
 
-				}
+					}
 //				var_dump($p_id->states->toArray());
-//dd($p_id->states());
+					//dd($p_id->states());
 
-				if(!empty($p_id->states->toArray())){
+					if (!empty($p_id->states->toArray())) {
 //					dd($p_id->states);
-					$previous_state_id = $p_id->states->first()->id;
-				}
-				//dd($state_id);
-				//dd($previous_state_id);
-
-				$realstateid = States::where('state_id', '=', $state_id)->pluck('id');
-
-
-				if(isset($previous_state_id)){
-
-					//dd($realstateid);
-					$new_participant->states()->sync([$realstateid, $previous_state_id], false);
-
-				}else {
+						$previous_state_id = $p_id->states->first()->id;
+					}
+					//dd($state_id);
 					//dd($previous_state_id);
-					$new_participant->states()->sync([$realstateid]);
+
+					$realstateid = States::where('state_id', '=', $state_id)->pluck('id');
+
+					if (isset($previous_state_id)) {
+
+						//dd($realstateid);
+						$new_participant->states()->sync([$realstateid, $previous_state_id], false);
+
+					} else {
+						//dd($previous_state_id);
+						$new_participant->states()->sync([$realstateid]);
+					}
+
 				}
+				if (isset($district_id)) {
 
-
-			}
-			if (isset($district_id)) {
-
-				$new_participant->districts()->sync([$district_id]);
-			}
-		} elseif ($participant['participant_type'] == 'spotchecker') {
-			//$township = Townships::where('township', '=', $input['township'])->get();
-			if(isset($input['enumerator_id'])){
-
-				$enumerators = explode(',', $input['enumerator_id']);
-				$townships = array();
-				foreach($enumerators as $enumerator_id) {
-
-					preg_match('/[0-9]{3}([0-9]{3})/', $enumerator_id, $matches);
-
-					$village_id = (int) $matches[1];
-					$townships[] = Villages::where('village_id', '=', $village_id)->pluck('townships_id');
+					$new_participant->districts()->sync([$district_id]);
 				}
+			} elseif ($participant['participant_type'] == 'spotchecker') {
+				//$township = Townships::where('township', '=', $input['township'])->get();
+				if (isset($input['enumerator_id'])) {
 
+					$enumerators = explode(',', $input['enumerator_id']);
+					$townships = array();
+					foreach ($enumerators as $enumerator_id) {
 
-			}else{
-				$townships = array($township_id);
-			}
-			try {
-				$new_participant->townships()->sync($townships, false);
-			}catch(QueryException $e){
+						preg_match('/[0-9]{3}([0-9]{3})/', $enumerator_id, $matches);
 
-			}
-		}elseif ($participant['participant_type'] == 'enumerator') {
+						$village_id = (int) $matches[1];
+						$townships[] = Villages::where('village_id', '=', $village_id)->pluck('townships_id');
+					}
 
-			if (isset($village_id)) {
-
+				} else {
+					$townships = array($township_id);
+				}
 				try {
-
-					$realvillageid = Villages::where('village_id', '=', $village_id)->pluck('id');
-					$new_participant->villages()->sync([$realvillageid], false);
+					$new_participant->townships()->sync($townships, false);
 				} catch (QueryException $e) {
 
 				}
-			}
+			} elseif ($participant['participant_type'] == 'enumerator') {
 
-			if (isset($input['spotchecker_id']) && '' != $input['spotchecker_id']){
-				try {
-					$spotchecker_id = Participant::where('participant_id', '=', $input['spotchecker_id'])->pluck('id');
-					$spotchecker = Participant::find($spotchecker_id);
-					//dd($new_participant->villages);
-					$township_id = $new_participant->villages->first()->townships_id;
+				if (isset($village_id)) {
 
-					$spotchecker->townships()->sync([$township_id], false);
-				} catch(QueryException $e) {
+					try {
 
+						$realvillageid = Villages::where('village_id', '=', $village_id)->pluck('id');
+						$new_participant->villages()->sync([$realvillageid], false);
+					} catch (QueryException $e) {
+
+					}
 				}
+
+				if (isset($input['spotchecker_id']) && '' != $input['spotchecker_id']) {
+					try {
+						$spotchecker_id = Participant::where('participant_id', '=', $input['spotchecker_id'])->pluck('id');
+						$spotchecker = Participant::find($spotchecker_id);
+						//dd($new_participant->villages);
+						$township_id = $new_participant->villages->first()->townships_id;
+
+						$spotchecker->townships()->sync([$township_id], false);
+					} catch (QueryException $e) {
+
+					}
+				}
+			} else {
+				return;
 			}
-		} else{
-			return;
+
+			$pgroup = PGroups::all();
+
+			$new_participant->pgroups()->sync([$pgroup->first()->id]);
+
 		}
-
-
-		$pgroup = PGroups::all();
-
-
-		$new_participant->pgroups()->sync([$pgroup->first()->id]);
-
-	}
 	}
 }

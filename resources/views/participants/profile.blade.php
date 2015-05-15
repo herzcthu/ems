@@ -7,7 +7,7 @@
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1>
-				Participant Profile
+				Profile
 				<small>{{ $participants->name }}</small>
 			</h1>
 			<!--ol class="breadcrumb">
@@ -28,7 +28,7 @@
 					@endif
 					<div class="box">
 						<div class="box-header">
-							<h3 class="box-title">{{ $participants->name }} profile</h3>
+							<h3 class="box-title">{{ $participants->name }}'s profile</h3>
 						</div>
 						<!-- /.box-header -->
 						<div class="box-body">
@@ -48,7 +48,11 @@
 								</tr>
 								<tr>
 									<td>Date of Birth</td>
-									<td>{{ $participants->dob }}</td>
+									<td>
+										@if('01-01-1970' != $participant->dob)
+                                        {{ $participant->dob }}
+                                        @endif
+                                    </td>
 								</tr>
 
 								<tr>
@@ -69,9 +73,19 @@
 								</tr>
 								<tr>
 								<td>Phone Number</td>
-								<td>{!! isset($participants->user_line_phone)? $participants->user_line_phone.' (Landline)<br><br>':'' !!}{{ $participants->user_mobile_phone }} (Mobile)
+								<td>
+								{{ $participants->user_mobile_phone }} (Mobile)<br>
+								{!! isset($participants->user_line_phone)? $participants->user_line_phone.' (2nd Phone)':'' !!}
 								</td>
 
+								</tr>
+								<tr>
+									<td>Bank</td>
+									<td>{{ $participants->bank }}</td>
+								</tr>
+								<tr>
+									<td>Payment Type</td>
+									<td>{{ $participants->payment_type }}</td>
 								</tr>
 								<tr>
 									<td>Current Organization</td>

@@ -124,17 +124,17 @@ class AjaxController extends Controller {
 					} else {
 
 						$village = $enumerator->villages->first()->village;
-						$q_a['enu_name'] = _t($enumerator->name);
-						$q_a['village'] = _t($village);
+						$q_a['enu_name'] = $enumerator->name;
+						$q_a['village'] = (!empty($village->village_my)) ? $village->village_my : $village->village;
 						$q_a['spotchecker_id'] = $spotchecker->participant_id;
-						$q_a['spotchecker_name'] = _t($spotchecker->name);
+						$q_a['spotchecker_name'] = $spotchecker->name;
 					}
 					if (isset($answer) && !empty($answer)) {
 
 						$participant_name = $answer->participant->name;
 						$village = $participant->villages->first()->village;
-						$q_a['enu_name'] = _t($participant_name);
-						$q_a['village'] = _t($village);
+						$q_a['enu_name'] = $participant_name;
+						$q_a['village'] = (!empty($village->village_my)) ? $village->village_my : $village->village;
 						$ajax_response['status'] = true;
 						$ajax_response['message'] = $q_a;
 						//$ajax_response['enu_name'] = $participant_name;
@@ -213,9 +213,9 @@ class AjaxController extends Controller {
 							$ajax_response['message'] = '<p class="text-red">' . _t(':village does not exist in :state. Check again Enumerator ID!', array('village' => $village->village, 'state' => $state->first()["state"])) . '</p>';
 						} elseif (isset($enumerator)) {
 							$ajax_response['status'] = true;
-							$response['enumerator'] = _t($enumerator);
+							$response['enumerator'] = $enumerator;
 							$response['state'] = _t($state->first()["state"]);
-							$response['village'] = _t($village->village);
+							$response['village'] = (!empty($village->village_my)) ? $village->village_my : $village->village;
 						} else {
 							$ajax_response['status'] = false;
 							$ajax_response['message'] = '<p class="text-red">' . _t("Enumerator cannot find in database!") . '</p>';
