@@ -64,6 +64,7 @@
                                 <th>No.</th>
                                 <th>Name</th>
                                 <th>Email</th>
+                                <th>Enu Form Count</th>
                                 <th>User Role</th>
                                 <th>Gender</th>
                                 <th>Date of Birth</th>
@@ -79,6 +80,7 @@
                                         <td>{{ $k + 1}}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ \App\EmsQuestionsAnswers::where('user_id', '=', $user->id)->count() }}</td>
                                         <td>{{ $user->roles->toArray()[0]['name'] }}</td>
                                         <td>{{ $user->user_gender }}</td>
                                         <td>{{ $user->dob }}</td>

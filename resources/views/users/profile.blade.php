@@ -73,6 +73,21 @@
 									<td>User Biography</td>
 									<td>{{ $user->user_biography }}</td>
 								</tr>
+								@if(!empty(\App\EmsQuestionsAnswers::where('user_id', '=', $user->id)->get()))
+								<tr>
+
+									<td>Enumerator Forms</td>
+									<td>
+									<ol>
+									@foreach (\App\EmsQuestionsAnswers::where('user_id', '=', $user->id)->get() as $dataentry)
+										<li>{{ $dataentry->interviewee_id }}</li>
+									@endforeach
+									</ol>
+									</td>
+
+								</tr>
+								@endif
+
 
 								</tbody>
 							</table>
