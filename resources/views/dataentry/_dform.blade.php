@@ -230,6 +230,7 @@ $answers = csort($question->answers);
                                                  </div>'>
                                         @if(isset($dataentry->notes) && is_array($dataentry->notes))
                                             @foreach($dataentry->notes as $nk => $note)
+                                            {{ $nk }}
                                                 <?php $cat_num = str_replace('cat-', '', $nk);?>
                                                 <div class="addinput" id="{{ $nk }}">
                                                     <script>
@@ -238,14 +239,16 @@ $answers = csort($question->answers);
                                                         });
                                                     </script>
                                                     <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
-                                                    {!! Form::select("notes[cat-$cat_num]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"cat-$cat_num"]) !!}
+                                                    {!! Form::select("notes[$nk]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"$nk"]) !!}
                                                     <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                         @foreach($question->answers as $answer_k => $answer_v)
                                                             @if(!empty($answer_v))
                                                                 @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
                                                                     <li>
+                                                                        {{ $nk.$cat_num }}
                                                                         {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$cat_num])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$cat_num])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                                        }
 
                                                                     </li>
                                                                 @endif
@@ -427,7 +430,7 @@ $answers = csort($question->answers);
                                                         });
                                                     </script>
                                                     <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
-                                         {!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "__NAME__", ["class" => "","id"=>"cat-__NAME__"]) !!}
+                                         {!! Form::select("notes[cat-__NAME__]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), null, ["class" => "","id"=>"cat-__NAME__"]) !!}
 
                                         <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                             @foreach($question->answers as $answer_k => $answer_v)
@@ -444,7 +447,9 @@ $answers = csort($question->answers);
                                                  </div>'>
                                         @if(isset($dataentry->notes) && is_array($dataentry->notes))
                                             @foreach($dataentry->notes as $nk => $note)
+
                                                 <?php $cat_num = str_replace('cat-', '', $nk);?>
+
                                                 <div class="addinput" id="{{ $nk }}">
                                                     <script>
                                                         $( "{{'#'.$nk}} a.delCat" ).click(function() {
@@ -452,14 +457,18 @@ $answers = csort($question->answers);
                                                         });
                                                     </script>
                                                     <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
-                                                    {!! Form::select("notes[cat-$cat_num]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"cat-$cat_num"]) !!}
+                                                    {!! Form::select("notes[$nk]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$note", ["class" => "","id"=>"$nk"]) !!}
                                                     <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                         @foreach($question->answers as $answer_k => $answer_v)
+
                                                             @if(!empty($answer_v))
                                                                 @if( !in_array($answer_k, array('-99', '-98', '-97')) )
 
                                                                     <li>
-                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$cat_num])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$cat_num])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+
+                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$note])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$note])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                                    }
+                                                                    }
 
                                                                     </li>
                                                                 @endif

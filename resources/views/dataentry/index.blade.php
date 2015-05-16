@@ -163,7 +163,7 @@
                                                     @else
 
                                                         @if(is_array($data->answers[$q->id]))
-                                                                <td>
+                                                                <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                             @if(!empty($data->notes))
                                                                 @for($i = 1; $i <= 15; $i++)
                                                                     @if(in_array($i, $data->notes))
@@ -173,7 +173,7 @@
                                                                                 @foreach($data->answers[$q->id] as $da)
                                                                                     @if(is_array($da))
                                                                                         @if(array_key_exists($note, $da))
-                                                                                        <p>{{ '('.$nk.') '.$da[$note] }}</p>
+                                                                                        <p>{{ '('._t(sprintf("Category_%03d", $note)).') '.$da[$note] }}</p>
                                                                                         @endif
                                                                                     @endif
                                                                                 @endforeach
