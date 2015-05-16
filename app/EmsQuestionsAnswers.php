@@ -179,7 +179,7 @@ class EmsQuestionsAnswers extends Model {
 														if (is_array($da)) {
 															if (array_key_exists($note, $da)) {
 
-																$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $nk] = $da[$note];
+																$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . sprintf("Category_%03d", $note)] = $da[$note];
 															} else {
 																// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $nk] = '';
 															}

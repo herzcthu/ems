@@ -52,6 +52,7 @@
                                 <thead>
                                 <!--th>No.</th-->
                                 <th>Interviewee ID</th>
+                                <th>Data Entry ID</th>
                                 @permission('edit.data')
                                 <!--th>Action</th-->
                                 @endpermission
@@ -141,6 +142,7 @@
                                             <td>{!! $data->interviewee_id !!}</td>
                                             @endif
                                         @endif
+                                        <td>{{ sprintf("%02d", $data->user_id) }}</td>
                                         @permission('edit.data')
                                         <!--td>Edit</td-->
                                         @endpermission

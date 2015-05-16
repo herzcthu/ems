@@ -1019,6 +1019,9 @@ $answers = csort($question->answers);
         <tr>
             <td lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                 {!! Form::hidden('form_id', $form_id, ['class' => 'form-control']) !!}
+                @if(isset($dataentry->user_id))
+                    {!! Form::hidden('user_id', $dataentry->user_id, ['class' => 'form-control']) !!}
+                @endif
                 {!! Form::submit( _t($submitButton), ['class' => 'btn btn-primary form-control']) !!}
             </td>
             <td></td>
