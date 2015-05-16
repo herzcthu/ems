@@ -239,7 +239,7 @@ $answers = csort($question->answers);
                                                         });
                                                     </script>
                                                     <a href="#" class="btn btn-box-tool delCat"><i class="fa fa-minus"></i></a>
-                                                    {!! Form::select("notes[$nk]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$cat_num", ["class" => "","id"=>"$nk"]) !!}
+                                                    {!! Form::select("notes[$nk]",array_combine(range(1,15), array_map(function($n) { return _t(sprintf("Category_%03d", $n)); }, range(1, 15) )), "$note", ["class" => "","id"=>"$nk"]) !!}
                                                     <ul class="radio" lang="{!! Stevebauman\Translation\Facades\Translation::getLocale(); !!}">
                                                         @foreach($question->answers as $answer_k => $answer_v)
                                                             @if(!empty($answer_v))
@@ -247,7 +247,7 @@ $answers = csort($question->answers);
 
                                                                     <li>
                                                                         {{ $nk.$cat_num }}
-                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$cat_num])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$cat_num])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                                        {!! Form::radio("answers[$child->id][$cat_num][$note]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$note])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$note])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
                                                                         }
 
                                                                     </li>
@@ -466,7 +466,7 @@ $answers = csort($question->answers);
 
                                                                     <li>
 
-                                                                        {!! Form::radio("answers[$child->id][$cat_num]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$note])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$note])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
+                                                                        {!! Form::radio("answers[$child->id][$cat_num][$note]",$answer_v["value"],isset($dataentry->answers[$child->id][$cat_num][$note])? (($answer_v["value"] == $dataentry->answers[$child->id][$cat_num][$note])?true:false):null, ["class" => "garlic-auto-save ans-radio-cat-$cat_num"] )!!} {{ $answer_v['value']." ("._t($answer_v['text']).")" }}
                                                                     }
                                                                     }
 
