@@ -267,6 +267,7 @@
 
                                 </tfoot>
                             </table>
+                            {!! $dataentry->render(); !!}
                             </div>
                         </div>
                         <!-- /.box-body -->
