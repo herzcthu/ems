@@ -106,7 +106,7 @@
                                         <td>
                                             @foreach (array_unique(\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('user_id')) as $key => $value)
 
-                                                    (<a href="/users/{{ $value }}">{{ $value }}</a>)
+                                                    (<a href="/users/{{ $value }}">{{ sprintf('%02d',$value) }}</a>)
                                             @endforeach
                                         </td>
                                     </td>
