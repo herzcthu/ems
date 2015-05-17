@@ -133,9 +133,8 @@ class EmsQuestionsAnswers extends Model {
 			return false;
 		}
 
-		$questions = EmsFormQuestions::OfNotMain($id)->get();
-		$dataentry = EmsQuestionsAnswers::where('form_id', '=', $id)->get();
-		//dd($questions);
+		$dataentry = EmsQuestionsAnswers::where('form_id', $id)->get();
+		//dd($questions, $dataentry);
 
 		if (!empty($dataentry->toArray())) {
 			foreach ($dataentry as $data) {
@@ -155,11 +154,13 @@ class EmsQuestionsAnswers extends Model {
 
 				//return $matches;
 
-				//$locations = \Illuminate\Support\Facades\Cache::rememberForever('locations', function () use ($matches) {
-				//	return Villages::getLocations($matches[2]);
-				//});
+				$locations = \Illuminate\Support\Facades\Cache::rememberForever("locations-$matches[2]", function () use ($matches) {
+					return Villages::getLocations($matches[2]);
+				});
 
-				$locations = Villages::getLocations($matches[2]);
+				//$locations = Villages::getLocations($matches[2]);
+
+				//dd($locations);
 				//$village_name = Villages::getVillageName($matches[2]);
 
 				$alldata[$data->interviewee_id]['State'] = $locations['state']['state'];
@@ -168,75 +169,120 @@ class EmsQuestionsAnswers extends Model {
 				$alldata[$data->interviewee_id]['Village Track'] = $locations['village']['villagetrack'];
 				$alldata[$data->interviewee_id]['Village'] = $locations['village']['village'];
 
-				foreach ($questions as $q) {
-					if ($q->q_type == 'sub' || $q->q_type == 'same') {
-						if (array_key_exists($q->id, $data->answers)) {
-							if (is_array($data->answers[$q->id])) {
-								if (!empty($data->notes)) {
-									for ($i = 1; $i <= 15; $i++) {
-										if (in_array($i, $data->notes)) {
+				foreach ($data->answers as $key => $value) {
+					$q = \Illuminate\Support\Facades\Cache::rememberForever("question-$key", function () use ($key) {
+						return EmsFormQuestions::find($key);
+					});
+					if (!empty($data->notes)) {
+						foreach ($data->notes as $nk => $note) {
 
-											foreach ($data->notes as $nk => $note) {
-												if ($note == $i) {
-													foreach ($data->answers[$q->id] as $da) {
-														if (is_array($da)) {
-															if (array_key_exists($note, $da)) {
+							//print $note . '=>' . $nk;
 
-																$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . sprintf("Category_%03d", $note)] = $da[$note];
-															} else {
-																// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $nk] = '';
-															}
-														}
-
-													}
-												}
-											}
-										} else {
-											// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $i] = '';
-										}
-									}
-								}
-								$ii = 1;
-								foreach ($data->answers[$q->id] as $aq => $av) {
-									if (is_array($av)) {
-										foreach ($av as $ak => $v) {
-											// print_r($av);
-											// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $ii . $aq. $ak] = $v;
-										}
-
-									} else {
-										$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $ii . $aq] = $av;
-									}
-									$ii++;
-								}
-
-							} else {
-								$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = $data->answers[$q->id];
-							}
-						} else {
-							// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = '';
-						}
-					} else {
-						if (array_key_exists($q->id, $data->answers)) {
-							if (is_array($data->answers[$q->id])) {
-								foreach ($data->answers[$q->id] as $qk => $qv) {
-									$alldata[$data->interviewee_id][$q->question_number . $qk] = $qv;
-								}
-
-							} else {
-								$alldata[$data->interviewee_id][$q->question_number] = $data->answers[$q->id];
-							}
-						} else {
-							//    $alldata[$data->interviewee_id][$q->question_number] = '';
 						}
 					}
+					//dd($q);
+					//$alldata[$data->interviewee_id]['question'][$key] = $question->question_number;
+					if (is_array($value)) {
+						foreach ($value as $vk => $va) {
+							if (!is_array($va)) {
+								if (!in_array($q->q_type, array('main', 'single'))) {
+									$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $vk] = $va;
+								} else {
+									$alldata[$data->interviewee_id][$q->question_number . $vk] = $va;
+								}
+							} else {
+								foreach ($va as $nkey => $nvalue) {
+									if (!in_array($q->q_type, array('main', 'single'))) {
+										$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . sprintf("Category_%03d", $nkey)] = $nvalue;
+									} else {
+										$alldata[$data->interviewee_id][$q->question_number . sprintf("Category_%03d", $nkey)] = $nvalue;
+									}
+								}
+							}
 
+						}
+						//die();
+
+					} else {
+						if (!in_array($q->q_type, array('main', 'single'))) {
+							$alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = $value;
+						} else {
+							$alldata[$data->interviewee_id][$q->question_number] = $value;
+						}
+					}
 				}
+
 			}
 		} else {
 			$alldata = array();
 		}
+		//dd($alldata);
+		return $alldata;
+	}
 
+	public static function get_alldatainfo($form_name_url) {
+		$form_name = urldecode($form_name_url);
+		try {
+			$getform = EmsForm::where('name', '=', $form_name)->get();
+			$form_array = $getform->toArray();
+		} catch (QueryException $e) {
+			$form_array = '';
+		}
+		//return $form->toArray();
+		try {
+			$getform = EmsForm::find($form_name_url);
+		} catch (QueryException $e) {
+			$error = $e;
+		}
+		if (null !== $getform) {
+			$id = $getform->id;
+		} elseif (!empty($form_array)) {
+			$id = $getform->first()['id'];
+		} else {
+			return false;
+		}
+
+		$dataentry = EmsQuestionsAnswers::where('form_id', $id)->get();
+		//dd($questions, $dataentry);
+
+		if (!empty($dataentry->toArray())) {
+			foreach ($dataentry as $data) {
+
+				//var_dump($data->ScAnswers);
+
+				$alldata[$data->interviewee_id]['Interviewee ID'] = $data->interviewee_id;
+				$alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
+				$alldata[$data->interviewee_id]['Interviewer ID'] = $data->interviewer_id;
+				if ($data->form_complete == true) {
+					$alldata[$data->interviewee_id]['Form Status'] = 'Complete';
+				} else {
+					$alldata[$data->interviewee_id]['Form Status'] = 'Incomplete';
+				}
+
+				preg_match('/([1-9][0-9]{2})([0-9]{3})/', $data->interviewer_id, $matches);
+
+				//return $matches;
+
+				$locations = \Illuminate\Support\Facades\Cache::rememberForever("locations-$matches[2]", function () use ($matches) {
+					return Villages::getLocations($matches[2]);
+				});
+
+				//$locations = Villages::getLocations($matches[2]);
+
+				//dd($locations);
+				//$village_name = Villages::getVillageName($matches[2]);
+
+				$alldata[$data->interviewee_id]['State'] = $locations['state']['state'];
+				$alldata[$data->interviewee_id]['District'] = $locations['district']['district'];
+				$alldata[$data->interviewee_id]['Township'] = $locations['township']['township'];
+				$alldata[$data->interviewee_id]['Village Track'] = $locations['village']['villagetrack'];
+				$alldata[$data->interviewee_id]['Village'] = $locations['village']['village'];
+
+			}
+		} else {
+			$alldata = array();
+		}
+		//dd($alldata);
 		return $alldata;
 	}
 

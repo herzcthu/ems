@@ -35,8 +35,8 @@
                         <span class="info-box-icon bg-green"><i class="fa  ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Gender</span>
-                            <span class="info-box-number">M {{ !empty($data_array)? sprintf("%.2f%%",(((array_key_exists('M', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['M']:0)/count($data_array))*100)):0 }}</span>
-                            <span class="info-box-number">F {{ !empty($data_array)? sprintf("%.2f%%",(((array_key_exists('F', array_count_values(array_column($data_array,'Interviewee Gender')))? array_count_values(array_column($data_array,'Interviewee Gender'))['F']:0)/count($data_array))*100)):0 }}</span>
+                            <span class="info-box-number">M {{ sprintf("%.2f%%", $gender['M']) }}</span>
+                            <span class="info-box-number">F {{ sprintf("%.2f%%", $gender['F']) }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->
@@ -48,7 +48,7 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-red"><i class="ion ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Incomplete forms</span>
+                            <span class="info-box-text">Incomplete forms Total</span>
                             <span class="info-box-number"> {{ sprintf("%.2f%%", (isset($no_answers_percent)?$no_answers_percent:0)) }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
@@ -180,7 +180,7 @@
                                     @if(!empty($data_array))
                                         @foreach($all_state as $state_name)
                                             @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( $location_data[$state_name]['incomplete_count'] / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} , name1: "{{ $state_name }}" },
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ $location_data[$state_name]['incomplete_form'] }} , name1: "{{ $state_name }}" },
                                             @else
                                                 {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0},
                                             @endif
@@ -208,7 +208,7 @@
                                     @if(!empty($data_array))
                                         @foreach($all_state as $state_name)
                                             @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( ($location_data[$state_name]['answer_count'] - $location_data[$state_name]['incomplete_count']) / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} , name: "{{ $state_name }}" },
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ $location_data[$state_name]['completed_forms'] }} , name: "{{ $state_name }}" },
                                             @else
                                                 {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0, name1: "{{ $state_name }}" },
                                             @endif
@@ -237,7 +237,7 @@
                                     @if(!empty($data_array))
                                         @foreach($all_state as $state_name)
                                             @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round( ( ( ( count($location_data[$state_name]['villages']) * 9) - $location_data[$state_name]['answer_count']) / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2)  }} , name1: "{{ count($location_data[$state_name]['villages']) * 9 }}", name2: "{{ $location_data[$state_name]['answer_count'] }}" },
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ $location_data[$state_name]['forms_not_in_db']  }} , name1: "{{ count($location_data[$state_name]['villages']) * 9 }}", name2: "{{ $location_data[$state_name]['answer_count'] }}" },
                                             @else
                                                 {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0},
                                             @endif

@@ -37,35 +37,23 @@ class HomeController extends Controller {
 		$form_id = GeneralSettings::options('options', 'form_for_dashboard');
 
 		//return $form_id;
-		$data_array = EmsQuestionsAnswers::get_alldataentry($form_id);
-		$dataentry = EmsQuestionsAnswers::where('form_id', '=', $form_id)->get();
-
-		//$merged = array_merge_recursive($dataentry->toArray());
-		//$column = array_column($dataentry->toArray(), 'interviewer_id');
-
-		//dd(array_count_values($column));
-
-		//die();
-
-		//dd($merged);
-		//return array_count_values(array_column($data_array,'State'))['Ayeyarwady'];
+		$data_array = EmsQuestionsAnswers::get_alldatainfo($form_id);
+		//return $data_array;
+		$dataentry = EmsQuestionsAnswers::where('form_id', $form_id)->get();
 
 		$forms = EmsForm::paginate(5);
-		/*
-		$no_answers = array_count_values(array_flatten(array_column($dataentry->toArray(),'answers')));
-		$total_answers = array_sum($no_answers);
-		if(array_key_exists(0, $no_answers)) {
-		$no_answers_percent = ($no_answers[0] / $total_answers) * 100;
-		}else{
-		$no_answers_percent = 0;
-		}
-		 */
-		$incomplete_form = EmsQuestionsAnswers::where('form_id', $form_id)->where('form_complete', false)->get();
-		if (0 === count($incomplete_form) || 0 === count($dataentry)) {
-			$no_answers_percent = 0;
-		} else {
-			$no_answers_percent = (count($incomplete_form) / count($dataentry)) * 100;
-		}
+
+		$form_status_count = array_count_values(array_column($data_array, 'Form Status'));
+
+		$no_answers_percent = ($form_status_count['Incomplete'] / count($data_array)) * 100;
+
+		$gender_count = array_count_values(array_column($data_array, 'Interviewee Gender'));
+
+		$gender['M'] = ($gender_count['M'] / count($data_array)) * 100;
+		$gender['F'] = ($gender_count['F'] / count($data_array)) * 100;
+		$gender['U'] = ($gender_count['U'] / count($data_array)) * 100;
+		$gender['0'] = ($gender_count['0'] / count($data_array)) * 100;
+		//dd($gender);
 
 		$all_state = States::lists('state', 'id');
 		//dd($all_state);
@@ -124,13 +112,13 @@ class HomeController extends Controller {
 			}
 			$dataByState = EmsQuestionsAnswers::getAllByState($state_name, $data_array);
 			$location_data[$state_name]['answers'] = $dataByState;
-			$count = 0;
+			$incomplete_count = 0;
 			for ($i = 0; $i < count($dataByState); $i++) {
 				if (in_array('Incomplete', $dataByState[$i])) {
-					$count++;
+					$incomplete_count++;
 				}
 			}
-			$location_data[$state_name]['incomplete_count'] = $count;
+			$location_data[$state_name]['incomplete_count'] = $incomplete_count;
 			$location_data[$state_name]['abbr'] = $abbr_state;
 			if (array_key_exists($state_name, array_count_values(array_column($data_array, 'State')))) {
 
@@ -147,23 +135,16 @@ class HomeController extends Controller {
 				$location_data[$state_name]['answer_count'] = 0;
 			}
 
+			if (array_key_exists($state_name, array_count_values(array_column($data_array, 'State')))) {
+
+				$location_data[$state_name]['completed_forms'] = round((($location_data[$state_name]['answer_count'] - $incomplete_count) / (count($location_data[$state_name]['villages']) * 9) * 100), 2);
+				$location_data[$state_name]['incomplete_form'] = round(($incomplete_count / (count($location_data[$state_name]['villages']) * 9) * 100), 2);
+				$location_data[$state_name]['forms_not_in_db'] = round((((count($location_data[$state_name]['villages']) * 9) - $location_data[$state_name]['answer_count']) / (count($location_data[$state_name]['villages']) * 9) * 100), 2);
+			}
+
 		}
 
-		//dd($test);
-		//$townships = States::townships()->get();
-		//dd($townships);
-		//dd($all_state);
-		//dd($data_array);
-		//if(in_array('Complete' , array_values($location_data['Ayeyarwady']['answers'][0])))
-		//	dd(array_values($location_data['Ayeyarwady']['answers'][0]));
-
-		//dd($location_data);
-		//$ayewaddy = EmsQuestionsAnswers::getAllByState('Bago (West)', $data_array);
-		//print $no_answers_percent;
-		//print_r($ayewaddy);
-		//return;
-
-		return view('home', compact('data_array', 'dataentry', 'forms', 'no_answers_percent', 'location_data', 'all_state'));
+		return view('home', compact('data_array', 'dataentry', 'gender', 'forms', 'no_answers_percent', 'location_data', 'all_state'));
 	}
 
 }
