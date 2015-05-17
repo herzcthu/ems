@@ -80,6 +80,41 @@
                 </div><!-- /.col -->
             </div><!-- /.row -->
 
+            <div class="row">
+
+                <div class="col-md-12">
+                    <!-- Bar chart -->
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Completed dataentry by enumerator ID</h3>
+                        </div>
+                        <div class="box-body">
+                            <table id="datatable-allfeatures" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                <th>Enumerator form ID</th>
+                                <th>Completed form count</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (array_count_values(array_column($dataentry->toArray(), 'interviewer_id')) as $key => $value)
+                                    <tr>
+                                        <td>{{ $key }}</td>
+                                        <td>{{ $value }}</td>
+                                    </td>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+
+                                </tfoot>
+                            </table>
+                        </div><!-- /.box-body-->
+                    </div><!-- /.box -->
+
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+
         </section>
         <!-- /.content -->
     </div><!-- /.content-wrapper -->
@@ -116,58 +151,20 @@
 
                             },
 
-                            axisY2: {
-
-                                title: "Incomplete forms"
-
-                            },
-
-
-
-                            legend:{
-
-                                verticalAlign: "top",
-
-                                horizontalAlign: "center"
-
-                            },
-
                             data: [
 
                                 {
 
-                                    type: "column",
+                                    type: "stackedColumn100",
 
-                                    toolTipContent: " {name} <p class='text-blue'>Dataentry forms: {y}%</p>",
+                                    toolTipContent: " {name1} <br><span class='text-red'>Incomplete Forms: {y}%</span>",
 
-                                    legendText: "Dataentry forms",
+                                    color: "#C24642",
 
-                                    showInLegend: true,
+                                    name: "Incomplete forms",
+                                    //legendText: "Incomplete forms",
 
-                                    dataPoints:[
-
-                                    @if(!empty($data_array))
-                                        @foreach($all_state as $state_name)
-                                            @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( $location_data[$state_name]['answer_count'] / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} , name: "{{ $state_name }}" },
-                                            @else
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0, name: "{{ $state_name }}" },
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                ]
-
-                                },
-
-                                {
-
-                                    type: "column",
-
-                                    toolTipContent: "<p class='text-red'>Incomplete Forms: {y}%</p>",
-
-                                    legendText: "Incomplete forms",
-
-                                    axisYType: "secondary",
+                                    //axisYType: "secondary",
 
                                     showInLegend: true,
 
@@ -176,7 +173,7 @@
                                     @if(!empty($data_array))
                                         @foreach($all_state as $state_name)
                                             @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
-                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( $location_data[$state_name]['incomplete_count'] / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} },
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( $location_data[$state_name]['incomplete_count'] / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} , name1: "{{ $state_name }}" },
                                             @else
                                                 {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0},
                                             @endif
@@ -184,8 +181,64 @@
                                 @endif
                                     ]
 
-            }
+                                },
+                                {
 
+                                    type: "stackedColumn100",
+
+                                    toolTipContent: "<span class='text-blue'>Completed forms: {y}%</span>",
+
+                                    //legendText: "Dataentry forms",
+
+                                    color: "#369EAD",
+
+                                    name: "Completed forms",
+
+                                    showInLegend: true,
+
+                                    dataPoints:[
+
+                                    @if(!empty($data_array))
+                                        @foreach($all_state as $state_name)
+                                            @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round(( ($location_data[$state_name]['answer_count'] - $location_data[$state_name]['incomplete_count']) / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2) }} , name: "{{ $state_name }}" },
+                                            @else
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0, name1: "{{ $state_name }}" },
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                ]
+
+                                },
+                                {
+
+                                    type: "stackedColumn100",
+
+                                    toolTipContent: "<span style='color:#F39C12'>Forms not in Database: {y}%</span> <br> <span>Total Forms in Region: {name1}</span> <br><span>Total forms in database: {name2}</span>",
+
+                                    color: "#F39C12",
+
+                                    name: "Forms not in Database",
+                                    //legendText: "Incomplete forms",
+
+                                    //axisYType: "secondary",
+
+                                    showInLegend: true,
+
+                                    dataPoints:[
+
+                                    @if(!empty($data_array))
+                                        @foreach($all_state as $state_name)
+                                            @if(array_key_exists($state_name, array_count_values(array_column($data_array,'State'))))
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: {{ round( ( ( ( count($location_data[$state_name]['villages']) * 9) - $location_data[$state_name]['answer_count']) / (count($location_data[$state_name]['villages']) * 9)  * 100 ), 2)  }} , name1: "{{ count($location_data[$state_name]['villages']) * 9 }}", name2: "{{ $location_data[$state_name]['answer_count'] }}" },
+                                            @else
+                                                {label: "{{ $location_data[$state_name]['abbr'] }}", y: 0},
+                                            @endif
+                                    @endforeach
+                                @endif
+                                    ]
+
+                                },
 
 
                             ],
@@ -220,10 +273,6 @@
                             //prefix: "$",
                             suffix: "%"
                         },
-                        axisY2:{
-                            //prefix: "$",
-                            suffix: "%"
-                        }
 
                         });
 
