@@ -94,7 +94,7 @@ class EmsQuestionsAnswers extends Model {
 	}
 
 	public static function scopeOfAnswersByEmu($query, $emu_id) {
-		return $query->where('emu_id', '=', $emu_id);
+		return $query->where('interviewer_id', $emu_id);
 	}
 
 	public static function scopeOfAnsByInvWithQ($query, $inv, $q_id) {
@@ -155,7 +155,9 @@ class EmsQuestionsAnswers extends Model {
 
 				//return $matches;
 
-				$locations = Villages::getLocations($matches[2]);
+				$locations = \Illuminate\Support\Facades\Cache::rememberForever('locations', function () use ($matches) {
+					return Villages::getLocations($matches[2]);
+				});
 
 				//$village_name = Villages::getVillageName($matches[2]);
 

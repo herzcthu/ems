@@ -79,7 +79,7 @@
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
-
+            @role('admin')
             <div class="row">
 
                 <div class="col-md-12">
@@ -95,6 +95,7 @@
                                 <tr>
                                 <th>Enumerator form ID</th>
                                 <th>Completed form count</th>
+                                <th>Data Entry ID (ID, Form ID)</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -102,6 +103,12 @@
                                     <tr>
                                         <td>{{ $key }}</td>
                                         <td>{{ $value }}</td>
+                                        <td>
+                                            @foreach (array_unique(\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('user_id')) as $key => $value)
+
+                                                    (<a href="/users/{{ $value }}">{{ $value }}</a>)
+                                            @endforeach
+                                        </td>
                                     </td>
                                     @endforeach
                                 </tbody>
@@ -114,7 +121,7 @@
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
-
+            @endrole
         </section>
         <!-- /.content -->
     </div><!-- /.content-wrapper -->

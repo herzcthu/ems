@@ -1,7 +1,6 @@
 <?php namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
-use Bican\Roles\Models\Role;
 use App\User;
 use Auth;
 
@@ -12,34 +11,32 @@ class UsersFormRequest extends Request {
 	 *
 	 * @return bool
 	 */
-	public function authorize()
-	{
+	public function authorize() {
 		$this->current_user = Auth::user();
 		$current_user_id = $this->current_user->id;
 		/*
 		$commentId = $this->route('comment');
 
 		return Comment::where('id', $commentId)
-			->where('user_id', Auth::id())->exists();
-		*/
+		->where('user_id', Auth::id())->exists();
+		 */
 		$updateUserID = $this->route('users');
 		$user = User::find($updateUserID);
 		$method = Request::method();
 		//die($method);
-		if('PATCH' == $method) {
+		if ('PATCH' == $method) {
 
-		}else{
+		} else {
 
 		}
 
 		//die($user_id .''. $current_user_id .''. var_dump($this->current_user->allowed('edit.user',$user )));
 
-		if ( $this->current_user->is('admin') ){
+		if ($this->current_user->is('admin')) {
 			return true;
-		}elseif ($this->current_user->allowed('edit.user',$user ) && (User::where('id', $updateUserID)->where('id', Auth::id())->exists()))
-		{
+		} elseif ($this->current_user->allowed('edit.user', $user) && (User::where('id', $updateUserID)->where('id', Auth::id())->exists())) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}
@@ -49,19 +46,18 @@ class UsersFormRequest extends Request {
 	 *
 	 * @return array
 	 */
-	public function rules()
-	{
+	public function rules() {
 		//$url_segments = Request::segments();
 		//$update_user_id = $url_segments[2];
 
 		$method = Request::method();
 		//die($method);
-		if('PATCH' == $method){
+		if ('PATCH' == $method) {
 			$rules = [
 				//
 				'name' => 'required|min:4',
 				'email' => 'exists:users|email',
-				'password' => 'exists:users|password',
+				'password' => '',
 				'user_gender' => 'required',
 				'dob' => 'dateformat:d-m-Y',
 				'user_line_phone' => '',
@@ -69,7 +65,7 @@ class UsersFormRequest extends Request {
 				//'user_mailing_address' => 'required',
 				'user_biography' => '',
 			];
-		}else {
+		} else {
 			$rules = [
 				//
 				'name' => 'required:min:4',
