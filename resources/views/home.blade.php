@@ -110,6 +110,7 @@
                                             @endforeach
                                         </td>
                                     </td>
+                                    </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot>
