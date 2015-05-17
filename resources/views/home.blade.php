@@ -109,7 +109,6 @@
                                                     (<a href="/users/{{ $value }}">{{ sprintf('%02d',$value) }}</a>)
                                             @endforeach
                                         </td>
-                                    </td>
                                     </tr>
                                     @endforeach
                                 </tbody>

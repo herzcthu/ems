@@ -155,10 +155,11 @@ class EmsQuestionsAnswers extends Model {
 
 				//return $matches;
 
-				$locations = \Illuminate\Support\Facades\Cache::rememberForever('locations', function () use ($matches) {
-					return Villages::getLocations($matches[2]);
-				});
+				//$locations = \Illuminate\Support\Facades\Cache::rememberForever('locations', function () use ($matches) {
+				//	return Villages::getLocations($matches[2]);
+				//});
 
+				$locations = Villages::getLocations($matches[2]);
 				//$village_name = Villages::getVillageName($matches[2]);
 
 				$alldata[$data->interviewee_id]['State'] = $locations['state']['state'];
