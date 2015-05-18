@@ -221,7 +221,7 @@ class GeolocationsController extends Controller {
 				}
 				$village['village_id'] = $village_id;
 				try {
-					$new_village = Villages::updateOrCreate(array('townships_id' => $village['townships_id'], 'village_id' => $village_id, 'villagetrack' => $line['villagetrack'], 'village' => $line['village']), $village);
+					$new_village = Villages::updateOrCreate(array('village_id' => $village_id), $village);
 				} catch (QueryException $e) {
 					//var_dump(current($csv_array));
 				}
