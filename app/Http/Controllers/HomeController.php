@@ -98,6 +98,9 @@ class HomeController extends Controller {
 			if ($state_name == 'Kachin') {
 				$abbr_state = 'KCN';
 			}
+			if ($state_name == 'Kayah') {
+				$abbr_state = 'KYA';
+			}
 			if ($state_name == 'Kayin') {
 				$abbr_state = 'KYN';
 			}
