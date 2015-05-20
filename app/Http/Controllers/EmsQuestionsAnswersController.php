@@ -27,8 +27,9 @@ class EmsQuestionsAnswersController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index($form_name_url) {
+	public function index($form_name_url, Request $request) {
 		//
+		//return $request->route('form');
 		$current_user_role = User::find($this->current_user_id)->roles->first()->slug;
 		$form_name = urldecode($form_name_url);
 		try {
@@ -292,8 +293,33 @@ class EmsQuestionsAnswersController extends Controller {
 	 * @param  int $id
 	 * @return Response
 	 */
-	public function destroy($id) {
+	public function destroy($form_name_url, $id, Request $request) {
 		//
+		$form_url = $request->route('form');
+
+		$form_name = urldecode($form_url);
+
+		$form = EmsForm::where('name', $form_name)->get();
+
+		$form_id = $form->first()['id'];
+
+		$form_type = $form->first()['type'];
+		if ($this->auth_user->is('admin')) {
+			if ($form_type == 'enumerator') {
+				$dataToDelete = EmsQuestionsAnswers::find($id);
+			}
+			if ($form_type == 'spotchecker') {
+				$dataToDelete = SpotCheckerAnswers::find($id);
+			}
+			//print $id;
+			//dd($dataToDelete);
+			$dataToDelete->delete();
+
+		} else {
+			$message = 'Not allow to delete data for dataentry id' . $id . '!';
+			\Session::flash('answer_success', $message);
+		}
+		return redirect('/' . $form_url . '/dataentry/');
 	}
 
 	private function CreateAndStore($form_name, $request) {

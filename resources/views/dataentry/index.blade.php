@@ -53,6 +53,9 @@
                                 <!--th>No.</th-->
                                 <th>Interviewee ID</th>
                                 <th>Data Entry ID</th>
+                                @role('admin')
+                                <th>Delete</th>
+                                @endrole
                                 @permission('edit.data')
                                 <!--th>Action</th-->
                                 @endpermission
@@ -130,9 +133,11 @@
                                         @if($current_user->id == $data->user_id || ($current_user->is('admin|officestaff')) )
                                             @if($form->type == 'spotchecker')
                                             <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->enumerator_form_id !!}</a></td>
+                                            <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/delete">Delete</a></td>
                                             @endif
                                             @if($form->type == 'enumerator')
                                             <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/edit">{!! $data->interviewee_id !!}</a></td>
+                                            <td><a href="/{{ urlencode($form->name) }}/dataentry/{{ $data->id }}/delete">Delete</a></td>
                                             @endif
                                         @else
                                             @if($form->type == 'spotchecker')
