@@ -35,6 +35,9 @@ class HomeController extends Controller {
 	public function index() {
 
 		$form_id = GeneralSettings::options('options', 'form_for_dashboard');
+		//dd($form_id);
+
+		$dashboard_form = EmsForm::find($form_id);
 
 		//return $form_id;
 		$data_array = EmsQuestionsAnswers::get_alldatainfo($form_id);
@@ -43,6 +46,7 @@ class HomeController extends Controller {
 
 		$forms = EmsForm::paginate(5);
 
+		//dd(array_column($data_array, 'Form Status', 'Interviewee ID'));
 		$form_status_count = array_count_values(array_column($data_array, 'Form Status'));
 
 		$no_answers_percent = ($form_status_count['Incomplete'] / count($data_array)) * 100;
@@ -147,7 +151,7 @@ class HomeController extends Controller {
 
 		}
 
-		return view('home', compact('data_array', 'dataentry', 'gender', 'forms', 'no_answers_percent', 'location_data', 'all_state'));
+		return view('home', compact('data_array', 'dataentry', 'gender', 'forms', 'dashboard_form', 'no_answers_percent', 'location_data', 'all_state'));
 	}
 
 }

@@ -363,7 +363,9 @@ class EmsQuestionsAnswersController extends Controller {
 			}
 		});
 
-		if (isset($input['user_id']) || !empty($input['user_id'])) {
+		if ($this->auth_user->is('staff')) {
+			$answers['user_id'] = $this->current_user_id;
+		} elseif (isset($input['user_id']) || !empty($input['user_id'])) {
 			$answers['user_id'] = $input['user_id'];
 		} else {
 			$answers['user_id'] = $this->current_user_id;

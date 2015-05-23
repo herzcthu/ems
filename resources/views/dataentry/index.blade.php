@@ -52,10 +52,10 @@
                                 <thead>
                                 <!--th>No.</th-->
                                 <th>Interviewee ID</th>
-                                <th>Data Entry ID</th>
                                 @role('admin')
                                 <th>Delete</th>
                                 @endrole
+                                <th>Data Entry ID</th>
                                 @permission('edit.data')
                                 <!--th>Action</th-->
                                 @endpermission

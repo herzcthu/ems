@@ -94,8 +94,10 @@
                                 <thead>
                                 <tr>
                                 <th>Enumerator form ID</th>
-                                <th>Completed form count</th>
+                                <th>Forms in database</th>
                                 <th>Data Entry ID (ID, Form ID)</th>
+                                <th>Incomplete Forms</th>
+                                <th>Perfect Forms</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -104,9 +106,27 @@
                                         <td>{{ $key }}</td>
                                         <td>{{ $value }}</td>
                                         <td>
-                                            @foreach (array_unique(\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('user_id')) as $key => $value)
+                                            @foreach (array_unique(\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('user_id')) as $k => $v)
 
-                                                    (<a href="/users/{{ $value }}">{{ sprintf('%02d',$value) }}</a>)
+                                                    (<a href="/users/{{ $v }}">{{ sprintf('%02d',$v) }}</a>)
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach (\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('form_complete', 'interviewee_id') as $fk => $fv)
+                                                @if($fv === 0)
+                                                <a href="/{{ urlencode($dashboard_form->name) }}/dataentry/{{\App\EmsQuestionsAnswers::where('interviewee_id',$fk)->pluck('id')}}/edit">
+                                                {{ $fk }}
+                                                </a>
+                                                @endif
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @foreach (\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('form_complete', 'interviewee_id') as $fk => $fv)
+                                                @if($fv === 1)
+                                                <a href="/{{ urlencode($dashboard_form->name) }}/dataentry/{{\App\EmsQuestionsAnswers::where('interviewee_id',$fk)->pluck('id')}}/edit">
+                                                {{ $fk }}
+                                                </a>
+                                                @endif
                                             @endforeach
                                         </td>
                                     </tr>

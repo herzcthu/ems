@@ -49,8 +49,8 @@
 								<tr>
 									<td>Date of Birth</td>
 									<td>
-										@if('01-01-1970' != $participant->dob)
-                                        {{ $participant->dob }}
+										@if('01-01-1970' != $participants->dob)
+                                        {{ $participants->dob }}
                                         @endif
                                     </td>
 								</tr>
