@@ -71,6 +71,10 @@ class HomeController extends Controller {
 			$gender['0'] = ($gender_count['0'] / count($data_array)) * 100;
 		}
 
+		if (!isset($gender) || empty($gender)) {
+			$gender = array('M' => 0, 'F' => 0, 'U' => 0, '0' => 0);
+		}
+
 		//dd($gender);
 
 		$all_state = States::lists('state', 'id');
