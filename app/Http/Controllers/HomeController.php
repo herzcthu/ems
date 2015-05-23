@@ -49,7 +49,9 @@ class HomeController extends Controller {
 		//dd(array_column($data_array, 'Form Status', 'Interviewee ID'));
 		$form_status_count = array_count_values(array_column($data_array, 'Form Status'));
 
-		$no_answers_percent = ($form_status_count['Incomplete'] / count($data_array)) * 100;
+		if (in_array('Incomplete', $form_status_count)) {
+			$no_answers_percent = ($form_status_count['Incomplete'] / count($data_array)) * 100;
+		}
 
 		$gender_count = array_count_values(array_column($data_array, 'Interviewee Gender'));
 
