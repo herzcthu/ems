@@ -55,10 +55,22 @@ class HomeController extends Controller {
 
 		$gender_count = array_count_values(array_column($data_array, 'Interviewee Gender'));
 
-		$gender['M'] = ($gender_count['M'] / count($data_array)) * 100;
-		$gender['F'] = ($gender_count['F'] / count($data_array)) * 100;
-		$gender['U'] = ($gender_count['U'] / count($data_array)) * 100;
-		$gender['0'] = ($gender_count['0'] / count($data_array)) * 100;
+		if (in_array('M', $gender_count)) {
+			$gender['M'] = ($gender_count['M'] / count($data_array)) * 100;
+		}
+
+		if (in_array('F', $gender_count)) {
+			$gender['F'] = ($gender_count['F'] / count($data_array)) * 100;
+		}
+
+		if (in_array('U', $gender_count)) {
+			$gender['U'] = ($gender_count['U'] / count($data_array)) * 100;
+		}
+
+		if (in_array('0', $gender_count)) {
+			$gender['0'] = ($gender_count['0'] / count($data_array)) * 100;
+		}
+
 		//dd($gender);
 
 		$all_state = States::lists('state', 'id');
