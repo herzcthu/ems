@@ -114,18 +114,26 @@
                                         <td>
                                             @foreach (\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('form_complete', 'interviewee_id') as $fk => $fv)
                                                 @if($fv === 0)
+                                                @role('admin|staff')
                                                 <a href="/{{ urlencode($dashboard_form->name) }}/dataentry/{{\App\EmsQuestionsAnswers::where('interviewee_id',$fk)->pluck('id')}}/edit">
+                                                @endrole
                                                 {{ $fk }}
+                                                @role('admin|staff')
                                                 </a>
+                                                @endrole
                                                 @endif
                                             @endforeach
                                         </td>
                                         <td>
                                             @foreach (\App\EmsQuestionsAnswers::OfAnswersByEmu($key)->lists('form_complete', 'interviewee_id') as $fk => $fv)
                                                 @if($fv === 1)
+                                                @role('admin|staff')
                                                 <a href="/{{ urlencode($dashboard_form->name) }}/dataentry/{{\App\EmsQuestionsAnswers::where('interviewee_id',$fk)->pluck('id')}}/edit">
+                                                @endrole
                                                 {{ $fk }}
+                                                @role('admin|staff')
                                                 </a>
+                                                @endrole
                                                 @endif
                                             @endforeach
                                         </td>
