@@ -3,6 +3,7 @@
 use App\EmsForm;
 use App\EmsQuestionsAnswers;
 use App\GeneralSettings;
+use App\SpotCheckerAnswers;
 use App\States;
 
 class HomeController extends Controller {
@@ -39,6 +40,11 @@ class HomeController extends Controller {
 
 		$dashboard_form = EmsForm::find($form_id);
 
+		$spotchecker_form = $dashboard_form->spotchecker;
+
+		$spotchecker_answers = SpotCheckerAnswers::where('form_id', $spotchecker_form->id)->get();
+
+		//dd($spotchecker_answers);
 		//return $form_id;
 		$data_array = EmsQuestionsAnswers::get_alldatainfo($form_id);
 		//return $data_array;
@@ -49,25 +55,25 @@ class HomeController extends Controller {
 		//dd(array_column($data_array, 'Form Status', 'Interviewee ID'));
 		$form_status_count = array_count_values(array_column($data_array, 'Form Status'));
 
-		if (in_array('Incomplete', $form_status_count)) {
+		if (array_key_exists('Incomplete', $form_status_count)) {
 			$no_answers_percent = ($form_status_count['Incomplete'] / count($data_array)) * 100;
 		}
 
 		$gender_count = array_count_values(array_column($data_array, 'Interviewee Gender'));
 
-		if (in_array('M', $gender_count)) {
+		if (array_key_exists('M', $gender_count)) {
 			$gender['M'] = ($gender_count['M'] / count($data_array)) * 100;
 		}
 
-		if (in_array('F', $gender_count)) {
+		if (array_key_exists('F', $gender_count)) {
 			$gender['F'] = ($gender_count['F'] / count($data_array)) * 100;
 		}
 
-		if (in_array('U', $gender_count)) {
+		if (array_key_exists('U', $gender_count)) {
 			$gender['U'] = ($gender_count['U'] / count($data_array)) * 100;
 		}
 
-		if (in_array('0', $gender_count)) {
+		if (array_key_exists('0', $gender_count)) {
 			$gender['0'] = ($gender_count['0'] / count($data_array)) * 100;
 		}
 
@@ -169,7 +175,7 @@ class HomeController extends Controller {
 
 		}
 
-		return view('home', compact('data_array', 'dataentry', 'gender', 'forms', 'dashboard_form', 'no_answers_percent', 'location_data', 'all_state'));
+		return view('home', compact('data_array', 'dataentry', 'gender', 'forms', 'dashboard_form', 'no_answers_percent', 'location_data', 'all_state', 'spotchecker_answers'));
 	}
 
 }

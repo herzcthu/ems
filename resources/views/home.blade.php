@@ -57,8 +57,8 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text"></span>
-                            <span class="info-box-number"></span>
+                            <span class="info-box-text">Spotchecker count</span>
+                            <span class="info-box-number">{{ count($spotchecker_answers) }}</span>
                         </div><!-- /.info-box-content -->
                     </div><!-- /.info-box -->
                 </div><!-- /.col -->

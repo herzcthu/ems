@@ -88,6 +88,12 @@ class AjaxController extends Controller {
 					} catch (\ErrorException $e) {
 
 					}
+					$enumerator_id = $matches[1];
+					try {
+						$enumerator = Participant::where('participant_id', $enumerator_id)->first();
+					} catch (\ErrorException $e) {
+
+					}
 					if (isset($participant)) {
 						foreach ($participant->parents as $parent) {
 							if ($parent->participant_type == 'coordinator') {
@@ -98,12 +104,7 @@ class AjaxController extends Controller {
 							}
 						}
 					} else {
-						$enumerator_id = $matches[1];
-						try {
-							$enumerator = Participant::where('participant_id', $enumerator_id)->first();
-						} catch (\ErrorException $e) {
 
-						}
 						if (isset($enumerator)) {
 							foreach ($enumerator->parents as $parent) {
 								if ($parent->participant_type == 'coordinator') {
@@ -123,18 +124,19 @@ class AjaxController extends Controller {
 						return;
 					} else {
 
-						$village = $enumerator->villages->first()->village;
+						$village = $enumerator->villages;
 						$q_a['enu_name'] = $enumerator->name;
-						$q_a['village'] = (!empty($village->village_my)) ? $village->village_my : $village->village;
+						//dd($village->first()->village);
+						$q_a['village'] = (isset($village->first()->village_my) && !empty($village->first()->village_my)) ? $village->first()->village_my : $village->first()->village;
 						$q_a['spotchecker_id'] = $spotchecker->participant_id;
 						$q_a['spotchecker_name'] = $spotchecker->name;
 					}
 					if (isset($answer) && !empty($answer)) {
 
 						$participant_name = $answer->participant->name;
-						$village = $participant->villages->first()->village;
+						$village = $participant->villages;
 						$q_a['enu_name'] = $participant_name;
-						$q_a['village'] = (!empty($village->village_my)) ? $village->village_my : $village->village;
+						$q_a['village'] = (!empty($village->first()->village_my)) ? $village->first()->village_my : $village->first()->village;
 						$ajax_response['status'] = true;
 						$ajax_response['message'] = $q_a;
 						//$ajax_response['enu_name'] = $participant_name;
