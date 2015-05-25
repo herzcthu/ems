@@ -42,7 +42,11 @@ class HomeController extends Controller {
 
 		$spotchecker_form = $dashboard_form->spotchecker;
 
-		$spotchecker_answers = SpotCheckerAnswers::where('form_id', $spotchecker_form->id)->get();
+		try {
+			$spotchecker_answers = SpotCheckerAnswers::where('form_id', $spotchecker_form->id)->get();
+		} catch (\ErrorException $e) {
+
+		}
 
 		//dd($spotchecker_answers);
 		//return $form_id;

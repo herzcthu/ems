@@ -104,8 +104,9 @@ class EmsQuestionsAnswersRequest extends Request {
 			if ($form_type == 'spotchecker') {
 				$enu_form_id = $this->input('enu_form_id');
 				$enu_form_id = preg_replace('/[^0-9]/', '', $enu_form_id);
+				//dd($enu_form_id);
 				//dd($form_type);
-				if (strlen($enu_form_id != 7)) {
+				if (strlen($enu_form_id) != 7) {
 					$validator->errors()->add('enu_form_id', _t('Enumerator Form ID need to be exactly 7 digits')); //	break;
 
 				} else {
