@@ -79,7 +79,7 @@
 
                 </div><!-- /.col -->
             </div><!-- /.row -->
-            @role('admin')
+            @role('admin|staff')
             <div class="row">
 
                 <div class="col-md-12">
