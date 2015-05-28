@@ -89,11 +89,14 @@ class AjaxController extends Controller {
 
 					}
 					$enumerator_id = $matches[1];
+					//dd($enumerator_id);
 					try {
 						$enumerator = Participant::where('participant_id', $enumerator_id)->first();
 					} catch (\ErrorException $e) {
 
 					}
+					//dd($enumerator);
+					//dd($participant->parents);
 					if (isset($participant)) {
 						foreach ($participant->parents as $parent) {
 							if ($parent->participant_type == 'coordinator') {
@@ -117,6 +120,7 @@ class AjaxController extends Controller {
 						}
 						//dd($enumerator);
 					}
+
 					if (!isset($spotchecker)) {
 						$ajax_response['status'] = false;
 						$ajax_response['message'] = '<p class="text-red">' . _t('Spot Checker not found!') . '</p>';

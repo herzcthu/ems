@@ -489,21 +489,26 @@ class ParticipantsController extends Controller {
 				$coordinator = States::find($state_id);
 
 				//return $coordinator->coordinators;
+				$parent_id = array();
 				if (null != $coordinator->coordinators->first() || !empty($coordinator->coordinators->first()) || $coordinator->coordinators->first() != '') {
 					try {
-						$parent_id[] = $coordinator->coordinators->first()->pivot->coordinators_id;
+						//print($coordinator->coordinators->first()->id);
+						$parent_id[0] = $coordinator->coordinators->first()->id;
 					} catch (ErrorException $e) {
 
 					}
 				}
 
-				if (null != $spotchecker_tsp->spotcheckers->first() || !empty($spotchecker_tsp->spotcheckers->first()) || $spotchecker_tsp->spotcheckers->first() != '') {
-					//dd($spotchecker_tsp->spotcheckers);
+				if (isset($input['spotchecker_id'])) {
+					$parent_id[1] = Participant::where('participant_id', $input['spotchecker_id'])->pluck('id');
+				} elseif (null != $spotchecker_tsp->spotcheckers->first() || !empty($spotchecker_tsp->spotcheckers->first()) || $spotchecker_tsp->spotcheckers->first() != '') {
+					//print($spotchecker_tsp->spotcheckers->first()->id);
 					try {
-						$parent_id[] = $spotchecker_tsp->spotcheckers->first()->pivot->spotcheckers_id;
+						$parent_id[1] = $spotchecker_tsp->spotcheckers->first()->id;
 					} catch (ErrorException $e) {
 
 					}
+					//dd($parent_id);
 				}
 
 				$participant['participant_id'] = (int) $state_id_for_enu . sprintf('%03d', $village_id);
@@ -539,7 +544,7 @@ class ParticipantsController extends Controller {
 		if (isset($new_participant) && (!empty($new_participant) || null != $new_participant || $new_participant != '')) {
 
 			$new_participant->parents()->sync($parent_id, false);
-
+			//dd($parent_id);
 			if ($participant['participant_type'] == 'coordinator') {
 				//return var_dump($new_participant->states());
 				if (isset($state_id)) {

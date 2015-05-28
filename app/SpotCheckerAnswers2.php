@@ -86,14 +86,12 @@ class SpotCheckerAnswers extends Model {
 			return false;
 		}
 
-		//$questions = EmsFormQuestions::OfNotMain($id)->get();
+		$questions = EmsFormQuestions::OfNotMain($id)->get();
 		$dataentry = SpotCheckerAnswers::where('form_id', '=', $id)->get();
 		//dd($questions);
 
 		if (!empty($dataentry->toArray())) {
 			foreach ($dataentry as $data) {
-
-				//dd($dataentry);
 
 				$alldata[$data->enumerator_form_id]['Interviewee ID'] = $data->enumerator_form_id;
 				//$alldata[$data->enumerator_form_id]['Interviewee Gender'] = $data->interviewee_gender;
@@ -105,9 +103,7 @@ class SpotCheckerAnswers extends Model {
 
 				//return $matches;
 
-				$locations = \Illuminate\Support\Facades\Cache::rememberForever("locations-$matches[2]", function () use ($matches) {
-					return Villages::getLocations($matches[2]);
-				});
+				$locations = Villages::getLocations($matches[2]);
 				$enumerator_id = $matches[1] . $matches[2];
 
 				//$village_name = Villages::getVillageName($matches[2]);
@@ -118,51 +114,69 @@ class SpotCheckerAnswers extends Model {
 				$alldata[$data->enumerator_form_id]['Village Track'] = $locations['village']['villagetrack'];
 				$alldata[$data->enumerator_form_id]['Village'] = $locations['village']['village'];
 
-				//dd($data->answers);
+				foreach ($questions as $q) {
+					if (in_array($q->q_type, array('sub', 'same', 'spotchecker'))) {
+						if (array_key_exists($q->id, $data->answers)) {
+							if (is_array($data->answers[$q->id])) {
+								if (!empty($data->notes)) {
+									for ($i = 1; $i <= 15; $i++) {
+										if (in_array($i, $data->notes)) {
 
-				foreach ($data->answers as $key => $value) {
-					$q = \Illuminate\Support\Facades\Cache::rememberForever("question-$key", function () use ($key) {
-						return EmsFormQuestions::find($key);
-					});
-					if (!empty($data->notes)) {
-						foreach ($data->notes as $nk => $note) {
+											foreach ($data->notes as $nk => $note) {
+												if ($note == $i) {
+													foreach ($data->answers[$q->id] as $da) {
+														if (is_array($da)) {
+															if (array_key_exists($note, $da)) {
+																$alldata[$data->enumerator_form_id][$q->get_parent->question_number . '-' . $q->question_number . '-' . $nk] = $da[$note];
+															} else {
+																// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $nk] = '';
+															}
+														}
 
-							//print $note . '=>' . $nk;
-
-						}
-					}
-					//dd($q);
-					//$alldata[$data->enumerator_form_id]['question'][$key] = $question->question_number;
-					if (is_array($value)) {
-						foreach ($value as $vk => $va) {
-							if (!is_array($va)) {
-								if (!in_array($q->q_type, array('main', 'single', 'spotchecker'))) {
-									$alldata[$data->enumerator_form_id][$q->get_parent->question_number . $q->question_number . $vk] = $va;
-								} else {
-									$alldata[$data->enumerator_form_id][$q->question_number . $vk] = $va;
-								}
-							} else {
-								foreach ($va as $nkey => $nvalue) {
-									if (!in_array($q->q_type, array('main', 'single', 'spotchecker'))) {
-										$alldata[$data->enumerator_form_id][$q->get_parent->question_number . $q->question_number . sprintf("Category_%03d", $nkey)] = $nvalue;
-									} else {
-										$alldata[$data->enumerator_form_id][$q->question_number . sprintf("Category_%03d", $nkey)] = $nvalue;
+													}
+												}
+											}
+										} else {
+											// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $i] = '';
+										}
 									}
 								}
+								$ii = 1;
+								foreach ($data->answers[$q->id] as $aq => $av) {
+									if (is_array($av)) {
+										foreach ($av as $ak => $v) {
+											// print_r($av);
+											// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number . $ii . $aq. $ak] = $v;
+										}
+
+									} else {
+										$alldata[$data->enumerator_form_id][$q->get_parent->question_number . '-' . $q->question_number . '-' . $ii . '-' . $aq] = $av;
+									}
+									$ii++;
+								}
+
+							} else {
+								$alldata[$data->enumerator_form_id][$q->get_parent->question_number . '-' . $q->question_number] = $data->answers[$q->id];
 							}
-
-						}
-						//die();
-
-					} else {
-						if (!in_array($q->q_type, array('main', 'single', 'spotchecker'))) {
-							$alldata[$data->enumerator_form_id][$q->get_parent->question_number . $q->question_number] = $value;
 						} else {
-							$alldata[$data->enumerator_form_id][$q->question_number] = $value;
+							// $alldata[$data->interviewee_id][$q->get_parent->question_number . $q->question_number] = '';
+						}
+					} else {
+						if (array_key_exists($q->id, $data->answers)) {
+							if (is_array($data->answers[$q->id])) {
+								foreach ($data->answers[$q->id] as $qk => $qv) {
+									$alldata[$data->enumerator_form_id][$q->question_number . '-' . $qk] = $qv;
+								}
+
+							} else {
+								$alldata[$data->enumerator_form_id][$q->question_number] = $data->answers[$q->id];
+							}
+						} else {
+							//    $alldata[$data->interviewee_id][$q->question_number] = '';
 						}
 					}
-				}
 
+				}
 			}
 		} else {
 			$alldata = array();
