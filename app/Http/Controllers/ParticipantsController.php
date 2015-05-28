@@ -619,7 +619,7 @@ class ParticipantsController extends Controller {
 						//dd($new_participant->villages);
 						$township_id = $new_participant->villages->first()->townships_id;
 
-						$spotchecker->townships()->sync([$township_id], false);
+						$spotchecker->townships()->sync([$township_id]);
 					} catch (QueryException $e) {
 
 					}
