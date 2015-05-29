@@ -100,6 +100,7 @@ class SpotCheckerAnswers extends Model {
 				$alldata[$data->enumerator_form_id]['Spotchecker ID'] = $data->spotchecker_id;
 
 				$alldata[$data->enumerator_form_id]['Data Enterer ID'] = $data->user_id;
+				$alldata[$data->enumerator_form_id]['PSU'] = $data->psu;
 
 				preg_match('/([1-9][0-9]{2})([0-9]{3})[0-9]/', $data->enumerator_form_id, $matches);
 

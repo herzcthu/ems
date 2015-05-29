@@ -145,6 +145,7 @@ class EmsQuestionsAnswers extends Model {
 				$alldata[$data->interviewee_id]['Interviewee Gender'] = $data->interviewee_gender;
 				$alldata[$data->interviewee_id]['Interviewer ID'] = $data->interviewer_id;
 				$alldata[$data->interviewee_id]['Data Enterer ID'] = $data->user_id;
+				$alldata[$data->interviewee_id]['PSU'] = $data->psu;
 				if ($data->form_complete == true) {
 					$alldata[$data->interviewee_id]['Form Status'] = 'Complete';
 				} else {
