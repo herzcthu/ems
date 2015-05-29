@@ -371,6 +371,7 @@ class EmsQuestionsAnswersController extends Controller {
 			$answers['user_id'] = $this->current_user_id;
 		}
 		$answers['psu'] = $input['psu'];
+
 		$answers['answers'] = $input_answers;
 
 		$answers['form_complete'] = (bool) true;
@@ -428,9 +429,9 @@ class EmsQuestionsAnswersController extends Controller {
 			} else {
 				$answers['form_id'] = $input_answers;
 			}
-			//return $answers;
+			//dd($answers);
 			$new_answer = SpotCheckerAnswers::updateOrCreate(array('enumerator_form_id' => $answers['enumerator_form_id']), $answers);
-
+			//dd($new_answer);
 		} else {
 			//return $input;
 

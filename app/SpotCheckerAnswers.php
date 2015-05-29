@@ -12,7 +12,7 @@ class SpotCheckerAnswers extends Model {
 	 */
 	protected $table = 'spot_checker_answers';
 
-	protected $fillable = ['answers', 'notes', 'form_id', 'spotchecker_id', 'enumerator_form_id', 'user_id'];
+	protected $fillable = ['answers', 'notes', 'form_id', 'spotchecker_id', 'enumerator_form_id', 'user_id', 'psu', 'accuracy'];
 
 	public function EnuAnswers() {
 		return $this->hasOne('App\EmsQuestionsAnswers', 'enumerator_form_id', 'enumerator_form_id');
